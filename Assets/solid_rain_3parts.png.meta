@@ -1,0 +1,296 @@
+fileFormatVersion: 2
+guid: 9fad3bb1213f1724481f33e7511b9f8a
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: solid_rain_3parts_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1680
+        width: 200
+        height: 320
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6763bfb2f3eb75e458e33546226349e8
+      internalID: 332323594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: solid_rain_3parts_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1268
+        width: 200
+        height: 322
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bd491b4aca8d7743bc1284e01f835ae
+      internalID: 1930629394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: solid_rain_3parts_42
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 721
+        width: 200
+        height: 364
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e8ac80e7a1498f49a8aa3e19c9ddbe0
+      internalID: 1863085244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      solid_rain_3parts_0: 332323594
+      solid_rain_3parts_1: -1829189500
+      solid_rain_3parts_10: -59179537
+      solid_rain_3parts_11: -1601520238
+      solid_rain_3parts_12: 1920506503
+      solid_rain_3parts_13: 483350501
+      solid_rain_3parts_14: -261619122
+      solid_rain_3parts_15: 1553857201
+      solid_rain_3parts_16: 1363715331
+      solid_rain_3parts_17: 606581867
+      solid_rain_3parts_18: -359741540
+      solid_rain_3parts_19: -181872972
+      solid_rain_3parts_2: 164736316
+      solid_rain_3parts_20: -1270970746
+      solid_rain_3parts_21: -1145380748
+      solid_rain_3parts_22: 539500125
+      solid_rain_3parts_23: 1189710432
+      solid_rain_3parts_24: 1930629394
+      solid_rain_3parts_25: 2422845
+      solid_rain_3parts_26: 1119889796
+      solid_rain_3parts_27: -1322519267
+      solid_rain_3parts_28: 890351249
+      solid_rain_3parts_29: -623200431
+      solid_rain_3parts_3: 1569003183
+      solid_rain_3parts_30: -1258559657
+      solid_rain_3parts_31: -1533781442
+      solid_rain_3parts_32: 893583961
+      solid_rain_3parts_33: -1290738485
+      solid_rain_3parts_34: -1006137378
+      solid_rain_3parts_35: -1940686498
+      solid_rain_3parts_36: -1206901433
+      solid_rain_3parts_37: -883607055
+      solid_rain_3parts_38: 479643487
+      solid_rain_3parts_39: 1052839751
+      solid_rain_3parts_4: -2101446650
+      solid_rain_3parts_40: -1871642520
+      solid_rain_3parts_41: -1050512796
+      solid_rain_3parts_42: 1863085244
+      solid_rain_3parts_43: -308537793
+      solid_rain_3parts_44: -1162684043
+      solid_rain_3parts_45: -571713247
+      solid_rain_3parts_46: 1572072790
+      solid_rain_3parts_47: 807547920
+      solid_rain_3parts_48: 1077593967
+      solid_rain_3parts_49: 298098431
+      solid_rain_3parts_5: 429186500
+      solid_rain_3parts_50: 85251699
+      solid_rain_3parts_51: -1376218280
+      solid_rain_3parts_52: 128287823
+      solid_rain_3parts_53: -262260914
+      solid_rain_3parts_54: 2008850005
+      solid_rain_3parts_55: 908656778
+      solid_rain_3parts_56: -912896081
+      solid_rain_3parts_57: -434174656
+      solid_rain_3parts_58: 1122436098
+      solid_rain_3parts_59: 1786026860
+      solid_rain_3parts_6: -499375594
+      solid_rain_3parts_60: -352664891
+      solid_rain_3parts_61: -70815451
+      solid_rain_3parts_62: -1694568025
+      solid_rain_3parts_63: 87776678
+      solid_rain_3parts_64: -2023444536
+      solid_rain_3parts_65: 1047421441
+      solid_rain_3parts_66: 1839961842
+      solid_rain_3parts_67: -505022410
+      solid_rain_3parts_68: 65630585
+      solid_rain_3parts_69: -972461850
+      solid_rain_3parts_7: -1966862774
+      solid_rain_3parts_70: 1426018219
+      solid_rain_3parts_71: 1270867557
+      solid_rain_3parts_72: -1187515803
+      solid_rain_3parts_73: 223102043
+      solid_rain_3parts_74: -916381186
+      solid_rain_3parts_75: 815998312
+      solid_rain_3parts_76: 1526055749
+      solid_rain_3parts_77: 1613952769
+      solid_rain_3parts_78: 1096629524
+      solid_rain_3parts_79: 1070152884
+      solid_rain_3parts_8: 543041833
+      solid_rain_3parts_80: -1539362550
+      solid_rain_3parts_81: -386329990
+      solid_rain_3parts_82: 959211589
+      solid_rain_3parts_83: -624131920
+      solid_rain_3parts_84: 874167459
+      solid_rain_3parts_85: 589155187
+      solid_rain_3parts_86: -224629073
+      solid_rain_3parts_87: 960422624
+      solid_rain_3parts_88: 1782504063
+      solid_rain_3parts_89: -1144302489
+      solid_rain_3parts_9: -1017177199
+      solid_rain_3parts_90: -575433544
+      solid_rain_3parts_91: 439673571
+      solid_rain_3parts_92: -1104044315
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
