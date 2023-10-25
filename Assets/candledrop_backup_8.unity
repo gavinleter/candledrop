@@ -11550,7 +11550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+  pressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -12971,7 +12971,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+  pressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
 --- !u!4 &753370756 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1410566994242324153, guid: 7e4baa694eada2047a40628db041b919, type: 3}
@@ -13991,7 +13991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+  pressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
 --- !u!1 &938846241 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9090660706480959721, guid: 7e4baa694eada2047a40628db041b919, type: 3}
@@ -14580,7 +14580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+  pressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
 --- !u!1 &1028130698 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9090660706480959721, guid: 7e4baa694eada2047a40628db041b919, type: 3}
@@ -15580,7 +15580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+  pressedColor: {r: 0.47058824, g: 0.47058824, b: 0.47058824, a: 1}
 --- !u!1 &1209936616
 GameObject:
   m_ObjectHideFlags: 0
@@ -37764,6 +37764,7 @@ GameObject:
   - component: {fileID: 1933673969}
   - component: {fileID: 1933673968}
   - component: {fileID: 1933673967}
+  - component: {fileID: 1933673970}
   m_Layer: 0
   m_Name: can5
   m_TagString: Untagged
@@ -37877,6 +37878,33 @@ Transform:
   - {fileID: 539000060}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &1933673970
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933673966}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 1
+  m_Mass: 0.4675998
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0.6
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1961750294
 GameObject:
   m_ObjectHideFlags: 0
