@@ -11301,7 +11301,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 10.55, z: -10}
   m_LocalScale: {x: 0.5, y: 0.5, z: -10}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1264243756}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &519420033
@@ -14472,8 +14473,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1123557965}
   - component: {fileID: 1123557964}
-  - component: {fileID: 1123557966}
   - component: {fileID: 1123557967}
+  - component: {fileID: 1123557968}
   m_Layer: 0
   m_Name: settings_button
   m_TagString: Untagged
@@ -14548,20 +14549,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1123557966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1123557963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28a8afec48067046857560d7d4c3932, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  normalColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
 --- !u!61 &1123557967
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -14607,6 +14594,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.155, y: 0.155}
   m_EdgeRadius: 0
+--- !u!114 &1123557968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123557963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4223800bdac7651469c91d072c773e95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  pressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  pauseMenu: {fileID: 1264243754}
 --- !u!1001 &1124913032
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15326,6 +15328,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1264243756}
   - component: {fileID: 1264243755}
+  - component: {fileID: 1264243757}
   m_Layer: 0
   m_Name: pause_menu_candledrop
   m_TagString: Untagged
@@ -15393,9 +15396,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1264243754}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 35, y: 0, z: 0}
-  m_LocalScale: {x: 5.8, y: 5.8, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0, w: 1}
+  m_LocalPosition: {x: 70, y: -21.1, z: -1}
+  m_LocalScale: {x: 11.6, y: 11.6, z: -0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1025563258}
@@ -15408,8 +15411,20 @@ Transform:
   - {fileID: 72536840}
   - {fileID: 936292068}
   - {fileID: 513729408}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 519420032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1264243757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1264243754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea37e771754aa5e43881be6ddb1bbe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1275028215
 GameObject:
   m_ObjectHideFlags: 0
@@ -37684,5 +37699,4 @@ SceneRoots:
   - {fileID: 1123557965}
   - {fileID: 1275028217}
   - {fileID: 184310323}
-  - {fileID: 1264243756}
   - {fileID: 8613608204789993197}

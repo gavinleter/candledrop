@@ -14,35 +14,31 @@ public class ButtonPress : MonoBehaviour
 
     private bool isPressed = false;
 
-    private void Start()
+    virtual protected void Start()
     {
         rend = GetComponent<Renderer>();
         originalColor = rend.material.color;
         highlightColor = normalColor;
     }
 
-    private void OnMouseDown()
+    virtual protected void OnMouseDown()
     {
         isPressed = true;
         ChangeColor();
     }
 
-    private void OnMouseUp()
+    virtual protected void OnMouseUp()
     {
         isPressed = false;
         ChangeColor();
     }
 
-    private void OnMouseExit()
+    virtual protected void OnMouseExit()
     {
-        if (isPressed)
-        {
-            isPressed = false;
-            ChangeColor();
-        }
+        OnMouseUp();
     }
 
-    private void ChangeColor()
+    virtual protected void ChangeColor()
     {
         if (isPressed)
         {
@@ -53,4 +49,9 @@ public class ButtonPress : MonoBehaviour
             rend.material.color = normalColor;
         }
     }
+
+    public bool btnPressed() {
+        return isPressed;
+    }
+
 }
