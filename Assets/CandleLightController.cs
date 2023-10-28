@@ -9,8 +9,7 @@ public class CandleLightController : MonoBehaviour
     int layer;
     int overlaps = 0;
 
-    void Start()
-    {
+    void Start(){
         flickerObject = transform.Find("flicker").gameObject;
         staticFlickerObject = flickerObject.transform.Find("better_flicker_0").gameObject;
         layer = LayerMask.NameToLayer("flame");

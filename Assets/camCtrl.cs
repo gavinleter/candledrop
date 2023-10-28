@@ -6,8 +6,10 @@ public class camCtrl : MonoBehaviour
 {
     public Vector3 initialPosition = new Vector3(0f, 76f, 0f);
     public Vector3 targetPosition = new Vector3(0f, 55f, 0f);
+    public Vector3 gamePosition = new Vector3(0f, 10.55f, -10f);
     public float transitionSpeed = 5f;
     public float delayBeforeTransition = 1f;
+    [SerializeField] float candleFallTransitionSpeed;
 
     private float transitionStartTime;
     private bool isTransitioning = false;
@@ -46,5 +48,13 @@ public class camCtrl : MonoBehaviour
     {
         isTransitioning = true;
         transitionStartTime = Time.time;
+    }
+
+    public void startGameTransition() {
+        isTransitioning = false;
+        initialPosition = targetPosition;
+        targetPosition = gamePosition;
+        transitionSpeed = candleFallTransitionSpeed;
+        StartTransition();
     }
 }

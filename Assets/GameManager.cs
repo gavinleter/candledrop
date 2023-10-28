@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        StartTurn();
+        //StartTurn();
     }
 
     private void Update()
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void StartTurn()
+    public void StartTurn()
     {
         int randomIndex = UnityEngine.Random.Range(0, canObjects.Length); // Specify UnityEngine.Random
         selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
