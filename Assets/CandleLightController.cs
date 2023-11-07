@@ -9,6 +9,7 @@ public class CandleLightController : MonoBehaviour {
     bool candleEnabled = true;
     GameObject flickerObject;
     GameObject staticFlickerObject;
+    CandleIgniter candleIgniter;
     int layer;
     //overlaps is used to count how many solid objects the light is colliding with
     //the candle can only reignite if overlaps == 0
@@ -19,6 +20,7 @@ public class CandleLightController : MonoBehaviour {
         flickerObject = transform.Find("flicker").gameObject;
         staticFlickerObject = flickerObject.transform.Find("better_flicker_0").gameObject;
         layer = LayerMask.NameToLayer("flame");
+        candleIgniter = staticFlickerObject.GetComponent<CandleIgniter>();
 
         id = instances;
         instances++;
@@ -33,33 +35,20 @@ public class CandleLightController : MonoBehaviour {
 
 
     private void OnTriggerExit2D(Collider2D collision) {
-        if (collision.gameObject.layer != layer) {
+        if (collision.gameObject.layer != layer && !isParent(collision.gameObject)) {
             overlaps--;
         }
     }
 
 
     private void enableDisableCandleLight(Collider2D collider) {
-        if (collider.gameObject.layer != layer) {
+        if (collider.gameObject.layer != layer && !isParent(collider.gameObject)) {
             overlaps++;
         }
         //disable candle light if it hits something solid
+        //candles are re-enabled inside of CandleIgniter, attached to the static flicker child object
         if (candleEnabled && collider.gameObject.layer != layer && !isParent(collider.gameObject)) {
-            Debug.Log(collider.gameObject.name);
-            candleEnabled = false;
-            flickerObject.GetComponent<SpriteRenderer>().enabled = false;
-            staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
-            GetComponent<SpriteRenderer>().enabled = false;
-        } //enable candle light if it hits a flame and is not colliding with a wall
-        else if (!candleEnabled && collider.gameObject.layer == layer && overlaps == 0) {
-            CandleLightController other = collider.gameObject.GetComponent<CandleLightController>();
-            if (other != null && other.isEnabled()) {
-                candleEnabled = true;
-                flickerObject.GetComponent<SpriteRenderer>().enabled = true;
-                GetComponent<SpriteRenderer>().enabled = true;
-                staticFlickerObject.GetComponent<SpriteRenderer>().enabled = true;
-            }
-
+            disableLight();
         }
     }
 
@@ -69,7 +58,22 @@ public class CandleLightController : MonoBehaviour {
     }
 
 
-    
+    public void disableLight() {
+        candleEnabled = false;
+        flickerObject.GetComponent<SpriteRenderer>().enabled = false;
+        staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<SpriteRenderer>().enabled = false;
+        candleIgniter.setActive(false);
+    }
+
+
+    public void enableLight() {
+        candleEnabled = true;
+        flickerObject.GetComponent<SpriteRenderer>().enabled = true;
+        GetComponent<SpriteRenderer>().enabled = true;
+        staticFlickerObject.GetComponent<SpriteRenderer>().enabled = true;
+        candleIgniter.setActive(true);
+    }
 
 
     public bool isEnabled() {
@@ -83,5 +87,13 @@ public class CandleLightController : MonoBehaviour {
 
     public int getId() {
         return id;
+    }
+
+    public bool canIgnite() {
+        return overlaps == 0 && !candleEnabled;
+    }
+
+    public int ove() {
+        return overlaps;
     }
 }
