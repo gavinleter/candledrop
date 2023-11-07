@@ -13,8 +13,10 @@ public class MusicManager : MonoBehaviour
 {
     public MusicData[] songs;
     public float song2Start = 10.0f;
+    public float crossfadeYThreshold = 0.0f; // Set this threshold in the Inspector
 
     private int currentSongIndex = 0;
+    private bool song2Started = false;
 
     private void Start()
     {
@@ -32,19 +34,27 @@ public class MusicManager : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time >= song2Start && currentSongIndex == 0)
+        if (!song2Started && Time.time >= song2Start)
         {
-            // Start crossfading to the next song after the specified delay
-            int nextSongIndex = (currentSongIndex + 1) % songs.Length;
-            StartCoroutine(CrossfadeSongs(currentSongIndex, nextSongIndex));
+            // Start crossfading to the second song after the specified delay
+            StartCoroutine(CrossfadeToNextSong());
+            song2Started = true;
+        }
+
+        if (currentSongIndex < 2 && Camera.main.transform.position.y < crossfadeYThreshold)
+        {
+            // Start crossfading to the third song
+            int nextSongIndex = 2;
+            StartCoroutine(CrossfadeToNextSong());
             currentSongIndex = nextSongIndex;
         }
     }
 
-    private System.Collections.IEnumerator CrossfadeSongs(int currentIndex, int nextIndex)
+    private IEnumerator CrossfadeToNextSong()
     {
-        MusicData currentSong = songs[currentIndex];
-        MusicData nextSong = songs[nextIndex];
+        int nextSongIndex = (currentSongIndex + 1) % songs.Length;
+        MusicData currentSong = songs[currentSongIndex];
+        MusicData nextSong = songs[nextSongIndex];
 
         float elapsedTime = 0f;
 
@@ -61,5 +71,6 @@ public class MusicManager : MonoBehaviour
         // Ensure the volumes are set correctly at the end of the crossfade
         currentSong.audioSource.volume = 0f;
         nextSong.audioSource.volume = 1f;
+        currentSongIndex = nextSongIndex;
     }
 }
