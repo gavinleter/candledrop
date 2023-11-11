@@ -20,7 +20,6 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        // Ensure all songs are set to loop
         foreach (MusicData song in songs)
         {
             song.audioSource.loop = true;
