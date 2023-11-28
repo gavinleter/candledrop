@@ -33,11 +33,12 @@ public class basecamdown : MonoBehaviour
                 isTransitioning = false;
             }
         }
-        else if (Input.GetMouseButtonDown(0))
-        {
-            // Start the transition when the mouse button is initially pressed
-            StartTransition();
-        }
+    }
+
+    private void OnMouseDown()
+    {
+        // Check if the mouse click occurred on the object
+        StartTransition();
     }
 
     void StartTransition()
