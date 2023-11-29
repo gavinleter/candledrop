@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class GameManager : MonoBehaviour
     private float lastMoveTime;
     private bool hasMoved = false;
 
+    private static List<CandleLightController> currentCandles = new List<CandleLightController>();
+
     private void Start()
     {
         //StartTurn();
@@ -22,11 +26,16 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+
         if (isTurnActive)
         {
-            Rigidbody2D rb = selectedCan.GetComponent<Rigidbody2D>();
 
-            if (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.velocity.magnitude < 0.01f)
+            Rigidbody2D rb = null;
+            if (selectedCan != null) {
+                rb = selectedCan.GetComponent<Rigidbody2D>();
+            }
+
+            if (rb == null || (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.velocity.magnitude < 0.01f))
             {
                 // Object has stopped moving, start a new turn
                 StartTurn();
@@ -69,5 +78,41 @@ public class GameManager : MonoBehaviour
         isTurnActive = true;
         turnStartTime = Time.time;
         hasMoved = false; // Reset the moved flag
+
+        addCandleLight(selectedCan);
     }
+
+
+    public void addCandleLight(GameObject candle) {
+        //add the created candles lights to the list for candleRowDestroyer to reference by id later on
+        //the for loop is in the case a candle has multiple lights
+        for (int i = 0; i < candle.transform.childCount; i++) {
+            CandleLightController c = candle.transform.GetChild(i).GetChild(0).GetComponent<CandleLightController>();
+            currentCandles.Add(c);
+            c.assignId();
+        }
+    }
+
+
+    public static CandleLightController getCandleById(int id) {
+        /*for (int i = 0; i < currentCandles.Count; i++) {
+            Debug.Log(i + " " + id + " " + currentCandles[i].transform.parent.parent.name);
+        }*/
+        for (int i = 0; i < currentCandles.Count; i++) {
+            if (currentCandles[i].getId() == id) {
+                return currentCandles[i];
+            }
+        }
+        return null;
+    }
+
+
+    public void destroyCandle(int id) {
+        if(currentCandles[id] == selectedCan) {
+            selectedCan = null;
+        }
+
+        Destroy(getCandleById(id).getParentObject());
+    }
+
 }

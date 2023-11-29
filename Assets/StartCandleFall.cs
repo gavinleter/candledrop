@@ -17,6 +17,7 @@ public class StartCandleFall : MonoBehaviour
     void Start(){
         rb = GetComponent<Rigidbody2D>();
         gameManager = gameControllerObject.GetComponent<GameManager>();
+        gameManager.addCandleLight(gameObject);
     }
 
     // Update is called once per frame
