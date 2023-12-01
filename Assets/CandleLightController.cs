@@ -34,6 +34,11 @@ public class CandleLightController : MonoBehaviour {
 
     }
 
+    private void Update() {
+        //Debug.Log(transform.parent.parent.name + " " + touching.Count);
+    }
+
+
     void OnTriggerEnter2D(Collider2D collider){
 
         testCollisionCandleLight(collider);
@@ -76,10 +81,12 @@ public class CandleLightController : MonoBehaviour {
         staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
         GetComponent<SpriteRenderer>().enabled = false;
         candleIgniter.setActive(false);
+        staticFlickerObject.GetComponent<CircleCollider2D>().enabled = false;
     }
 
 
     public void enableLight() {
+        staticFlickerObject.GetComponent<CircleCollider2D>().enabled = true;
         candleEnabled = true;
         //flickerObject.GetComponent<SpriteRenderer>().enabled = true;
         staticFlickerObject.GetComponent<SpriteRenderer>().enabled = true;
@@ -101,7 +108,7 @@ public class CandleLightController : MonoBehaviour {
 
         //if this candle has an invalid id (in the case of candles just out in the open not being used in game)
         if (other.getId() == -1) {
-            //Debug.Log(other.transform.parent.parent.name + " " + other.getId() + " " + transform.parent.parent.name);
+            Debug.Log(other.transform.parent.parent.name + " " + other.getId() + " " + transform.parent.parent.name);
             return;
         }
 
@@ -140,11 +147,6 @@ public class CandleLightController : MonoBehaviour {
                 }
             }
         }
-
-    }
-
-
-    public void explode() {
 
     }
 
