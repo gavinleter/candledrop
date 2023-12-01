@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4238804412967305807}
   - component: {fileID: 1321363747742545784}
   - component: {fileID: 4986888736925604950}
-  - component: {fileID: 2670531699965231843}
+  - component: {fileID: 571249592705336583}
   m_Layer: 0
   m_Name: can10
   m_TagString: Untagged
@@ -76,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: ab56fd4739baf9040b3711128846f31d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1c7c8185cebe1564d983a857d521db95, type: 3}
   m_Color: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.21, y: 0.17}
+  m_Size: {x: 0.17, y: 0.17}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -99,7 +99,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.49322525
+  m_Mass: 0.44288236
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -114,7 +114,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!60 &2670531699965231843
+--- !u!60 &571249592705336583
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,50 +150,26 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.21, y: 0.17}
-    newSize: {x: 0.21, y: 0.17}
+    oldSize: {x: 0.17, y: 0.17}
+    newSize: {x: 0.17, y: 0.17}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.015020431, y: 0.034983236}
-      - {x: -0.015019471, y: 0.024980485}
-      - {x: -0.025020655, y: 0.024982588}
-      - {x: -0.025020018, y: 0.0149767585}
-      - {x: -0.0350212, y: 0.014981605}
-      - {x: -0.03502279, y: 0.0049811373}
-      - {x: -0.045021113, y: 0.0049812165}
-      - {x: -0.045021746, y: -0.0050200056}
-      - {x: -0.0550188, y: -0.0050169462}
-      - {x: -0.05501944, y: -0.015017333}
-      - {x: -0.06502539, y: -0.01502401}
-      - {x: -0.065021574, y: -0.025019512}
-      - {x: -0.0750075, y: -0.025006715}
-      - {x: -0.07501894, y: -0.035018627}
-      - {x: -0.085027434, y: -0.035027172}
-      - {x: -0.08501917, y: -0.04501945}
-      - {x: -0.095019475, y: -0.045019515}
-      - {x: -0.09502075, y: -0.07502441}
-      - {x: 0.09493937, y: -0.075029455}
-      - {x: 0.09498038, y: -0.045019496}
-      - {x: 0.084978364, y: -0.04501194}
-      - {x: 0.084981546, y: -0.03502117}
-      - {x: 0.07498069, y: -0.03501712}
-      - {x: 0.07497719, y: -0.025017405}
-      - {x: 0.06498109, y: -0.025024794}
-      - {x: 0.06498141, y: -0.015021864}
-      - {x: 0.0549815, y: -0.015021666}
-      - {x: 0.054981813, y: -0.0050225095}
-      - {x: 0.044981267, y: -0.0050177015}
-      - {x: 0.0449854, y: 0.0049737464}
-      - {x: 0.034981992, y: 0.004980303}
-      - {x: 0.034978177, y: 0.014980611}
-      - {x: 0.024984939, y: 0.014983434}
-      - {x: 0.024977311, y: 0.024981039}
-      - {x: 0.014980261, y: 0.024971064}
-      - {x: 0.014979832, y: 0.03497847}
+    - - {x: 0.0349804, y: 0.07498048}
+      - {x: 0.034980398, y: 0.044980466}
+      - {x: 0.044894483, y: 0.04511831}
+      - {x: 0.044980627, y: -0.04501965}
+      - {x: -0.04502461, y: -0.04503384}
+      - {x: -0.04501984, y: 0.044980783}
+      - {x: -0.035019938, y: 0.04498181}
+      - {x: -0.035019927, y: 0.07498039}
+      - {x: -0.0750198, y: 0.07498057}
+      - {x: -0.075019486, y: -0.075019605}
+      - {x: 0.074980386, y: -0.07501956}
+      - {x: 0.07498038, y: 0.07498106}
   m_UseDelaunayMesh: 0
 --- !u!1001 &7652905603082507927
 PrefabInstance:
@@ -221,7 +197,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1410566994242324153, guid: 7e4baa694eada2047a40628db041b919, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0702
+      value: -0.01013
       objectReference: {fileID: 0}
     - target: {fileID: 1410566994242324153, guid: 7e4baa694eada2047a40628db041b919, type: 3}
       propertyPath: m_LocalPosition.z
@@ -267,6 +243,10 @@ PrefabInstance:
       propertyPath: objectsToDisappear.Array.data[1]
       value: 
       objectReference: {fileID: 4778475593060059294}
+    - target: {fileID: 9090660706480959735, guid: 7e4baa694eada2047a40628db041b919, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8026948696197737103, guid: 7e4baa694eada2047a40628db041b919, type: 3}
     m_RemovedGameObjects: []
