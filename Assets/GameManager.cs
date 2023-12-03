@@ -65,8 +65,8 @@ public class GameManager : MonoBehaviour
 
     public void StartTurn()
     {
-        int randomIndex = UnityEngine.Random.Range(0, canObjects.Length); // Specify UnityEngine.Random
-        selectedCan = Instantiate(canObjects[/*randomIndex*/0], teleCoords.position, Quaternion.identity);
+        int randomIndex = UnityEngine.Random.Range(0,canObjects.Length); // Specify UnityEngine.Random
+        selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
         selectedCan.SetActive(true);
 
         Rigidbody2D rb = selectedCan.GetComponent<Rigidbody2D>();
