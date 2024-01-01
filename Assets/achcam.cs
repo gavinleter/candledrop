@@ -2,11 +2,14 @@ using UnityEngine;
 
 public class achcam : MonoBehaviour
 {
-    public bool inAchievementsPage = true;
-    public Camera draggedCamera;
-    public float dragStrength = 0.1f;
+    bool inAchievementsPage = false;
+    [SerializeField] Camera draggedCamera;
+    [SerializeField] float dragStrength;
 
     private Vector2 lastMousePosition;
+
+    float upperBound = 0;
+    float lowerBound = 0;
 
     void Update()
     {
@@ -38,5 +41,23 @@ public class achcam : MonoBehaviour
 
         // Apply the movement to the assigned camera's position
         draggedCamera.transform.Translate(Vector3.up * moveAmount);
+
+        if(draggedCamera.transform.position.y > upperBound) {
+            draggedCamera.transform.position = new Vector3(draggedCamera.transform.position.x, upperBound, draggedCamera.transform.position.z);
+        }
+        if (draggedCamera.transform.position.y < lowerBound) {
+            draggedCamera.transform.position = new Vector3(draggedCamera.transform.position.x, lowerBound, draggedCamera.transform.position.z);
+        }
+    }
+
+
+    public void setActive(bool x) {
+        inAchievementsPage = x;
+    }
+
+
+    public void setBounds(float upper, float lower) {
+        lowerBound = lower;
+        upperBound = upper;
     }
 }

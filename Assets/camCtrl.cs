@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class camCtrl : MonoBehaviour
 {
-    public Vector3 initialPosition = new Vector3(0f, 76f, 0f);
-    public Vector3 targetPosition = new Vector3(0f, 55f, 0f);
-    public Vector3 gamePosition = new Vector3(0f, 10.55f, -10f);
-    public float transitionSpeed = 5f;
-    public float delayBeforeTransition = 1f;
+    Vector3 initialPosition = new Vector3(0f, 76f, -10f);
+    Vector3 targetPosition;
+
+    Vector3 gameStartPosition = new Vector3(0f, 55f, -10f);
+    Vector3 gamePosition = new Vector3(0f, 10.55f, -10f);
+
+    [SerializeField] float transitionSpeed;
+    [SerializeField] float delayBeforeTransition;
     [SerializeField] float candleFallTransitionSpeed;
 
     private float transitionStartTime;
@@ -18,15 +21,22 @@ public class camCtrl : MonoBehaviour
     {
         // Set the camera's initial position
         transform.position = initialPosition;
+        targetPosition = gameStartPosition;
 
         // Start the transition delay
-        Invoke("StartTransition", delayBeforeTransition);
+        Invoke("startTransition", delayBeforeTransition);
     }
 
     void Update()
     {
         if (isTransitioning)
         {
+            //check if the target position is the same as the starting position to prevent division by 0
+            if (initialPosition.Equals(targetPosition)) {
+                isTransitioning = false;
+                return;
+            }
+
             float timeSinceStart = Time.time - transitionStartTime;
             float journeyLength = Vector3.Distance(initialPosition, targetPosition);
 
@@ -34,6 +44,7 @@ public class camCtrl : MonoBehaviour
             float journeyFraction = Mathf.SmoothStep(0f, 1f, timeSinceStart / (journeyLength / transitionSpeed));
 
             // Smoothly move the camera using Lerp
+
             transform.position = Vector3.Lerp(initialPosition, targetPosition, journeyFraction);
 
             // Check if the transition is complete
@@ -44,7 +55,7 @@ public class camCtrl : MonoBehaviour
         }
     }
 
-    void StartTransition()
+    public void startTransition()
     {
         isTransitioning = true;
         transitionStartTime = Time.time;
@@ -52,9 +63,28 @@ public class camCtrl : MonoBehaviour
 
     public void startGameTransition() {
         isTransitioning = false;
-        initialPosition = targetPosition;
+        initialPosition = gameStartPosition;
         targetPosition = gamePosition;
         transitionSpeed = candleFallTransitionSpeed;
-        StartTransition();
+        startTransition();
+    }
+
+
+    public void restartTransition() {
+        setNewTarget(gameStartPosition, candleFallTransitionSpeed);
+        startTransition();
+    }
+
+
+    public void setNewTarget(Vector3 targetPosition, float transitionSpeed) {
+        isTransitioning = false;
+        initialPosition = transform.position;
+        this.targetPosition = targetPosition;
+        this.transitionSpeed = transitionSpeed;
+    }
+
+
+    public void setNewTarget(Vector3 targetPosition) {
+        setNewTarget(targetPosition, transitionSpeed);
     }
 }

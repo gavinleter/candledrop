@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IMenu
 {
     public GameObject[] canObjects = new GameObject[12];
     public Transform teleCoords;
@@ -17,11 +17,30 @@ public class GameManager : MonoBehaviour
     private float lastMoveTime;
     private bool hasMoved = false;
 
+    private bool gameStarted = false;
+
     private static List<CandleLightController> currentCandles = new List<CandleLightController>();
+    [SerializeField] List<ButtonPress> buttons;
+
+    [SerializeField] GameObject startingCandlePrefab;
+    [SerializeField] float startingCandleGravity;
+    [SerializeField] Camera mainCamera;
+
+    [SerializeField] GameObject pauseMenuObject;
+
 
     private void Start()
     {
-        //StartTurn();
+
+        System.Action settingsAction = delegate () {
+            pause();
+            pauseMenuObject.GetComponent<IMenu>().pause();
+        };
+
+        //both the top and bottom pause buttons
+        buttons[0].onPress(settingsAction);
+        buttons[1].onPress(settingsAction);
+
     }
 
     private void Update()
@@ -65,6 +84,7 @@ public class GameManager : MonoBehaviour
 
     public void StartTurn()
     {
+        gameStarted = true;
         int randomIndex = UnityEngine.Random.Range(0,canObjects.Length); // Specify UnityEngine.Random
         selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
         selectedCan.SetActive(true);
@@ -114,6 +134,53 @@ public class GameManager : MonoBehaviour
         }
 
         Destroy(getCandleById(id).getParentObject());
+    }
+
+
+    public void pause() {
+        isTurnActive = false;
+        getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(false);
+
+        for (int i = 0; i < buttons.Count; i++) {
+            buttons[i].active = false;
+        }
+    }
+
+
+    public void unpause() {
+        getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(true);
+        if (gameStarted) {
+            isTurnActive = true;
+        }
+
+        for (int i = 0; i < buttons.Count; i++) {
+            buttons[i].active = true;
+        }
+    }
+
+
+    public bool isGameStarted() {
+        return gameStarted;
+    }
+
+
+    public void resetGame() {
+        selectedCan = null;
+        isTurnActive = false;
+        gameStarted = false;
+
+        for(int i = 0; i < currentCandles.Count; i++) {
+            Destroy(currentCandles[i].getParentObject());
+        }
+        currentCandles.Clear();
+
+        GameObject x = Instantiate(startingCandlePrefab);
+        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
+    }
+
+
+    GameObject getStartingCandleObject() {
+        return currentCandles[0].getParentObject();
     }
 
 }

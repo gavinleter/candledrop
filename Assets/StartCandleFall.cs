@@ -12,6 +12,7 @@ public class StartCandleFall : MonoBehaviour
     Rigidbody2D rb;
     bool activated = false;
     bool gameStarted = false;
+    bool readyToDrop = true;
 
     // Start is called before the first frame update
     void Start(){
@@ -42,4 +43,17 @@ public class StartCandleFall : MonoBehaviour
             gameManager.StartTurn();
         }
     }
+
+
+    public void setFields(float initialGravity, GameObject gameControllerObject, Camera mainCam) {
+        this.initialGravity = initialGravity;
+        this.gameControllerObject = gameControllerObject;
+        this.mainCam = mainCam;
+    }
+
+
+    public void setReadyToDrop(bool x) {
+        readyToDrop = x;
+    }
+
 }

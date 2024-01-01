@@ -14,27 +14,38 @@ public class ButtonPress : MonoBehaviour
 
     private bool isPressed = false;
 
-    virtual protected void Start()
-    {
+    private List<System.Action> actions;
+
+    public bool active = false;
+
+    virtual protected void Start(){
         rend = GetComponent<Renderer>();
         originalColor = rend.material.color;
         highlightColor = normalColor;
+
+        actions = new List<System.Action>();
     }
 
-    virtual protected void OnMouseDown()
-    {
-        isPressed = true;
-        ChangeColor();
+    virtual protected void OnMouseDown(){
+        if (active) {
+
+            isPressed = true;
+            ChangeColor();
+
+            //execute each action when this button is pressed
+            for (int i = 0; i < actions.Count; i++) {
+                executeAction(i);
+            }
+
+        }
     }
 
-    virtual protected void OnMouseUp()
-    {
+    virtual protected void OnMouseUp(){
         isPressed = false;
         ChangeColor();
     }
 
-    virtual protected void OnMouseExit()
-    {
+    virtual protected void OnMouseExit(){
         OnMouseUp();
     }
 
@@ -50,8 +61,19 @@ public class ButtonPress : MonoBehaviour
         }
     }
 
+
     public bool btnPressed() {
         return isPressed;
     }
 
+
+    //takes in an anonmymous method that should run when this button is pressed
+    public void onPress(System.Action action) {
+        actions.Add(action);
+    }
+
+
+    private void executeAction(int index) {
+        actions[index]();
+    }
 }
