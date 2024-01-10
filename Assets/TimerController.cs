@@ -11,6 +11,8 @@ public class TimerController : MonoBehaviour
         29.6f, 31.3f, 33.1f, 34.9f, 35.4f, 35.6f, 36.7f, 38.5f, 40.3f, 42.1f, 42.5f, 42.7f,
         43.9f, 45.7f, 47.5f, 49.3f, 49.7f, 49.9f, 51.0f, 52.8f, 54.6f, 56.4f, 56.6f, 56.8f, 57.0f
     };
+    private bool[] usedCheckpoints;
+    private int nextCheckpoint = 0;
 
     // Particle System prefab to be cloned
     public ParticleSystem lightningParticleSystemPrefab;
@@ -22,15 +24,37 @@ public class TimerController : MonoBehaviour
     public float maxY = 10f;
 
     private float timer = 0f;
+    private float startTime;
     private float timerDuration = 57.3f;
 
     void Start()
     {
+        usedCheckpoints = new bool[lightningEventCheckpoints.Length];
+        
+        startTime = Time.time;
         // Start the timer coroutine when the game starts
-        StartCoroutine(StartTimer());
+        //StartCoroutine(StartTimer());
     }
 
-    IEnumerator StartTimer()
+    void Update() {
+        
+        //get time since last loop reset
+        timer = Time.time - startTime;
+
+        //if its time for a loop, reset
+        if(timer > timerDuration) {
+            timer = 0;
+            startTime = Time.time;
+            resetUsedCheckpoints();
+        }
+
+        if (IsCheckpointTime(timer)) {
+            TriggerLightningEvent();
+        }
+
+    }
+
+    /*IEnumerator StartTimer()
     {
         //Debug.Log("Timer Coroutine Started");
 
@@ -53,15 +77,15 @@ public class TimerController : MonoBehaviour
                 //Debug.Log("Timer Reset at Time: " + Time.time);
             }
         }
-    }
+    }*/
 
     bool IsCheckpointTime(float currentTime)
     {
-        // Check if the current time is a lightning event checkpoint
-        foreach (float checkpoint in lightningEventCheckpoints)
-        {
-            if (Mathf.Approximately(currentTime, checkpoint))
-            {
+        for (int i = 0; i < lightningEventCheckpoints.Length; i++) {
+            if (!usedCheckpoints[i] && currentTime - 0.05f < lightningEventCheckpoints[i] && currentTime + 0.05f > lightningEventCheckpoints[i]) {
+
+                usedCheckpoints[i] = true;
+                Debug.Log(currentTime + " " + lightningEventCheckpoints[i]);
                 return true;
             }
         }
@@ -98,12 +122,10 @@ public class TimerController : MonoBehaviour
         Destroy(clone.gameObject, main.duration);
     }
 
-    bool inCheckpointArray(float x) {
-        for(int i = 0; i < lightningEventCheckpoints.Length; i++) {
-            if(lightningEventCheckpoints[i] + 0.01f > x && lightningEventCheckpoints[i] - 0.01f < x) {
-                return true;
-            }
+    void resetUsedCheckpoints() {
+        for (int i = 0; i < usedCheckpoints.Length; i++) {
+            usedCheckpoints[i] = false;
         }
-        return false;
     }
+
 }
