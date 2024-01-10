@@ -6,7 +6,10 @@ public class TimerController : MonoBehaviour
 {
     // Checkpoints for lightning events in seconds
     private float[] lightningEventCheckpoints = {
-        // ... (unchanged)
+        0.9f, 2.7f, 4.5f, 6.3f, 6.7f, 6.9f, 8.1f, 9.9f, 11.6f, 13.4f, 13.9f, 14.1f, 15.2f,
+        17.0f, 18.8f, 20.6f, 21.0f, 21.2f, 22.4f, 24.2f, 26.0f, 27.8f, 28.0f, 28.2f, 28.4f,
+        29.6f, 31.3f, 33.1f, 34.9f, 35.4f, 35.6f, 36.7f, 38.5f, 40.3f, 42.1f, 42.5f, 42.7f,
+        43.9f, 45.7f, 47.5f, 49.3f, 49.7f, 49.9f, 51.0f, 52.8f, 54.6f, 56.4f, 56.6f, 56.8f, 57.0f
     };
 
     // Particle System prefab to be cloned
@@ -29,7 +32,7 @@ public class TimerController : MonoBehaviour
 
     IEnumerator StartTimer()
     {
-        Debug.Log("Timer Coroutine Started");
+        //Debug.Log("Timer Coroutine Started");
 
         while (true)
         {
@@ -37,9 +40,9 @@ public class TimerController : MonoBehaviour
 
             // Update the timer with tenths of a second precision
             timer += 0.1f;
-
+            
             // Check if the timer has reached or exceeded the desired duration
-            if (timer >= timerDuration)
+            if (inCheckpointArray(timer))
             {
                 // Trigger the "lightning_event"
                 TriggerLightningEvent();
@@ -47,7 +50,7 @@ public class TimerController : MonoBehaviour
                 // Reset the timer back to zero
                 timer = 0f;
 
-                Debug.Log("Timer Reset at Time: " + Time.time);
+                //Debug.Log("Timer Reset at Time: " + Time.time);
             }
         }
     }
@@ -67,7 +70,7 @@ public class TimerController : MonoBehaviour
 
     void TriggerLightningEvent()
     {
-        Debug.Log("Lightning Event Triggered at Time: " + Time.time);
+        //Debug.Log("Lightning Event Triggered at Time: " + Time.time);
 
         // Create a clone of the particle system
         ParticleSystem clone = Instantiate(lightningParticleSystemPrefab);
@@ -93,5 +96,14 @@ public class TimerController : MonoBehaviour
 
         clone.Play();
         Destroy(clone.gameObject, main.duration);
+    }
+
+    bool inCheckpointArray(float x) {
+        for(int i = 0; i < lightningEventCheckpoints.Length; i++) {
+            if(lightningEventCheckpoints[i] + 0.01f > x && lightningEventCheckpoints[i] - 0.01f < x) {
+                return true;
+            }
+        }
+        return false;
     }
 }
