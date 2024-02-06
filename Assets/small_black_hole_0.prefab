@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holeExplodePrefab: {fileID: 6175462216268171424, guid: ee2c0268390a9fe459faa701dcb23b92, type: 3}
-  candles:
+  blackHoleDiesOn:
   - {fileID: 5724497351766774285, guid: e9bfa2aeb21558444a1108501d55b090, type: 3}
   - {fileID: 2992595853368622326, guid: c2c431e4dd0b47b449bfee71895a4717, type: 3}
   - {fileID: 8122213765713368628, guid: 1799e8f8129d79c468c3589cde1c68ce, type: 3}
@@ -218,6 +218,7 @@ MonoBehaviour:
   - {fileID: 7741733313713798520, guid: 564d87b6128b2644293cfeb32bf12d78, type: 3}
   - {fileID: 3717247453703850631, guid: 93afdea7791bb4c4b902a9ca281f97bd, type: 3}
   - {fileID: 8531850439406674610, guid: 8aad904d95583cb448813f3f54b4b13d, type: 3}
+  - {fileID: 0}
 --- !u!1 &4421521638613439260
 GameObject:
   m_ObjectHideFlags: 0
