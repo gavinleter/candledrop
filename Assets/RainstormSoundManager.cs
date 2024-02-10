@@ -4,7 +4,7 @@ public class RainstormSoundManager : MonoBehaviour
 {
     public AudioClip rainstormSound;
     public Transform mainCamera;
-    public float volumeTransitionSpeed = 0.5f;
+    public float volumeTransitionSpeed = 3.0f;
 
     private AudioSource audioSource;
     
@@ -15,35 +15,40 @@ public class RainstormSoundManager : MonoBehaviour
         audioSource.clip = rainstormSound;
         audioSource.loop = true;
         audioSource.Play();
+        audioSource.volume = 0f;
     }
 
 
-    private void Update()
+    void Update()
     {
-        if (mainCamera.position.y > 65.0)
+
+        if (mainCamera.position.y > 70.0)
         {
-            // Camera is above 65, set volume to 0% instantly
-            SmoothlyChangeVolume(0f, 0f);
+
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0.0f, Time.deltaTime * volumeTransitionSpeed);
         }
-        else if (mainCamera.position.y > 45.0 && mainCamera.position.y < 65.0)
+
+
+        else if (mainCamera.position.y > 45.0 && mainCamera.position.y < 60.0)
         {
-            // Camera is between 45 and 65, smoothly transition volume to 90%
-            SmoothlyChangeVolume(0.9f, volumeTransitionSpeed);
+    
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0.7f, Time.deltaTime * volumeTransitionSpeed);
         }
+
+
         else if (mainCamera.position.y > 0.0 && mainCamera.position.y < 45.0)
         {
-            // Camera is between 0 and 45, smoothly transition volume to 50%
-            SmoothlyChangeVolume(0.5f, volumeTransitionSpeed);
+                // Camera is above 65, set volume to 0% instantly
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0.5f, Time.deltaTime * volumeTransitionSpeed);
         }
+
+
         else
         {
-            // Camera is below 0, set volume to 0%
-            SmoothlyChangeVolume(0f, volumeTransitionSpeed);
+                // Camera is above 65, set volume to 0% instantly
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0.0f, Time.deltaTime * volumeTransitionSpeed);
         }
-    }
 
-    private void SmoothlyChangeVolume(float targetVolume, float transitionTime)
-    {
-        audioSource.volume = Mathf.Lerp(audioSource.volume, targetVolume, transitionTime * Time.deltaTime);
+
     }
 }
