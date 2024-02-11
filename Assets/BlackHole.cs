@@ -12,13 +12,13 @@ public class BlackHole : MonoBehaviour
         // Check if the collided object is in the list of objects that cause the black hole to explode
         if (blackHoleDiesOn.Contains(other.gameObject))
         {
-            Debug.Log(other.gameObject.name);
             // Instantiate and play the hole explode particle system at the black hole's position
             GameObject holeExplode = Instantiate(holeExplodePrefab, transform.position, Quaternion.identity);
             Destroy(holeExplode, 2f); // Destroy the explosion effect after 2 seconds
 
-            // Destroy the black hole object
-            Destroy(gameObject);
         }
+
+        // Destroy the black hole object
+            Destroy(gameObject);
     }
 }
