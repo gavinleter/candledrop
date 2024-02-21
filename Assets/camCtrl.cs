@@ -76,6 +76,18 @@ public class camCtrl : MonoBehaviour
     }
 
 
+    public void transitionToTop(float speed) {
+        setNewTarget(gameStartPosition, speed);
+        startTransition();
+    }
+
+
+    public void transitionToBottom(float speed) {
+        setNewTarget(gamePosition, speed);
+        startTransition();
+    }
+
+
     public void setNewTarget(Vector3 targetPosition, float transitionSpeed) {
         isTransitioning = false;
         initialPosition = transform.position;

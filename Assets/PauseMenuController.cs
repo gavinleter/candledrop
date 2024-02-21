@@ -50,7 +50,7 @@ public class PauseMenuController : MonoBehaviour, IMenu
 
             unpause();
 
-            float upperBound = achievementMenuObject.transform.GetChild(0).position.y - 5;
+            /*float upperBound = achievementMenuObject.transform.GetChild(0).position.y - 5;
             float lowerBound = achievementMenuObject.transform.GetChild(achievementMenuObject.transform.childCount - 1).position.y;
 
             Vector3 target = achievementMenuObject.transform.GetChild(0).position;
@@ -61,7 +61,8 @@ public class PauseMenuController : MonoBehaviour, IMenu
             mainCam.GetComponent<camCtrl>().startTransition();
 
             achievementMenuObject.GetComponent<achcam>().setBounds(upperBound, lowerBound);
-            achievementMenuObject.GetComponent<achcam>().setActive(true);
+            achievementMenuObject.GetComponent<achcam>().setActive(true);*/
+            achievementMenuObject.GetComponent<AchievementMenuController>().unpause();
         });
 
     }

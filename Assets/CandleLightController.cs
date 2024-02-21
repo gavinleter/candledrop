@@ -200,5 +200,9 @@ public class CandleLightController : MonoBehaviour {
         return parentObject;
     }
 
+    public static void reset() {
+        instances = 0;
+    }
+
 
 }

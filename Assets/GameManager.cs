@@ -174,8 +174,15 @@ public class GameManager : MonoBehaviour, IMenu
         }
         currentCandles.Clear();
 
+        CandleLightController.reset();
+
         GameObject x = Instantiate(startingCandlePrefab);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
+        currentCandles.Add(x.transform.GetChild(0).GetChild(0).GetComponent<CandleLightController>());
+
+        for (int i = 0; i < currentCandles.Count; i++) {
+            Debug.Log(currentCandles[i].transform.parent.parent.gameObject.name);
+        }
     }
 
 
