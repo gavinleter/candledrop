@@ -17,18 +17,31 @@ public class camCtrl : MonoBehaviour
     private float transitionStartTime;
     private bool isTransitioning = false;
 
+    private bool introDelayFinished = false;
+    private float introStartTime;
+
+
     void Start()
     {
         // Set the camera's initial position
         transform.position = initialPosition;
         targetPosition = gameStartPosition;
 
+        introStartTime = Time.time;
         // Start the transition delay
-        Invoke("startTransition", delayBeforeTransition);
+        //Invoke("startTransition", delayBeforeTransition);
     }
 
     void Update()
     {
+
+        //wait for x seconds before transitioning downwards when the game starts
+        if(!introDelayFinished && delayBeforeTransition < Time.time) {
+            introDelayFinished = true;
+            startTransition();
+        }
+
+
         if (isTransitioning)
         {
             //check if the target position is the same as the starting position to prevent division by 0
@@ -53,6 +66,17 @@ public class camCtrl : MonoBehaviour
                 isTransitioning = false;
             }
         }
+    }
+
+
+    public void skipIntroTransition() {
+        introDelayFinished = true;
+        transitionSpeed = 20f;
+        startTransition();
+    }
+
+    public void setTransitionSpeed(float speed) {
+        transitionSpeed = speed;
     }
 
     public void startTransition()

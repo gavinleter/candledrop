@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour, IMenu
     private void Start()
     {
 
+        //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = delegate () {
             pause();
             pauseMenuObject.GetComponent<IMenu>().pause();
@@ -40,6 +41,10 @@ public class GameManager : MonoBehaviour, IMenu
         //both the top and bottom pause buttons
         buttons[0].onPress(settingsAction);
         buttons[1].onPress(settingsAction);
+        //skip the intro transition when the game starts if the screen is pressed
+        buttons[2].onPress(delegate () {
+            mainCamera.GetComponent<camCtrl>().skipIntroTransition();
+        });
 
     }
 
