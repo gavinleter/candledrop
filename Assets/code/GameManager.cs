@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour, IMenu
                 Vector3 tapPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 tapPosition.z = 0;
 
-                if (selectedCan != null)
+                if (selectedCan != null && pauseMenuObject.GetComponent<PauseMenuController>().unpauseFinished())
                 {
                     selectedCan.transform.position = new Vector3(teleCoords.position.x, teleCoords.position.y, 0);
 

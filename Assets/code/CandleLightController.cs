@@ -11,6 +11,7 @@ public class CandleLightController : MonoBehaviour {
     GameObject flickerObject;
     GameObject staticFlickerObject;
     GameObject parentObject;
+    GameObject superGlowObject;
     CandleIgniter candleIgniter;
     int layer;
     //overlaps is used to count how many solid objects the light is colliding with
@@ -25,6 +26,7 @@ public class CandleLightController : MonoBehaviour {
         parentObject = transform.parent.parent.gameObject;
 
         flickerObject = transform.Find("flicker").gameObject;
+        superGlowObject = transform.Find("super_glow").gameObject;
         staticFlickerObject = flickerObject.transform.Find("better_flicker_0").gameObject;
         layer = LayerMask.NameToLayer("flame");
 
@@ -102,10 +104,12 @@ public class CandleLightController : MonoBehaviour {
 
     public void enableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = true;
+        superGlowObject.GetComponent<ParticleSystem>().Play();
     }
 
     public void disableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = false;
+        superGlowObject.GetComponent<ParticleSystem>().Stop();
     }
 
 

@@ -128,4 +128,10 @@ public class PauseMenuController : MonoBehaviour, IMenu
     }
 
 
+    //if the unpause menu has finished going away, this returns true
+    public bool unpauseFinished() {
+        return opacity < 0.05f;
+    }
+
+
 }

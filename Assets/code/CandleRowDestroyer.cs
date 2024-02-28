@@ -9,6 +9,7 @@ public class CandleRowDestroyer : MonoBehaviour
     [SerializeField] GameObject otherSide;
     [SerializeField] GameObject CandleDestroyParticle;
     [SerializeField] GameObject gameManager;
+    [SerializeField] ParticleSystem leftParticleSystem;
     GameManager gameManagerScript;
     RightWall otherSideScript;
 
@@ -16,6 +17,7 @@ public class CandleRowDestroyer : MonoBehaviour
     void Start(){
         otherSideScript = otherSide.GetComponent<RightWall>();
         gameManagerScript = gameManager.GetComponent<GameManager>();
+        leftParticleSystem.Stop();
     }
 
     // Update is called once per frame
@@ -99,6 +101,11 @@ public class CandleRowDestroyer : MonoBehaviour
         //make sure this candle isnt already in the list
         if (findIndex(other.getId()) == -1) {
             touching.Add(other.getId());
+            
+            //start wall shine if something is touching the wall
+            if(touching.Count > 0) {
+                leftParticleSystem.Play();
+            }
         }
     }
 
@@ -107,6 +114,11 @@ public class CandleRowDestroyer : MonoBehaviour
         int index = findIndex(other.getId());
         if (index != -1) {
             touching.RemoveAt(index);
+
+            //stop wall shine if something is touching the wall
+            if (touching.Count < 1) {
+                leftParticleSystem.Stop();
+            }
         }
     }
 

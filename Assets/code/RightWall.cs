@@ -6,11 +6,12 @@ public class RightWall : MonoBehaviour
 {
 
     List<int> touching = new List<int>();
+    [SerializeField] ParticleSystem rightParticleSystem;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        rightParticleSystem.Stop();
     }
 
     // Update is called once per frame
@@ -52,6 +53,11 @@ public class RightWall : MonoBehaviour
         //make sure this candle isnt already in the list
         if (findIndex(other.getId()) == -1) {
             touching.Add(other.getId());
+
+            //start wall shine if something is touching the wall
+            if (touching.Count > 0) {
+                rightParticleSystem.Play();
+            }
         }
     }
 
@@ -60,6 +66,11 @@ public class RightWall : MonoBehaviour
         int index = findIndex(other.getId());
         if (index != -1) {
             touching.RemoveAt(index);
+
+            //stop wall shine if something is touching the wall
+            if (touching.Count < 1) {
+                rightParticleSystem.Stop();
+            }
         }
     }
 

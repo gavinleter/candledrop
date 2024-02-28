@@ -24,6 +24,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         GetComponent<achcam>().setBounds(topObject.transform.position.y + topBoundOffset, bottomObject.transform.position.y + bottomBoundOffset);
         transitionPosition = new Vector3(topObject.transform.position.x, topObject.transform.position.y + topBoundOffset, -10);
 
+        //Debug.Log(btns[0].gameObject.name);
         btns[0].onPress(delegate () {
             
             pause();
@@ -35,7 +36,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
             else {
                 mainCam.GetComponent<camCtrl>().transitionToTop(60f);
             }
-
+            
         });
 
     }
