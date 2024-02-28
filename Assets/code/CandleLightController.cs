@@ -21,7 +21,7 @@ public class CandleLightController : MonoBehaviour {
     private List<int> touching = new List<int>();
 
 
-    void Start(){
+    void Awake(){
         parentObject = transform.parent.parent.gameObject;
 
         flickerObject = transform.Find("flicker").gameObject;
@@ -33,6 +33,12 @@ public class CandleLightController : MonoBehaviour {
         disableBackLight();
 
     }
+
+
+    void Start() {
+        
+    }
+
 
     private void Update() {
         //Debug.Log(transform.parent.parent.name + " " + touching.Count);
@@ -69,7 +75,7 @@ public class CandleLightController : MonoBehaviour {
         }
         //disable candle light if it hits something solid
         //candles are re-enabled inside of CandleIgniter, attached to the static flicker child object
-        if (candleEnabled && collider.gameObject.layer != layer && !isParent(collider.gameObject)) {
+        if (candleEnabled && collider.gameObject.layer != layer && !isParent(collider.gameObject) && collider.GetComponent<CandleIgniter>() == null) {
             disableLight();
         }
     }

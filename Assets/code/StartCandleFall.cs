@@ -16,9 +16,8 @@ public class StartCandleFall : MonoBehaviour
 
     // Start is called before the first frame update
     void Start(){
-        rb = GetComponent<Rigidbody2D>();
-        gameManager = gameControllerObject.GetComponent<GameManager>();
-        gameManager.addCandleLight(gameObject);
+        //Debug.Log(name);
+
     }
 
     // Update is called once per frame
@@ -26,6 +25,7 @@ public class StartCandleFall : MonoBehaviour
     {
         
     }
+
 
 
     void OnMouseDown() {
@@ -49,6 +49,9 @@ public class StartCandleFall : MonoBehaviour
         this.initialGravity = initialGravity;
         this.gameControllerObject = gameControllerObject;
         this.mainCam = mainCam;
+        rb = GetComponent<Rigidbody2D>();
+        gameManager = gameControllerObject.GetComponent<GameManager>();
+        gameManager.addCandleLight(gameObject);
     }
 
 

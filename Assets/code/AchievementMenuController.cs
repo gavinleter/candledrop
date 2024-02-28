@@ -25,6 +25,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         transitionPosition = new Vector3(topObject.transform.position.x, topObject.transform.position.y + topBoundOffset, -10);
 
         btns[0].onPress(delegate () {
+            
             pause();
             parentMenuObject.GetComponent<PauseMenuController>().pause();
 

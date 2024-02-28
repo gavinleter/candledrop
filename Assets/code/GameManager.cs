@@ -46,6 +46,10 @@ public class GameManager : MonoBehaviour, IMenu
             mainCamera.GetComponent<camCtrl>().skipIntroTransition();
         });
 
+        GameObject x = Instantiate(startingCandlePrefab);
+        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
+        //Debug.Log(x.name);
+
     }
 
     private void Update()
@@ -144,7 +148,9 @@ public class GameManager : MonoBehaviour, IMenu
 
     public void pause() {
         isTurnActive = false;
-        getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(false);
+        if(getStartingCandleObject() != null) {
+            getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(false);
+        }
 
         for (int i = 0; i < buttons.Count; i++) {
             buttons[i].active = false;
@@ -153,7 +159,11 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void unpause() {
-        getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(true);
+
+        if (getStartingCandleObject() != null) {
+            getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(true);
+        }
+
         if (gameStarted) {
             isTurnActive = true;
         }
@@ -183,16 +193,25 @@ public class GameManager : MonoBehaviour, IMenu
 
         GameObject x = Instantiate(startingCandlePrefab);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
-        currentCandles.Add(x.transform.GetChild(0).GetChild(0).GetComponent<CandleLightController>());
-
+        //Debug.Log(x.name);
+        //currentCandles.Add(x.transform.GetChild(0).GetChild(0).GetComponent<CandleLightController>());
+        //Debug.Log(currentCandles[0].gameObject.name);
+        //addCandleLight(x);
+        /*
         for (int i = 0; i < currentCandles.Count; i++) {
             Debug.Log(currentCandles[i].transform.parent.parent.gameObject.name);
+            //Debug.Log(getStartingCandleObject().name);
         }
+        */
     }
 
 
     GameObject getStartingCandleObject() {
-        return currentCandles[0].getParentObject();
+        //If the first candle in the array has a StartCandleFall script on it, its a starter candle. Otherwise its a normal candle
+        if (currentCandles[0] != null && currentCandles[0].transform.parent.parent.GetComponent<StartCandleFall>() != null) {
+            return currentCandles[0].getParentObject();
+        }
+        return null;
     }
 
 }
