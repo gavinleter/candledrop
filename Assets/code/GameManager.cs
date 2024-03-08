@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour, IMenu
     private bool gameStarted = false;
 
     private static List<CandleLightController> currentCandles = new List<CandleLightController>();
-    [SerializeField] List<ButtonPress> buttons;
+    [SerializeField] List<ButtonPress> buttons = new List<ButtonPress>();
 
     [SerializeField] GameObject startingCandlePrefab;
     [SerializeField] float startingCandleGravity;
@@ -31,6 +31,11 @@ public class GameManager : MonoBehaviour, IMenu
 
     private void Start()
     {
+
+        /*for(int i = 0; i < buttonObjects.Count; i++) {
+            Debug.Log(buttonObjects[i].GetComponent<ButtonPress>().gameObject.name);
+            buttons.Add(buttonObjects[i].GetComponent<ButtonPress>());
+        }*/
 
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = delegate () {
