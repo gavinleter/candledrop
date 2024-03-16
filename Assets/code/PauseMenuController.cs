@@ -47,21 +47,7 @@ public class PauseMenuController : MonoBehaviour, IMenu
 
         //achievements button
         btns[2].onPress(delegate() {
-
             unpause();
-
-            /*float upperBound = achievementMenuObject.transform.GetChild(0).position.y - 5;
-            float lowerBound = achievementMenuObject.transform.GetChild(achievementMenuObject.transform.childCount - 1).position.y;
-
-            Vector3 target = achievementMenuObject.transform.GetChild(0).position;
-            target.y -= 5;
-            target.z = -10;
-
-            mainCam.GetComponent<camCtrl>().setNewTarget(target, 20f);
-            mainCam.GetComponent<camCtrl>().startTransition();
-
-            achievementMenuObject.GetComponent<achcam>().setBounds(upperBound, lowerBound);
-            achievementMenuObject.GetComponent<achcam>().setActive(true);*/
             achievementMenuObject.GetComponent<AchievementMenuController>().unpause();
         });
 

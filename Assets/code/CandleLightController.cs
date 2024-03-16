@@ -96,7 +96,7 @@ public class CandleLightController : MonoBehaviour {
     public void enableLight() {
         staticFlickerObject.GetComponent<CircleCollider2D>().enabled = true;
         candleEnabled = true;
-        //flickerObject.GetComponent<SpriteRenderer>().enabled = true;
+        flickerObject.GetComponent<SpriteRenderer>().enabled = true;
         staticFlickerObject.GetComponent<SpriteRenderer>().enabled = true;
         GetComponent<SpriteRenderer>().enabled = true;
         candleIgniter.setActive(true);
@@ -214,5 +214,8 @@ public class CandleLightController : MonoBehaviour {
         instances = 0;
     }
 
+    public void destroySelf() {
+        
+    }
 
 }

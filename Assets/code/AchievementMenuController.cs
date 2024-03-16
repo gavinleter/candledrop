@@ -49,7 +49,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
 
     public void unpause() {
-        mainCam.GetComponent<camCtrl>().setNewTarget(transitionPosition, 20f);
+        mainCam.GetComponent<camCtrl>().setNewTarget(transitionPosition, 60f);
         mainCam.GetComponent<camCtrl>().startTransition();
         GetComponent<achcam>().setActive(true);
         for (int i = 0; i < btns.Count; i++) {

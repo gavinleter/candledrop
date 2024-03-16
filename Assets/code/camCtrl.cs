@@ -70,9 +70,11 @@ public class camCtrl : MonoBehaviour
 
 
     public void skipIntroTransition() {
-        introDelayFinished = true;
-        transitionSpeed = 20f;
-        startTransition();
+        if (!introDelayFinished) {
+            introDelayFinished = true;
+            transitionSpeed = 20f;
+            startTransition();
+        }
     }
 
     public void setTransitionSpeed(float speed) {
@@ -113,6 +115,7 @@ public class camCtrl : MonoBehaviour
 
 
     public void setNewTarget(Vector3 targetPosition, float transitionSpeed) {
+        introDelayFinished = true;
         isTransitioning = false;
         initialPosition = transform.position;
         this.targetPosition = targetPosition;
@@ -122,5 +125,10 @@ public class camCtrl : MonoBehaviour
 
     public void setNewTarget(Vector3 targetPosition) {
         setNewTarget(targetPosition, transitionSpeed);
+    }
+
+
+    public bool currentlyTransitioning() {
+        return isTransitioning;
     }
 }

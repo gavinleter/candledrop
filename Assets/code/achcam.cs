@@ -6,23 +6,37 @@ public class achcam : MonoBehaviour
     [SerializeField] Camera draggedCamera;
     [SerializeField] float dragStrength;
 
+    float inertia = 0f;
     private Vector2 lastMousePosition;
 
     float upperBound = 0;
     float lowerBound = 0;
 
+
+    void Start() {
+
+    }
+
     void Update()
     {
-        if (!inAchievementsPage)
+        //do nothing if not in achievements menu or if we are currently transitioning to achievements menu
+        if (!inAchievementsPage || draggedCamera.GetComponent<camCtrl>().currentlyTransitioning()) {
             return;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
             lastMousePosition = Input.mousePosition;
         }
-        else if (Input.GetMouseButton(0))
+        else
         {
-            Vector2 delta = (Vector2)Input.mousePosition - lastMousePosition;
+            Vector2 delta;
+            if (Input.GetMouseButton(0)) {
+                delta = (Vector2)Input.mousePosition - lastMousePosition;
+            }
+            else {
+                delta = Vector2.zero;
+            }
             MoveCamera(delta.y);
             lastMousePosition = Input.mousePosition;
         }
@@ -38,9 +52,11 @@ public class achcam : MonoBehaviour
 
         // Adjust the camera movement speed using dragStrength
         float moveAmount = -deltaY * dragStrength;
+        inertia += moveAmount * 0.1f;
+        inertia = Mathf.Lerp(inertia, 0f, 0.05f);
 
         // Apply the movement to the assigned camera's position
-        draggedCamera.transform.Translate(Vector3.up * moveAmount);
+        draggedCamera.transform.Translate(Vector3.up * (moveAmount + inertia));
 
         if(draggedCamera.transform.position.y > upperBound) {
             draggedCamera.transform.position = new Vector3(draggedCamera.transform.position.x, upperBound, draggedCamera.transform.position.z);
@@ -48,6 +64,7 @@ public class achcam : MonoBehaviour
         if (draggedCamera.transform.position.y < lowerBound) {
             draggedCamera.transform.position = new Vector3(draggedCamera.transform.position.x, lowerBound, draggedCamera.transform.position.z);
         }
+
     }
 
 

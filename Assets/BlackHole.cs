@@ -4,21 +4,30 @@ using UnityEngine;
 
 public class BlackHole : MonoBehaviour
 {
-    public GameObject holeExplodePrefab;
-    public List<GameObject> blackHoleDiesOn; // List of objects that cause the black hole to explode
+    [SerializeField] GameObject holeExplodePrefab;
+    GameManager gameManagerScript;
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        // Check if the collided object is in the list of objects that cause the black hole to explode
-        if (blackHoleDiesOn.Contains(other.gameObject))
-        {
-            // Instantiate and play the hole explode particle system at the black hole's position
-            GameObject holeExplode = Instantiate(holeExplodePrefab, transform.position, Quaternion.identity);
-            Destroy(holeExplode, 2f); // Destroy the explosion effect after 2 seconds
+    public void setup(GameManager g) {
+        gameManagerScript = g;
+    }
+
+    private void OnCollisionEnter2D(Collision2D other){
+        CandleLightController o = other.gameObject.GetComponentInChildren<CandleLightController>();
+
+        //check if the colliding object is a candle
+        if (o != null){
+            gameManagerScript.destroyCandle(o.getId());
 
         }
 
-        // Destroy the black hole object
-            Destroy(gameObject);
+        destroySelf();
+
+    }
+
+
+    void destroySelf() {
+        GameObject holeExplode = Instantiate(holeExplodePrefab, transform.position, Quaternion.identity);
+        Destroy(holeExplode, 2f); // Destroy the explosion effect after 2 seconds
+        Destroy(gameObject);
     }
 }
