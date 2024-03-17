@@ -32,6 +32,14 @@ public class ButtonPress : MonoBehaviour
             isPressed = true;
             ChangeColor();
 
+        }
+    }
+
+    virtual protected void OnMouseUp(){
+        if (active && isPressed) {
+
+            isPressed = false;
+            ChangeColor();
             //execute each action when this button is pressed
             for (int i = 0; i < actions.Count; i++) {
                 executeAction(i);
@@ -40,13 +48,9 @@ public class ButtonPress : MonoBehaviour
         }
     }
 
-    virtual protected void OnMouseUp(){
+    virtual protected void OnMouseExit(){
         isPressed = false;
         ChangeColor();
-    }
-
-    virtual protected void OnMouseExit(){
-        OnMouseUp();
     }
 
     virtual protected void ChangeColor()

@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour, IMenu
 
     private static List<CandleLightController> currentCandles = new List<CandleLightController>();
     [SerializeField] List<ButtonPress> buttons = new List<ButtonPress>();
+    //for special non candle objects like the black hole
+    private List<SpecialObject> specialObjects = new List<SpecialObject>();
 
     [SerializeField] GameObject startingCandlePrefab;
     [SerializeField] float startingCandleGravity;
@@ -162,8 +164,11 @@ public class GameManager : MonoBehaviour, IMenu
         if (selectedCan.GetComponentInChildren<CandleLightController>() != null) {
             addCandleLight(selectedCan);
 
-        } else if(selectedCan.GetComponent<BlackHole>() != null) {
-            selectedCan.GetComponent<BlackHole>().setup(this);
+        } else if(selectedCan.GetComponent<SpecialObject>() != null) {
+
+            int specialObjId = nextSpecialObjectId();
+            selectedCan.GetComponent<SpecialObject>().setup(this, specialObjId);
+            specialObjects[specialObjId] = selectedCan.GetComponent<SpecialObject>();
         }
     }
 
@@ -240,25 +245,25 @@ public class GameManager : MonoBehaviour, IMenu
         isTurnActive = false;
         gameStarted = false;
 
+        //clear all candles
         for(int i = 0; i < currentCandles.Count; i++) {
             Destroy(currentCandles[i].getParentObject());
         }
         currentCandles.Clear();
 
+        //clear all special objects
+        for (int i = 0; i < specialObjects.Count; i++) {
+            if(specialObjects[i] != null) {
+                specialObjects[i].destroySelf();
+            }
+        }
+        specialObjects.Clear();
+
         CandleLightController.reset();
 
         GameObject x = Instantiate(startingCandlePrefab);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
-        //Debug.Log(x.name);
-        //currentCandles.Add(x.transform.GetChild(0).GetChild(0).GetComponent<CandleLightController>());
-        //Debug.Log(currentCandles[0].gameObject.name);
-        //addCandleLight(x);
-        /*
-        for (int i = 0; i < currentCandles.Count; i++) {
-            Debug.Log(currentCandles[i].transform.parent.parent.gameObject.name);
-            //Debug.Log(getStartingCandleObject().name);
-        }
-        */
+
     }
 
 
@@ -268,6 +273,24 @@ public class GameManager : MonoBehaviour, IMenu
             return currentCandles[0].getParentObject();
         }
         return null;
+    }
+
+
+    //go through the special object array and try to find an empty space
+    //if there is no empty space, make a new one
+    int nextSpecialObjectId() {
+        for (int i = 0; i < specialObjects.Count; i++) {
+            if (specialObjects[i] == null) {
+                return i;
+            }
+        }
+        specialObjects.Add(null);
+        return specialObjects.Count - 1;
+    }
+
+
+    public void removeSpecialObject(int id) {
+        specialObjects[id] = null;
     }
 
 }
