@@ -90,7 +90,7 @@ public class PauseMenuController : MonoBehaviour, IMenu
     public void pause() {
         lerp = 0f;
         active = true;
-        transform.position = new Vector3(transform.parent.position.x, transform.parent.position.y, 10f);
+        transform.position = new Vector3(transform.parent.position.x, transform.parent.position.y, 0f);
         for (int i = 0; i < btns.Count; i++) {
             btns[i].active = true;
         }

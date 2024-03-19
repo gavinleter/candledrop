@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour, IMenu
         //both the top and bottom pause buttons
         buttons[0].onPress(settingsAction);
         buttons[1].onPress(settingsAction);
-        //skip the intro transition when the game starts if the screen is pressed
+        //skip the intro transition when the game starts if the screen is pressed (invisible over intro area)
         buttons[2].onPress(delegate () {
             mainCamera.GetComponent<camCtrl>().skipIntroTransition();
         });
@@ -83,6 +83,11 @@ public class GameManager : MonoBehaviour, IMenu
             canPause = true;
             mainCamera.GetComponent<camCtrl>().transitionToTop(40f);
         });
+        //button to drop a candle (invisible over game area)
+        buttons[7].onPress(delegate () {
+            dropCandle();
+        });
+        
 
 
         GameObject x = Instantiate(startingCandlePrefab);
@@ -106,7 +111,7 @@ public class GameManager : MonoBehaviour, IMenu
                 // Object has stopped moving, start a new turn
                 StartTurn();
             }
-            else if (Time.time - turnStartTime >= minTurnDuration && Input.GetMouseButtonDown(0) && !hasMoved)
+            /*else if (Time.time - turnStartTime >= minTurnDuration && Input.GetMouseButtonDown(0) && !hasMoved)
             {
                 Vector3 tapPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 tapPosition.z = 0;
@@ -136,9 +141,47 @@ public class GameManager : MonoBehaviour, IMenu
                     lastMoveTime = Time.time + velocityCheckDelay; // Delay before checking velocity
                     hasMoved = true; // Candle has been moved
                 }
-            }
+            }*/
         }
     }
+
+
+    private void dropCandle() {
+
+        if (isTurnActive && Time.time - turnStartTime >= minTurnDuration && !hasMoved) {
+            Rigidbody2D rb = rb = selectedCan.GetComponent<Rigidbody2D>();
+
+            Vector3 tapPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            tapPosition.z = 0;
+
+            if (selectedCan != null && pauseMenuObject.GetComponent<PauseMenuController>().unpauseFinished()) {
+                selectedCan.transform.position = new Vector3(teleCoords.position.x, teleCoords.position.y, 0);
+
+                rb.gravityScale = 1;
+                rb.isKinematic = false;
+
+                Vector3 newPosition = new Vector3(tapPosition.x, selectedCan.transform.position.y, 0);
+
+                //check if the tapped position is too far off screen first and adjust if necessary
+                if (tapPosition.x + selectedCan.GetComponent<Collider2D>().bounds.size.x / 2 > rightCandlePlacementLimit.transform.position.x) {
+
+                    newPosition.x = rightCandlePlacementLimit.transform.position.x - selectedCan.GetComponent<Collider2D>().bounds.size.x / 2;
+                }
+                if (tapPosition.x - selectedCan.GetComponent<Collider2D>().bounds.size.x / 2 < leftCandlePlacementLimit.transform.position.x) {
+
+                    newPosition.x = leftCandlePlacementLimit.transform.position.x + selectedCan.GetComponent<Collider2D>().bounds.size.x / 2;
+                }
+
+                selectedCan.transform.position = newPosition;
+
+                canMove = true;
+                lastMoveTime = Time.time + velocityCheckDelay; // Delay before checking velocity
+                hasMoved = true; // Candle has been moved
+            }
+        }
+
+    }
+
 
     public void StartTurn()
     {
