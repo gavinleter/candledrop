@@ -12,6 +12,12 @@ public class ButtonPress : MonoBehaviour
     public Color normalColor = Color.white;
     public Color pressedColor = Color.gray;
 
+    [SerializeField] AudioClip btnDownSound;
+    [SerializeField] AudioClip btnUpSound;
+
+    AudioSource audioSourceUp;
+    AudioSource audioSourceDown;
+
     private bool isPressed = false;
 
     private List<System.Action> actions;
@@ -23,11 +29,20 @@ public class ButtonPress : MonoBehaviour
         originalColor = rend.material.color;
         highlightColor = normalColor;
 
+        audioSourceUp = gameObject.AddComponent<AudioSource>();
+        audioSourceDown = gameObject.AddComponent<AudioSource>();
+        audioSourceUp.clip = btnUpSound;
+        audioSourceDown.clip = btnDownSound;
+
         actions = new List<System.Action>();
     }
 
     virtual protected void OnMouseDown(){
         if (active) {
+
+            if (btnDownSound != null && Settings.soundEnabled) { 
+                audioSourceDown.Play();
+            }
 
             isPressed = true;
             ChangeColor();
@@ -43,6 +58,10 @@ public class ButtonPress : MonoBehaviour
             //execute each action when this button is pressed
             for (int i = 0; i < actions.Count; i++) {
                 executeAction(i);
+            }
+
+            if (btnUpSound != null && Settings.soundEnabled) {
+                audioSourceUp.Play();
             }
 
         }

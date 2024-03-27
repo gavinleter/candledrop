@@ -51,6 +51,12 @@ public class PauseMenuController : MonoBehaviour, IMenu
             achievementMenuObject.GetComponent<AchievementMenuController>().unpause();
         });
 
+        //sound enable/disable button
+        btns[3].onPress(delegate () {
+            Settings.soundEnabled = !Settings.soundEnabled;
+            btns[3].gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = !Settings.soundEnabled;
+        });
+
     }
 
     // Update is called once per frame
