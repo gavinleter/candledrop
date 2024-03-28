@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour, IMenu
     //user should not be able to press pause buttons while transitioning to credits or basement
     private bool canPause = true;
 
+    [SerializeField] public float blackHoleDestroyRadius = 0f;
+
     private static List<CandleLightController> currentCandles = new List<CandleLightController>();
     [SerializeField] List<ButtonPress> buttons = new List<ButtonPress>();
     //for special non candle objects like the black hole

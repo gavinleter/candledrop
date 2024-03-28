@@ -28,6 +28,16 @@ public class BlackHole : MonoBehaviour, SpecialObject
 
 
     public void destroySelf() {
+
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, gameManagerScript.blackHoleDestroyRadius, Vector2.one);
+
+        for (int i = 0; i < hits.Length; i++) {
+            CandleLightController o = hits[i].collider.gameObject.GetComponentInChildren<CandleLightController>();
+            if (o != null) {
+                gameManagerScript.destroyCandle(o.getId());
+            }
+        }
+
         GameObject holeExplode = Instantiate(holeExplodePrefab, transform.position, Quaternion.identity);
         Destroy(holeExplode, 2f); // Destroy the explosion effect after 2 seconds
         gameManagerScript.removeSpecialObject(id);
