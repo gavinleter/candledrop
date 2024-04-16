@@ -1,3 +1,8 @@
+// code below is commented out since it is creating problems ingame
+
+
+/*
+
 
 // using unity UI is important since its needed for text obj
 using UnityEngine.UI;
@@ -26,7 +31,7 @@ public class score : MonoBehaviour {
         int number = //sum of all number of candles that were lined up, and then add bonuses              !!!! need help here !!!!
 
         // once line above calculates score, line below turns to string to be shown ingame
-        score.text = number.ToString();
+        score.Text = number.ToString();
 
         // if the score above is greater than the current highscore, which is set to zero at first by default, because the ",0" above and below,
         // this checks that
@@ -60,3 +65,7 @@ public class score : MonoBehaviour {
 
 
 // in summary, we should us playerprefs to store all the data, it seems like the easiest and most effective thing to do :)
+
+
+
+*/
