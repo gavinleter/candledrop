@@ -18,6 +18,8 @@ public class snowyTap : MonoBehaviour
 
     public bool active = true;
 
+    public SpriteRenderer defaultSprite;
+    public Sprite chirpingSprite;
     virtual protected void Start(){
 
         audioSourceChirp1 = gameObject.AddComponent<AudioSource>();
@@ -36,23 +38,49 @@ public class snowyTap : MonoBehaviour
 
             if (Settings.soundEnabled) 
             {
-                int chirpSound = Random.Range(0,2);
+                int chirpSound = Random.Range(0,3);
 
                 
                 if (chirpSound == 0) {
 
                     audioSourceChirp1.Play();
+                    ChangeSprite(chirpingSprite);
+                    public float currentChirpTimer = 3.0f
+                    chirpAnimation();
+
                 }
+                
                 else if (chirpSound == 1) {
 
                     audioSourceChirp2.Play();
+                    ChangeSprite(chirpingSprite);
+                    public float currentChirpTimer = 3.0f
+                    chirpAnimation();
                 }
                 else if (chirpSound == 2) {
 
                     audioSourceChirp3.Play();
+                    ChangeSprite(chirpingSprite);
+                    public float currentChirpTimer = 3.0f
+                    chirpAnimation();
                 }
             }
-
         }
+    }  
+
+
+    void chirpAnimation(){
+
+        currentChirpTimer -= Time.deltaTime;
+        if (currentChirpTimer <= 0){
+
+            ChangeSprite(defaultSprite);
+        }
+
+        else{
+            chirpAnimation();
+        }
+
     }
 }
+
