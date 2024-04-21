@@ -9,18 +9,23 @@ public class snowyTap : MonoBehaviour
     [SerializeField] AudioClip chirp2;
     [SerializeField] AudioClip chirp3;
 
+
     AudioSource audioSourceChirp1;
     AudioSource audioSourceChirp2;
     AudioSource audioSourceChirp3;
 
 
     private List<System.Action> actions;
+    private bool active = true;
 
-    public bool active = true;
 
-    public SpriteRenderer defaultSprite;
+    public Sprite defaultSnowySprite;
     public Sprite chirpingSprite;
+
+    public Animator snowyAnim;
     virtual protected void Start(){
+
+        snowyAnim = GetComponent<Animator>();
 
         audioSourceChirp1 = gameObject.AddComponent<AudioSource>();
         audioSourceChirp2 = gameObject.AddComponent<AudioSource>();
@@ -36,6 +41,9 @@ public class snowyTap : MonoBehaviour
     virtual protected void OnMouseDown(){
         if (active) {
 
+            snowyAnim.Play("snowy_chirp");
+            StartCoroutine(MyCoroutine());
+
             if (Settings.soundEnabled) 
             {
                 int chirpSound = Random.Range(0,3);
@@ -44,43 +52,28 @@ public class snowyTap : MonoBehaviour
                 if (chirpSound == 0) {
 
                     audioSourceChirp1.Play();
-                    ChangeSprite(chirpingSprite);
-                    public float currentChirpTimer = 3.0f
-                    chirpAnimation();
+                    Debug.Log("Should chirp");
 
                 }
                 
                 else if (chirpSound == 1) {
 
                     audioSourceChirp2.Play();
-                    ChangeSprite(chirpingSprite);
-                    public float currentChirpTimer = 3.0f
-                    chirpAnimation();
+                    Debug.Log("Should chirp");
                 }
                 else if (chirpSound == 2) {
 
                     audioSourceChirp3.Play();
-                    ChangeSprite(chirpingSprite);
-                    public float currentChirpTimer = 3.0f
-                    chirpAnimation();
+                    Debug.Log("Should chirp");
                 }
             }
         }
-    }  
+    }
 
+    IEnumerator MyCoroutine(){
 
-    void chirpAnimation(){
-
-        currentChirpTimer -= Time.deltaTime;
-        if (currentChirpTimer <= 0){
-
-            ChangeSprite(defaultSprite);
-        }
-
-        else{
-            chirpAnimation();
-        }
+        yield return new WaitForSeconds(0.8f);
+        snowyAnim.Play("snowy_idle");
 
     }
 }
-
