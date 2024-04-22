@@ -5,13 +5,8 @@ using UnityEngine;
 public class snowyTap : MonoBehaviour
 {
 
-    [SerializeField] AudioClip chirp1;
-    [SerializeField] AudioClip chirp2;
     [SerializeField] AudioClip chirp3;
 
-
-    AudioSource audioSourceChirp1;
-    AudioSource audioSourceChirp2;
     AudioSource audioSourceChirp3;
 
 
@@ -27,12 +22,8 @@ public class snowyTap : MonoBehaviour
 
         snowyAnim = GetComponent<Animator>();
 
-        audioSourceChirp1 = gameObject.AddComponent<AudioSource>();
-        audioSourceChirp2 = gameObject.AddComponent<AudioSource>();
         audioSourceChirp3 = gameObject.AddComponent<AudioSource>();
 
-        audioSourceChirp1.clip = chirp1;
-        audioSourceChirp2.clip = chirp2;
         audioSourceChirp3.clip = chirp3;
 
         actions = new List<System.Action>();
@@ -46,26 +37,9 @@ public class snowyTap : MonoBehaviour
 
             if (Settings.soundEnabled) 
             {
-                int chirpSound = Random.Range(0,3);
-
-                
-                if (chirpSound == 0) {
-
-                    audioSourceChirp1.Play();
-                    Debug.Log("Should chirp");
-
-                }
-                
-                else if (chirpSound == 1) {
-
-                    audioSourceChirp2.Play();
-                    Debug.Log("Should chirp");
-                }
-                else if (chirpSound == 2) {
-
-                    audioSourceChirp3.Play();
-                    Debug.Log("Should chirp");
-                }
+                //int chirpSound = Random.Range(0,3); this line shows how to generate a random number, this is 0 - 2.
+                audioSourceChirp3.Play();
+                Debug.Log("Should chirp");
             }
         }
     }
