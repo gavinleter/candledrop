@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 383456720054378255}
   - component: {fileID: 2248255653699556830}
   - component: {fileID: 2837720069398996855}
+  - component: {fileID: 9219239389795843477}
   m_Layer: 0
   m_Name: candleabra starter candle
   m_TagString: Untagged
@@ -285,7 +286,7 @@ Rigidbody2D:
   m_Mass: 1.1520864
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -293,10 +294,25 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &9219239389795843477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7741733313713798520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40908fc7105f03e4aa861212dcf927ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialGravity: 0
+  gameControllerObject: {fileID: 0}
+  mainCam: {fileID: 0}
 --- !u!1001 &2998553818713645799
 PrefabInstance:
   m_ObjectHideFlags: 0

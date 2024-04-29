@@ -3,7 +3,9 @@ guid: b28a8afec48067046857560d7d4c3932
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - btnDownSound: {fileID: 8300000, guid: d5842ba99c4e6df429d41651de87e764, type: 3}
+  - btnUpSound: {fileID: 8300000, guid: f7e3355b9fd2fd949aeaaeca740aeb34, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

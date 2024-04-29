@@ -28,7 +28,11 @@ public class GameManager : MonoBehaviour, IMenu
     //for special non candle objects like the black hole
     private List<SpecialObject> specialObjects = new List<SpecialObject>();
 
-    [SerializeField] GameObject startingCandlePrefab;
+    GameObject startingCandlePrefab;
+    Sprite startingCandleSkin;
+    int currentSkinId = 0;
+    int currentCandlePrefabId = 0;
+
     [SerializeField] float startingCandleGravity;
     [SerializeField] Camera mainCamera;
 
@@ -41,8 +45,24 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] GameObject rightCandlePlacementLimit;
 
 
+    [SerializeField] GameObject[] starterCandles;
+
+    [SerializeField] SkinSelectMenuController skinSelectMenu;
+    [SerializeField] LockedFeatureMenuController lockedFeatureMenu;
+
+    [SerializeField] GameObject startingCandleSpawnLocation;
+
+    SkinManager skinManager;
+
+
     private void Start()
     {
+
+        skinManager = GetComponent<SkinManager>();
+
+        //get the starting candle prefab and skin
+        setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
+
 
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = delegate () {
@@ -89,11 +109,43 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[7].onPress(delegate () {
             dropCandle();
         });
-        
+
+
+        //generates an anonymous method for each candle prefab select button
+        System.Func<int, System.Action> candlePrefabSelectionButton = (int id) => {
+            return delegate () {
+
+                if (Settings.candleUnlocked(id)) {
+                    currentCandlePrefabId = id;
+                    pause();
+                    skinSelectMenu.pause();
+                }
+                else {
+                    lockedFeatureMenu.setExitAction(delegate () {
+                        lockedFeatureMenu.unpause();
+                        unpause();
+                    });
+
+                    pause();
+                    lockedFeatureMenu.pause();
+                }
+
+            };
+        };
+
+        //adds each respective anonymous method and then swaps the skin of each button if its unlocked
+        for(int i = 0; i < 5; i++) {
+            Debug.Log(i);
+            buttons[i + 8].onPress(candlePrefabSelectionButton(i));
+
+            if (Settings.candleUnlocked(i)) {
+                buttons[i + 8].gameObject.GetComponent<SpriteRenderer>().sprite = skinManager.getSkin(i, 0);
+            }
+        }
 
 
         GameObject x = Instantiate(startingCandlePrefab);
-        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
+        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
 
     }
 
@@ -188,7 +240,7 @@ public class GameManager : MonoBehaviour, IMenu
     public void StartTurn()
     {
         gameStarted = true;
-        int randomIndex = UnityEngine.Random.Range(0,canObjects.Length); // Specify UnityEngine.Random
+        int randomIndex = UnityEngine.Random.Range(0,canObjects.Length);
         if(randomIndex > 7) {
             randomIndex = 12;
         }
@@ -203,7 +255,7 @@ public class GameManager : MonoBehaviour, IMenu
         canMove = false;
         isTurnActive = true;
         turnStartTime = Time.time;
-        hasMoved = false; // Reset the moved flag
+        hasMoved = false;
 
         //if a candle has spawned instead of a special item like the black hole, add it to the list to keep track of
         if (selectedCan.GetComponentInChildren<CandleLightController>() != null) {
@@ -261,6 +313,15 @@ public class GameManager : MonoBehaviour, IMenu
         for (int i = 0; i < buttons.Count; i++) {
             buttons[i].active = false;
         }
+
+        //make all particles from buttons stop playing
+        for(int i = 0; i < buttons.Count; i++) {
+            ParticleSystem[] ps = buttons[i].GetComponentsInChildren<ParticleSystem>();
+            for (int j = 0; j < ps.Length; j++) { 
+                ps[j].Stop();
+                ps[j].Clear();
+            }
+        }
     }
 
 
@@ -276,6 +337,14 @@ public class GameManager : MonoBehaviour, IMenu
 
         for (int i = 0; i < buttons.Count; i++) {
             buttons[i].active = true;
+        }
+
+        //make all particles from buttons start playing again
+        for (int i = 0; i < buttons.Count; i++) {
+            ParticleSystem[] ps = buttons[i].GetComponentsInChildren<ParticleSystem>();
+            for (int j = 0; j < ps.Length; j++) {
+                ps[j].Play();
+            }
         }
     }
 
@@ -306,8 +375,8 @@ public class GameManager : MonoBehaviour, IMenu
 
         CandleLightController.reset();
 
-        GameObject x = Instantiate(startingCandlePrefab);
-        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
+        GameObject x = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
+        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
 
     }
 
@@ -336,6 +405,31 @@ public class GameManager : MonoBehaviour, IMenu
 
     public void removeSpecialObject(int id) {
         specialObjects[id] = null;
+    }
+
+
+    //set the starting candle prefab and skin by their respective ids
+    public void setStarterCandle(int candle, int skin) {
+        startingCandlePrefab = starterCandles[candle];
+        startingCandleSkin = skinManager.getSkin(candle, skin);
+        currentSkinId = skin;
+        currentCandlePrefabId = candle;
+    }
+
+    //set only the skin of the starting candle by its id
+    public void setStarterCandleSkin(int skin) {
+        startingCandlePrefab = starterCandles[currentCandlePrefabId];
+        startingCandleSkin = skinManager.getSkin(currentCandlePrefabId, skin);
+        currentSkinId = skin;
+    }
+
+
+    public int getCurrentStarterCandleSkinId() {
+        return currentSkinId;
+    }
+
+    public int getCurrentStarterCandleId() {
+        return currentCandlePrefabId;
     }
 
 }

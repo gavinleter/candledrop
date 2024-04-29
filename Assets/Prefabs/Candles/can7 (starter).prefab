@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3226489603947019153}
   - component: {fileID: 3677839209297147922}
   - component: {fileID: 3971226294843561111}
+  - component: {fileID: 2442522616419202660}
   m_Layer: 0
   m_Name: can7 (starter)
   m_TagString: Untagged
@@ -147,7 +148,7 @@ Rigidbody2D:
   m_Mass: 0.74543315
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0.6
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -155,10 +156,25 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &2442522616419202660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3901996967076399185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40908fc7105f03e4aa861212dcf927ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialGravity: 0
+  gameControllerObject: {fileID: 0}
+  mainCam: {fileID: 0}
 --- !u!1001 &947025237826680632
 PrefabInstance:
   m_ObjectHideFlags: 0

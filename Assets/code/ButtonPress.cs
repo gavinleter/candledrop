@@ -99,4 +99,9 @@ public class ButtonPress : MonoBehaviour
     private void executeAction(int index) {
         actions[index]();
     }
+
+
+    public void clearActions() {
+        actions.Clear();
+    }
 }

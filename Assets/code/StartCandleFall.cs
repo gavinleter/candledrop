@@ -45,13 +45,14 @@ public class StartCandleFall : MonoBehaviour
     }
 
 
-    public void setFields(float initialGravity, GameObject gameControllerObject, Camera mainCam) {
+    public void setFields(float initialGravity, GameObject gameControllerObject, Camera mainCam, Sprite skin) {
         this.initialGravity = initialGravity;
         this.gameControllerObject = gameControllerObject;
         this.mainCam = mainCam;
         rb = GetComponent<Rigidbody2D>();
         gameManager = gameControllerObject.GetComponent<GameManager>();
         gameManager.addCandleLight(gameObject);
+        GetComponent<SpriteRenderer>().sprite = skin;
     }
 
 

@@ -11,6 +11,25 @@ public class Settings
 
 
 
+    public static int getStarterCandleId() {
+        return 0;
+    }
+
+
+    public static int getStarterCandleSkinId() {
+        return 0;
+    }
+
+
+    public static bool skinUnlocked(int candle, int skin) {
+        return skin < 2;
+    }
+
+
+    public static bool candleUnlocked(int candle) {
+        return candle < 2;
+    }
+
 
     public static void increaseSecretButtonCounter(){
 
