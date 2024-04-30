@@ -94,7 +94,6 @@ public class secButtTrigger : MonoBehaviour
 
                 if (Settings.secretButtonCounter == 1) 
                 {
-                    Debug.Log("should play");
                     found1.Play();
                 }
                 
