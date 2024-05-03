@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour, IMenu
 
         //adds each respective anonymous method and then swaps the skin of each button if its unlocked
         for(int i = 0; i < 5; i++) {
-            
+            Debug.Log(i);
             buttons[i + 8].onPress(candlePrefabSelectionButton(i));
 
             if (Settings.candleUnlocked(i)) {
