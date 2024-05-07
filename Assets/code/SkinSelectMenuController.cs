@@ -32,9 +32,13 @@ public class SkinSelectMenuController : FadingMenuController
             };
         };
 
-        //go through each skin select button and assign their methods
+        //go through each skin select button and assign their methods, also remove cover if they're unlocked
         for(int i = 0; i < 5; i++) {
             btns[i].onPress(skinButton(i));
+
+            if (Settings.skinUnlocked(gameManager.getCurrentStarterCandleId(), i)) {
+                btns[i].transform.Find("skin_select_cover").GetComponent<SpriteRenderer>().enabled = false;
+            }
         }
 
         //confirm select skin button

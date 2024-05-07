@@ -10,6 +10,9 @@ public class PauseMenuController : FadingMenuController
 
     [SerializeField] GameObject achievementMenuObject;
 
+    [SerializeField] Sprite soundEnabledSprite;
+    [SerializeField] Sprite soundDisabledSprite;
+
 
     // Start is called before the first frame update
     protected override void Start(){
@@ -46,7 +49,14 @@ public class PauseMenuController : FadingMenuController
         //sound enable/disable button
         btns[3].onPress(delegate () {
             Settings.soundEnabled = !Settings.soundEnabled;
-            btns[3].gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = !Settings.soundEnabled;
+
+            if (Settings.soundEnabled) {
+                btns[3].GetComponent<SpriteRenderer>().sprite = soundEnabledSprite;
+            }
+            else {
+                btns[3].GetComponent<SpriteRenderer>().sprite = soundDisabledSprite;
+            }
+
         });
 
     }
