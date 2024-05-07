@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour, IMenu
 {
@@ -135,7 +136,6 @@ public class GameManager : MonoBehaviour, IMenu
 
         //adds each respective anonymous method and then swaps the skin of each button if its unlocked
         for(int i = 0; i < 5; i++) {
-            
             buttons[i + 8].onPress(candlePrefabSelectionButton(i));
 
             if (Settings.candleUnlocked(i)) {
