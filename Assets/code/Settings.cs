@@ -7,8 +7,7 @@ public class Settings
 
     public static bool soundEnabled = true;
     public static bool musicEnabled = true;
-    public static int secretButtonCounter = 0;
-
+    private static int secretButtonCounter = 0;
 
 
     public static int getStarterCandleId() {
@@ -30,12 +29,17 @@ public class Settings
         return candle < 2;
     }
 
-
-    public static void increaseSecretButtonCounter(){
-
-        secretButtonCounter += 1;
-
-
+    public static bool isSecretButtonFound(int id) {
+        return false;
     }
+
+    public static void setSecretButtonFound(int id) {
+        secretButtonCounter++;
+    }
+
+    public static int getSecretButtonCounter() {
+        return secretButtonCounter;
+    }
+
 
 }

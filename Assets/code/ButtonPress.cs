@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class ButtonPress : MonoBehaviour
 {
-    private Color originalColor;
-    private Color highlightColor;
-    private Renderer rend;
+    SpriteRenderer rend;
 
-    // Customize these colors to your liking
-    public Color normalColor = Color.white;
-    public Color pressedColor = Color.gray;
+    [SerializeField] Color normalColor = Color.white;
+    [SerializeField] Color pressedColor = Color.gray;
 
     [SerializeField] AudioClip btnDownSound;
     [SerializeField] AudioClip btnUpSound;
 
-    AudioSource audioSourceUp;
     AudioSource audioSourceDown;
+    AudioSource audioSourceUp;
 
     private bool isPressed = false;
 
@@ -25,63 +22,67 @@ public class ButtonPress : MonoBehaviour
     public bool active = false;
 
     virtual protected void Start(){
-        rend = GetComponent<Renderer>();
-        originalColor = rend.material.color;
-        highlightColor = normalColor;
+        rend = GetComponent<SpriteRenderer>();
 
         audioSourceUp = gameObject.AddComponent<AudioSource>();
-        audioSourceDown = gameObject.AddComponent<AudioSource>();
         audioSourceUp.clip = btnUpSound;
+
+        audioSourceDown = gameObject.AddComponent<AudioSource>();
         audioSourceDown.clip = btnDownSound;
+
 
         actions = new List<System.Action>();
     }
 
-    virtual protected void OnMouseDown(){
+    private void OnMouseDown(){
         if (active) {
 
-            if (btnDownSound != null && Settings.soundEnabled) { 
-                audioSourceDown.Play();
-            }
-
-            isPressed = true;
-            ChangeColor();
-
+            MouseDown();
         }
     }
+
+    virtual protected void MouseDown() {
+        if (btnDownSound != null && Settings.soundEnabled) {
+            audioSourceDown.Play();
+        }
+
+        isPressed = true;
+        rend.material.color = pressedColor;
+    }
+
+
 
     virtual protected void OnMouseUp(){
         if (active && isPressed) {
 
-            isPressed = false;
-            ChangeColor();
-            //execute each action when this button is pressed
-            for (int i = 0; i < actions.Count; i++) {
-                executeAction(i);
-            }
-
-            if (btnUpSound != null && Settings.soundEnabled) {
-                audioSourceUp.Play();
-            }
-
+            MouseUp();
         }
     }
+
+    virtual protected void MouseUp() {
+        isPressed = false;
+        rend.material.color = normalColor;
+
+        //execute each action when this button is pressed
+        for (int i = 0; i < actions.Count; i++) {
+            executeAction(i);
+        }
+
+        if (btnUpSound != null && Settings.soundEnabled) {
+            audioUp();
+        }
+    }
+
+    //this is here because the SecretButton class plays more than one sound when pressed
+    virtual protected void audioUp() {
+        audioSourceUp.Play();
+    }
+
+
 
     virtual protected void OnMouseExit(){
         isPressed = false;
-        ChangeColor();
-    }
-
-    virtual protected void ChangeColor()
-    {
-        if (isPressed)
-        {
-            rend.material.color = pressedColor;
-        }
-        else
-        {
-            rend.material.color = normalColor;
-        }
+        rend.material.color = normalColor;
     }
 
 
