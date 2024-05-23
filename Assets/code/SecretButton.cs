@@ -12,6 +12,9 @@ public class SecretButton : ButtonPress
     [SerializeField] GameObject confettiParticleSystemObject;
     [SerializeField] GameObject alreadyFoundParticleSystemObject;
 
+    //an empty gameobject where the particles will spawn
+    [SerializeField] GameObject particleSystemSpawnLocation;
+
     //for the victory sound that also plays when finding a secret button
     [SerializeField] AudioClip[] extraSounds;
     AudioSource[] audioSourceExtra;
@@ -29,10 +32,10 @@ public class SecretButton : ButtonPress
 
         //get references to each child particle system as they are instantiated
         for (int i = 0; i < particleSystemObjects.Length; i++) {
-            foundText[i] = Instantiate(particleSystemObjects[i], transform).GetComponent<ParticleSystem>();
+            foundText[i] = Instantiate(particleSystemObjects[i], particleSystemSpawnLocation.transform).GetComponent<ParticleSystem>();
         }
-        confettiParticle = Instantiate(confettiParticleSystemObject, transform).GetComponent<ParticleSystem>();
-        alreadyFoundParticle= Instantiate(alreadyFoundParticleSystemObject, transform).GetComponent<ParticleSystem>();
+        confettiParticle = Instantiate(confettiParticleSystemObject, particleSystemSpawnLocation.transform).GetComponent<ParticleSystem>();
+        alreadyFoundParticle= Instantiate(alreadyFoundParticleSystemObject, particleSystemSpawnLocation.transform).GetComponent<ParticleSystem>();
 
 
         //an audiosource can only play one sound at a time, so a new one needs to be made for each sound

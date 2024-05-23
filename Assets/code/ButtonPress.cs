@@ -12,8 +12,8 @@ public class ButtonPress : MonoBehaviour
     [SerializeField] AudioClip btnDownSound;
     [SerializeField] AudioClip btnUpSound;
 
-    AudioSource audioSourceDown;
-    AudioSource audioSourceUp;
+    protected AudioSource audioSourceDown;
+    protected AudioSource audioSourceUp;
 
     private bool isPressed = false;
 
@@ -42,7 +42,7 @@ public class ButtonPress : MonoBehaviour
     }
 
     virtual protected void MouseDown() {
-        if (btnDownSound != null && Settings.soundEnabled) {
+        if (audioSourceDown.clip != null && Settings.soundEnabled) {
             audioSourceDown.Play();
         }
 
@@ -68,7 +68,7 @@ public class ButtonPress : MonoBehaviour
             executeAction(i);
         }
 
-        if (btnUpSound != null && Settings.soundEnabled) {
+        if (audioSourceUp.clip != null && Settings.soundEnabled) {
             audioUp();
         }
     }
@@ -105,4 +105,5 @@ public class ButtonPress : MonoBehaviour
     public void clearActions() {
         actions.Clear();
     }
+
 }

@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour, IMenu
 
     SkinManager skinManager;
 
+    [SerializeField] AudioClip snowyChirpSound;
+
 
     private void Start()
     {
@@ -142,6 +144,23 @@ public class GameManager : MonoBehaviour, IMenu
                 buttons[i + 8].gameObject.GetComponent<SpriteRenderer>().sprite = skinManager.getSkin(i, 0);
             }
         }
+
+        //buttons 13, 14, and 15 dont need their onPress methods set because they use the SecretButton and WaffleButton class for their behaviour
+
+        //snowy button
+        Animator animator = buttons[16].GetComponent<Animator>();
+        AudioSource audioSource = buttons[16].gameObject.AddComponent<AudioSource>();
+        audioSource.clip = snowyChirpSound;
+        buttons[16].onPress(delegate () {
+
+            if (!audioSource.isPlaying) {
+
+                animator.SetTrigger("chirp");
+                audioSource.Play();
+
+            }
+
+        });
 
 
         GameObject x = Instantiate(startingCandlePrefab);
@@ -241,9 +260,9 @@ public class GameManager : MonoBehaviour, IMenu
     {
         gameStarted = true;
         int randomIndex = UnityEngine.Random.Range(0,canObjects.Length);
-        if(randomIndex > 7) {
+        /*if(randomIndex > 7) {
             randomIndex = 12;
-        }
+        }*/
         selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
         selectedCan.SetActive(true);
 
