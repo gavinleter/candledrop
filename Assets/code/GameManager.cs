@@ -331,7 +331,7 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
         for (int i = 0; i < buttons.Count; i++) {
-            buttons[i].active = false;
+            buttons[i].setActive(false);
         }
 
         //make all particles from buttons stop playing
@@ -356,7 +356,7 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
         for (int i = 0; i < buttons.Count; i++) {
-            buttons[i].active = true;
+            buttons[i].setActive(true);
         }
 
         //make all particles from buttons start playing again

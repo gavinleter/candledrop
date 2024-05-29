@@ -53,7 +53,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         mainCam.GetComponent<camCtrl>().startTransition();
         GetComponent<achcam>().setActive(true);
         for (int i = 0; i < btns.Count; i++) {
-            btns[i].active = true;
+            btns[i].setActive(true);
         }
     }
 
@@ -61,7 +61,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
     public void pause() {
         GetComponent<achcam>().setActive(false);
         for (int i = 0; i < btns.Count; i++) {
-            btns[i].active = false;
+            btns[i].setActive(false);
         }
     }
 

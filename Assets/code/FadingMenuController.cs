@@ -34,6 +34,7 @@ public class FadingMenuController : MonoBehaviour, IMenu
         else if (lerp > 0f) {
             lerp -= 0.1f * Time.deltaTime;
             opacity = Mathf.Lerp(0f, opacity, lerp);
+            transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(-1f, transform.localPosition.y, lerp), transform.localPosition.z);
             setAlpha();
         }
 
@@ -65,7 +66,7 @@ public class FadingMenuController : MonoBehaviour, IMenu
         lerp = 0f;
         active = true;
         for (int i = 0; i < btns.Count; i++) {
-            btns[i].active = true;
+            btns[i].setActive(true);
         }
         for (int i = 0; i < childrenParticles.Length; i++) {
             childrenParticles[i].Play();
@@ -77,7 +78,7 @@ public class FadingMenuController : MonoBehaviour, IMenu
         lerp = 1f;
         active = false;
         for (int i = 0; i < btns.Count; i++) {
-            btns[i].active = false;
+            btns[i].setActive(false);
         }
         for (int i = 0; i < childrenParticles.Length; i++) {
             childrenParticles[i].Clear();
