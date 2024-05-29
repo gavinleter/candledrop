@@ -163,6 +163,7 @@ public class GameManager : MonoBehaviour, IMenu
         });
 
 
+        //spawn the starting candle
         GameObject x = Instantiate(startingCandlePrefab);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
 
@@ -360,6 +361,12 @@ public class GameManager : MonoBehaviour, IMenu
 
         //make all particles from buttons start playing again
         for (int i = 0; i < buttons.Count; i++) {
+
+            //the exception are secretbuttons since this code would make all found text appear after unpausing
+            if(buttons[i] is SecretButton) {
+                continue;
+            }
+
             ParticleSystem[] ps = buttons[i].GetComponentsInChildren<ParticleSystem>();
             for (int j = 0; j < ps.Length; j++) {
                 ps[j].Play();

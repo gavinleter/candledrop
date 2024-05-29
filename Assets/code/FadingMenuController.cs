@@ -12,6 +12,7 @@ public class FadingMenuController : MonoBehaviour, IMenu
     protected SpriteRenderer sr;
     protected SpriteRenderer[] childrenRenderers;
     protected ParticleSystem[] childrenParticles;
+    protected CanvasGroup canvasGroup;
 
     [SerializeField] protected List<ButtonPress> btns = new List<ButtonPress>();
 
@@ -20,6 +21,7 @@ public class FadingMenuController : MonoBehaviour, IMenu
         sr = GetComponent<SpriteRenderer>();
         childrenRenderers = GetComponentsInChildren<SpriteRenderer>();
         childrenParticles = GetComponentsInChildren<ParticleSystem>();
+        canvasGroup = GetComponent<CanvasGroup>();
     }
 
     virtual protected void Update() {
@@ -53,6 +55,10 @@ public class FadingMenuController : MonoBehaviour, IMenu
         temp = sr.color;
         temp.a = opacity;
         sr.color = temp;
+        //set opacity of any canvas elements on this menu
+        if (canvasGroup != null) {
+            canvasGroup.alpha = opacity;
+        }
     }
 
     virtual public void pause() {

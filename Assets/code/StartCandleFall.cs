@@ -27,7 +27,6 @@ public class StartCandleFall : MonoBehaviour
     }
 
 
-
     void OnMouseDown() {
         if (!activated) {
             activated = true;
