@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour, IMenu
     private static List<CandleLightController> currentCandles = new List<CandleLightController>();
     [SerializeField] List<ButtonPress> buttons = new List<ButtonPress>();
     //for special non candle objects like the black hole
-    private List<SpecialObject> specialObjects = new List<SpecialObject>();
+    private List<ISpecialObject> specialObjects = new List<ISpecialObject>();
 
     GameObject startingCandlePrefab;
     Sprite startingCandleSkin;
@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] Camera mainCamera;
 
     [SerializeField] GameObject pauseMenuObject;
+    [SerializeField] FadingObject startingFloor;
 
     [SerializeField] GameObject creditsTransitionLocation;
     [SerializeField] GameObject basementTransitionLocation;
@@ -66,6 +67,8 @@ public class GameManager : MonoBehaviour, IMenu
         //get the starting candle prefab and skin
         setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
 
+        startingFloor.forceAppear();
+
 
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = delegate () {
@@ -80,33 +83,33 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[1].onPress(settingsAction);
         //skip the intro transition when the game starts if the screen is pressed (invisible over intro area)
         buttons[2].onPress(delegate () {
-            mainCamera.GetComponent<camCtrl>().skipIntroTransition();
+            mainCamera.GetComponent<CameraController>().skipIntroTransition();
         });
         //credits button
         buttons[3].onPress(delegate () {
             if (canPause) {
                 canPause = false;
-                mainCamera.GetComponent<camCtrl>().setNewTarget(creditsTransitionLocation.transform.position);
-                mainCamera.GetComponent<camCtrl>().startTransition();
+                mainCamera.GetComponent<CameraController>().setNewTarget(creditsTransitionLocation.transform.position);
+                mainCamera.GetComponent<CameraController>().startTransition();
             }
         });
         //button to go back down from credits
         buttons[4].onPress(delegate () {
             canPause = true;
-            mainCamera.GetComponent<camCtrl>().transitionToTop(20f);
+            mainCamera.GetComponent<CameraController>().transitionToTop(20f);
         });
         //button to go to the basement
         buttons[5].onPress(delegate () {
             if (canPause) {
                 canPause = false;
-                mainCamera.GetComponent<camCtrl>().setNewTarget(basementTransitionLocation.transform.position, 40f);
-                mainCamera.GetComponent<camCtrl>().startTransition();
+                mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
+                mainCamera.GetComponent<CameraController>().startTransition();
             }
         });
         //button to go back up from basement
         buttons[6].onPress(delegate () {
             canPause = true;
-            mainCamera.GetComponent<camCtrl>().transitionToTop(40f);
+            mainCamera.GetComponent<CameraController>().transitionToTop(40f);
         });
         //button to drop a candle (invisible over game area)
         buttons[7].onPress(delegate () {
@@ -182,41 +185,12 @@ public class GameManager : MonoBehaviour, IMenu
 
             if (rb == null || (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.velocity.magnitude < 0.01f))
             {
-                // Object has stopped moving, start a new turn
+                //object has stopped moving, start a new turn
                 StartTurn();
             }
-            /*else if (Time.time - turnStartTime >= minTurnDuration && Input.GetMouseButtonDown(0) && !hasMoved)
-            {
-                Vector3 tapPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                tapPosition.z = 0;
-
-                if (selectedCan != null && pauseMenuObject.GetComponent<PauseMenuController>().unpauseFinished())
-                {
-                    selectedCan.transform.position = new Vector3(teleCoords.position.x, teleCoords.position.y, 0);
-
-                    rb.gravityScale = 1;
-                    rb.isKinematic = false;
-
-                    Vector3 newPosition = new Vector3(tapPosition.x, selectedCan.transform.position.y, 0);
-
-                    //check if the tapped position is too far off screen first and adjust if necessary
-                    if(tapPosition.x + selectedCan.GetComponent<Collider2D>().bounds.size.x / 2 > rightCandlePlacementLimit.transform.position.x){
-
-                        newPosition.x = rightCandlePlacementLimit.transform.position.x - selectedCan.GetComponent<Collider2D>().bounds.size.x / 2;
-                    }
-                    if(tapPosition.x - selectedCan.GetComponent<Collider2D>().bounds.size.x / 2 < leftCandlePlacementLimit.transform.position.x) {
-
-                        newPosition.x = leftCandlePlacementLimit.transform.position.x + selectedCan.GetComponent<Collider2D>().bounds.size.x / 2;
-                    }
-
-                    selectedCan.transform.position = newPosition;
-
-                    canMove = true;
-                    lastMoveTime = Time.time + velocityCheckDelay; // Delay before checking velocity
-                    hasMoved = true; // Candle has been moved
-                }
-            }*/
         }
+
+
     }
 
 
@@ -249,8 +223,8 @@ public class GameManager : MonoBehaviour, IMenu
                 selectedCan.transform.position = newPosition;
 
                 canMove = true;
-                lastMoveTime = Time.time + velocityCheckDelay; // Delay before checking velocity
-                hasMoved = true; // Candle has been moved
+                lastMoveTime = Time.time + velocityCheckDelay;
+                hasMoved = true;
             }
         }
 
@@ -262,7 +236,10 @@ public class GameManager : MonoBehaviour, IMenu
         gameStarted = true;
         int randomIndex = UnityEngine.Random.Range(0,canObjects.Length);
         /*if(randomIndex > 7) {
-            randomIndex = 12;
+            randomIndex = 8;
+        }
+        else {
+            randomIndex = 0;
         }*/
         selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
         selectedCan.SetActive(true);
@@ -281,11 +258,11 @@ public class GameManager : MonoBehaviour, IMenu
         if (selectedCan.GetComponentInChildren<CandleLightController>() != null) {
             addCandleLight(selectedCan);
 
-        } else if(selectedCan.GetComponent<SpecialObject>() != null) {
+        } else if(selectedCan.GetComponent<ISpecialObject>() != null) {
 
             int specialObjId = nextSpecialObjectId();
-            selectedCan.GetComponent<SpecialObject>().setup(this, specialObjId);
-            specialObjects[specialObjId] = selectedCan.GetComponent<SpecialObject>();
+            selectedCan.GetComponent<ISpecialObject>().setup(this, specialObjId);
+            specialObjects[specialObjId] = selectedCan.GetComponent<ISpecialObject>();
         }
     }
 
@@ -385,6 +362,8 @@ public class GameManager : MonoBehaviour, IMenu
         isTurnActive = false;
         gameStarted = false;
 
+        startingFloor.forceAppear();
+
         //clear all candles
         for(int i = 0; i < currentCandles.Count; i++) {
             Destroy(currentCandles[i].getParentObject());
@@ -458,5 +437,9 @@ public class GameManager : MonoBehaviour, IMenu
         return currentCandlePrefabId;
     }
 
+
+    public void fadeOutStartingFloor() {
+        startingFloor.fadeOut();
+    }
 
 }

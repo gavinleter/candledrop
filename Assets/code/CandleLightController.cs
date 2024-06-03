@@ -90,6 +90,8 @@ public class CandleLightController : MonoBehaviour {
         GetComponent<SpriteRenderer>().enabled = false;
         candleIgniter.setActive(false);
         staticFlickerObject.GetComponent<CircleCollider2D>().enabled = false;
+        superGlowObject.GetComponent<ParticleSystem>().Stop();
+        superGlowObject.GetComponent<ParticleSystem>().Clear();
     }
 
 
@@ -102,14 +104,15 @@ public class CandleLightController : MonoBehaviour {
         candleIgniter.setActive(true);
     }
 
-    public void enableBackLight() {
+    private void enableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = true;
         superGlowObject.GetComponent<ParticleSystem>().Play();
     }
 
-    public void disableBackLight() {
+    private void disableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = false;
         superGlowObject.GetComponent<ParticleSystem>().Stop();
+        superGlowObject.GetComponent<ParticleSystem>().Clear();
     }
 
 
@@ -118,7 +121,6 @@ public class CandleLightController : MonoBehaviour {
 
         //if this candle has an invalid id (in the case of candles just out in the open not being used in game)
         if (other.getId() == -1) {
-            Debug.Log(other.transform.parent.parent.name + " " + other.getId() + " " + transform.parent.parent.name);
             return;
         }
 

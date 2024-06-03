@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlackHole : MonoBehaviour, SpecialObject
+public class BlackHole : MonoBehaviour, ISpecialObject
 {
     [SerializeField] GameObject holeExplodePrefab;
     GameManager gameManagerScript;

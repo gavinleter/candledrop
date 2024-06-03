@@ -20,7 +20,7 @@ public class achcam : MonoBehaviour
     void Update()
     {
         //do nothing if not in achievements menu or if we are currently transitioning to achievements menu
-        if (!inAchievementsPage || draggedCamera.GetComponent<camCtrl>().currentlyTransitioning()) {
+        if (!inAchievementsPage || draggedCamera.GetComponent<CameraController>().currentlyTransitioning()) {
             return;
         }
 

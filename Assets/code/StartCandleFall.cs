@@ -28,10 +28,11 @@ public class StartCandleFall : MonoBehaviour
 
 
     void OnMouseDown() {
-        if (!activated) {
+        if (!activated && readyToDrop && !gameStarted) {
             activated = true;
             rb.gravityScale = initialGravity;
-            mainCam.GetComponent<camCtrl>().startGameTransition();
+            mainCam.GetComponent<CameraController>().startGameTransition();
+            gameManager.fadeOutStartingFloor();
         }
     }
 

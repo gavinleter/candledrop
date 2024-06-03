@@ -31,10 +31,10 @@ public class AchievementMenuController : MonoBehaviour, IMenu
             parentMenuObject.GetComponent<PauseMenuController>().pause();
 
             if (gameManager.isGameStarted()) {
-                mainCam.GetComponent<camCtrl>().transitionToBottom(60f);
+                mainCam.GetComponent<CameraController>().transitionToBottom(60f);
             }
             else {
-                mainCam.GetComponent<camCtrl>().transitionToTop(60f);
+                mainCam.GetComponent<CameraController>().transitionToTop(60f);
             }
             
         });
@@ -49,8 +49,8 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
 
     public void unpause() {
-        mainCam.GetComponent<camCtrl>().setNewTarget(transitionPosition, 60f);
-        mainCam.GetComponent<camCtrl>().startTransition();
+        mainCam.GetComponent<CameraController>().setNewTarget(transitionPosition, 60f);
+        mainCam.GetComponent<CameraController>().startTransition();
         GetComponent<achcam>().setActive(true);
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(true);
