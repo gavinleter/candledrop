@@ -270,11 +270,12 @@ public class GameManager : MonoBehaviour, IMenu
     public void addCandleLight(GameObject candle) {
         //add the created candles lights to the list for candleRowDestroyer to reference by id later on
         //the for loop is in the case a candle has multiple lights
+        CandleLightController[] c = candle.GetComponentsInChildren<CandleLightController>();
+
         for (int i = 0; i < candle.transform.childCount; i++) {
-            CandleLightController c = candle.transform.GetChild(i).GetChild(0).GetComponent<CandleLightController>();
-            currentCandles.Add(c);
-            c.assignId();
-            candle.name = candle.name + " ID: " + c.getId();
+            currentCandles.Add(c[i]);
+            c[i].assignId();
+            candle.name = candle.name + " ID: " + c[i].getId();
         }
     }
 
@@ -388,7 +389,7 @@ public class GameManager : MonoBehaviour, IMenu
 
     GameObject getStartingCandleObject() {
         //If the first candle in the array has a StartCandleFall script on it, its a starter candle. Otherwise its a normal candle
-        if (currentCandles[0] != null && currentCandles[0].transform.parent.parent.GetComponent<StartCandleFall>() != null) {
+        if (currentCandles[0] != null && currentCandles[0].GetComponentInChildren<StartCandleFall>() != null) {
             return currentCandles[0].getParentObject();
         }
         return null;
