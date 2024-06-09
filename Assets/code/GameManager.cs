@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour, IMenu
 
     [SerializeField] SkinSelectMenuController skinSelectMenu;
     [SerializeField] LockedFeatureMenuController lockedFeatureMenu;
+    [SerializeField] AdSpinnerMenuController adSpinnerMenu;
 
     [SerializeField] GameObject startingCandleSpawnLocation;
 
@@ -163,6 +164,11 @@ public class GameManager : MonoBehaviour, IMenu
 
             }
 
+        });
+
+        buttons[17].onPress(delegate () {
+            pause();
+            adSpinnerMenu.pause();
         });
 
 

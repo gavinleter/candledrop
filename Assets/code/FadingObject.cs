@@ -18,8 +18,8 @@ public class FadingObject : MonoBehaviour
     virtual protected void Start(){
 
         sr = GetComponent<SpriteRenderer>();
-        childrenRenderers = GetComponentsInChildren<SpriteRenderer>();
-        childrenParticles = GetComponentsInChildren<ParticleSystem>();
+        childrenRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        childrenParticles = GetComponentsInChildren<ParticleSystem>(true);
         canvasGroup = GetComponent<CanvasGroup>();
 
     }

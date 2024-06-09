@@ -5,9 +5,6 @@ using UnityEngine;
 public class FlareLightController : CandleLightController
 {
 
-    private void Update() {
-        //Debug.Log(parentObject.name + " - " + id + " - " + overlaps + " - " + candleEnabled);
-    }
 
     override protected void Awake() {
         parentObject = transform.parent.gameObject;
