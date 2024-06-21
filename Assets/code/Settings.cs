@@ -26,7 +26,7 @@ public class Settings
 
 
     public static bool candleUnlocked(int candle) {
-        return candle < 2;
+        return true;
     }
 
     public static bool isSecretButtonFound(int id) {

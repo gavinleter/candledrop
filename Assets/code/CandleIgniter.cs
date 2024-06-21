@@ -33,23 +33,23 @@ public class CandleIgniter : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision) {
         CandleLightController other = collision.gameObject.GetComponent<CandleLightController>();
 
-        if (other != null) {
-
-            //if this candle is active and the other candle can be ignited, enable its light
-            if(other.canIgnite() && isActive) {
-                other.enableLight();
-            }
-
-            //exit early if this is a CandleLightController
-            return;
-        }
-
         CandleIgniter o = collision.gameObject.GetComponent<CandleIgniter>();
 
         if (o != null) {
 
             //keep track of any candle light that comes into contact with this one
             parentCandle.addToList(o.getParentCandleScript());
+
+            //this object is a CandleIgniter, so we don't check if its a CandleLightController. Exit early
+            return;
+        }
+
+        if (other != null) {
+
+            //if this candle is active and the other candle can be ignited, enable its light
+            if(other.canIgnite() && isActive) {
+                other.enableLight();
+            }
 
         }
 

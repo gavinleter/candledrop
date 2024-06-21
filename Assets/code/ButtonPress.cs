@@ -16,13 +16,17 @@ public class ButtonPress : MonoBehaviour
     protected AudioSource audioSourceUp;
 
     private bool isPressed = false;
+    private Collider2D buttonCollider;
 
     private List<System.Action> actions;
 
-    public bool active = false;
+    [SerializeField] private bool active = false;
 
     virtual protected void Start(){
         rend = GetComponent<SpriteRenderer>();
+        buttonCollider = GetComponent<Collider2D>();
+
+        buttonCollider.enabled = active;
 
         audioSourceUp = gameObject.AddComponent<AudioSource>();
         audioSourceUp.clip = btnUpSound;
@@ -61,6 +65,7 @@ public class ButtonPress : MonoBehaviour
 
     virtual protected void MouseUp() {
         isPressed = false;
+
         rend.material.color = normalColor;
 
         //execute each action when this button is pressed
@@ -104,6 +109,12 @@ public class ButtonPress : MonoBehaviour
 
     public void clearActions() {
         actions.Clear();
+    }
+
+
+    public void setActive(bool a) {
+        active = a;
+        buttonCollider.enabled = a;
     }
 
 }

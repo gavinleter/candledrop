@@ -4,25 +4,25 @@ using System.Collections.Generic;
 
 public class CandleLightController : MonoBehaviour {
 
-    private static int instances = 0;
-    private int id = -1;
+    protected static int instances = 0;
+    protected int id = -1;
 
-    bool candleEnabled = true;
-    GameObject flickerObject;
-    GameObject staticFlickerObject;
-    GameObject parentObject;
-    GameObject superGlowObject;
-    CandleIgniter candleIgniter;
-    int layer;
+    protected bool candleEnabled = true;
+    protected GameObject flickerObject;
+    protected GameObject staticFlickerObject;
+    protected GameObject parentObject;
+    protected GameObject superGlowObject;
+    protected CandleIgniter candleIgniter;
+    protected int layer;
     //overlaps is used to count how many solid objects the light is colliding with
     //the candle can only reignite if overlaps == 0
-    int overlaps = 0;
+    protected int overlaps = 0;
 
     //keeps track of the id of each candle this candle is touching
-    private List<int> touching = new List<int>();
+    protected List<int> touching = new List<int>();
 
 
-    void Awake(){
+    virtual protected void Awake(){
         parentObject = transform.parent.parent.gameObject;
 
         flickerObject = transform.Find("flicker").gameObject;
@@ -36,15 +36,6 @@ public class CandleLightController : MonoBehaviour {
 
     }
 
-
-    void Start() {
-        
-    }
-
-
-    private void Update() {
-        //Debug.Log(transform.parent.parent.name + " " + touching.Count);
-    }
 
 
     void OnTriggerEnter2D(Collider2D collider){
@@ -80,20 +71,23 @@ public class CandleLightController : MonoBehaviour {
         if (candleEnabled && collider.gameObject.layer != layer && !isParent(collider.gameObject) && collider.GetComponent<CandleIgniter>() == null) {
             disableLight();
         }
+
     }
 
 
-    public void disableLight() {
+    virtual public void disableLight() {
         candleEnabled = false;
         flickerObject.GetComponent<SpriteRenderer>().enabled = false;
         staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
         GetComponent<SpriteRenderer>().enabled = false;
         candleIgniter.setActive(false);
         staticFlickerObject.GetComponent<CircleCollider2D>().enabled = false;
+        superGlowObject.GetComponent<ParticleSystem>().Stop();
+        superGlowObject.GetComponent<ParticleSystem>().Clear();
     }
 
 
-    public void enableLight() {
+    virtual public void enableLight() {
         staticFlickerObject.GetComponent<CircleCollider2D>().enabled = true;
         candleEnabled = true;
         flickerObject.GetComponent<SpriteRenderer>().enabled = true;
@@ -102,23 +96,23 @@ public class CandleLightController : MonoBehaviour {
         candleIgniter.setActive(true);
     }
 
-    public void enableBackLight() {
+    virtual protected void enableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = true;
         superGlowObject.GetComponent<ParticleSystem>().Play();
     }
 
-    public void disableBackLight() {
+    virtual protected void disableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = false;
         superGlowObject.GetComponent<ParticleSystem>().Stop();
+        superGlowObject.GetComponent<ParticleSystem>().Clear();
     }
 
 
     //need to keep track of all other candle ids that are touching this one
     public void addToList(CandleLightController other) {
-
+        
         //if this candle has an invalid id (in the case of candles just out in the open not being used in game)
         if (other.getId() == -1) {
-            Debug.Log(other.transform.parent.parent.name + " " + other.getId() + " " + transform.parent.parent.name);
             return;
         }
 
@@ -194,8 +188,8 @@ public class CandleLightController : MonoBehaviour {
 
     //make sure the candle flame cant be extinguished by its own candle base
     //this is for checking if a top level candle gameObject is the same as this object's top level candle gameObject
-    public bool isParent(GameObject obj) {
-        return transform.parent.parent.gameObject == obj;
+    virtual public bool isParent(GameObject obj) {
+        return parentObject == obj;
     }
 
     public int getId() {
