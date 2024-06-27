@@ -57,8 +57,8 @@ public class CandleLightController : MonoBehaviour {
     //keep track of any incoming collisions and turn off candle light if it hits something
     private void testCollisionCandleLight(Collider2D collider) {
 
-        //nothing should happen if touching a button
-        if(collider.GetComponent<ButtonPress>() != null) {
+        //nothing should happen if touching a button or the ad spinner lever
+        if(collider.GetComponent<ButtonPress>() != null || collider.GetComponent<AdSpinnerLever>() != null) {
             return;
         }
 

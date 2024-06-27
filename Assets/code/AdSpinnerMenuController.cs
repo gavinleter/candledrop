@@ -8,7 +8,9 @@ public class AdSpinnerMenuController : FadingMenuController
     [SerializeField] Camera mainCamera;
     [SerializeField] AdSpinnerLever lever;
     [SerializeField] UpgradeDisplayMenuController upgradeDisplayMenu;
+
     [SerializeField] float startingSpeed;
+    [SerializeField] float shakeAmount;
 
     GameObject emptySpinner;
     SpriteRenderer emptySpinnerSpriteRenderer;
@@ -42,8 +44,8 @@ public class AdSpinnerMenuController : FadingMenuController
         base.Update();
 
         if (spinning) {
-            positionOffset.x = UnityEngine.Random.Range(-1f, 1f) * spinnerAnimator.speed * 0.4f;
-            positionOffset.y = UnityEngine.Random.Range(-1f, 1f) * spinnerAnimator.speed * 0.4f;
+            positionOffset.x = UnityEngine.Random.Range(-1f, 1f) * spinnerAnimator.speed * shakeAmount;
+            positionOffset.y = UnityEngine.Random.Range(-1f, 1f) * spinnerAnimator.speed * shakeAmount;
 
             transform.position = initialPosition + positionOffset;
         }

@@ -166,11 +166,11 @@ public class GameManager : MonoBehaviour, IMenu
 
         });
 
-        buttons[17].onPress(delegate () {
+        //button 17 doesn't need its onPress method set because it uses the AdBoosterButton class
+        buttons[18].onPress(() => {
             pause();
             adSpinnerMenu.pause();
         });
-
 
         //spawn the starting candle
         GameObject x = Instantiate(startingCandlePrefab);
@@ -200,6 +200,7 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
 
+    //attempt to drop the candle if it has spawned, other dropped candles aren't moving, and a time delay has finished between now and the last drop
     private void dropCandle() {
 
         if (isTurnActive && Time.time - turnStartTime >= minTurnDuration && !hasMoved) {
@@ -237,6 +238,7 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
 
+    //spawn a new candle to be dropped
     public void StartTurn()
     {
         gameStarted = true;
@@ -320,6 +322,12 @@ public class GameManager : MonoBehaviour, IMenu
 
         //make all particles from buttons stop playing
         for(int i = 0; i < buttons.Count; i++) {
+
+            //the particles on the ad booster button should never stop
+            if (buttons[i] is AdBoosterButton) {
+                continue;
+            }
+
             ParticleSystem[] ps = buttons[i].GetComponentsInChildren<ParticleSystem>();
             for (int j = 0; j < ps.Length; j++) { 
                 ps[j].Stop();

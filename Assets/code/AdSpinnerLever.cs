@@ -4,17 +4,12 @@ using UnityEngine;
 
 public class AdSpinnerLever : MonoBehaviour
 {
-    //310 top
-    //50 bottom
+    
     [SerializeField] Camera mainCamera;
     [SerializeField] AdSpinnerMenuController spinnerMenu;
+
     bool leverGrabbed = false;
     bool leverFullyPulled = false;
-
-    void Start()
-    {
-        
-    }
 
     
     void Update(){
