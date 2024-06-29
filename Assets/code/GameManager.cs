@@ -168,8 +168,9 @@ public class GameManager : MonoBehaviour, IMenu
 
         //button 17 doesn't need its onPress method set because it uses the AdBoosterButton class
         buttons[18].onPress(() => {
-            pause();
-            adSpinnerMenu.pause();
+            //pause();
+            //adSpinnerMenu.pause();
+            convertAllCandlesToFlares();
         });
 
         //spawn the starting candle
@@ -249,6 +250,7 @@ public class GameManager : MonoBehaviour, IMenu
         else {
             randomIndex = 0;
         }*/
+        randomIndex = 0;
         selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
         selectedCan.SetActive(true);
 
@@ -397,6 +399,19 @@ public class GameManager : MonoBehaviour, IMenu
 
         GameObject x = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
+
+    }
+
+
+    void convertAllCandlesToFlares() {
+
+        for(int i = 0; i < currentCandles.Count; i++) {
+            if (currentCandles[i] != null && !currentCandles[i].isCurrentlyFlare()) {
+
+                currentCandles[i].convertToFlare();
+
+            }
+        }
 
     }
 

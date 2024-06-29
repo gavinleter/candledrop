@@ -1,38 +1,54 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class CandleLightController : MonoBehaviour {
 
-    protected static int instances = 0;
-    protected int id = -1;
+    [SerializeField] bool isFlare;
+    Color32 flareFlickerColor = new Color32(108, 0, 11, 100);
+    Color32 flareBackLightColor = new Color32(108, 0, 11, 150);
+    Color32 flareGlowColor = new Color32(0xCA, 0x0C, 0x0E, 0xFF);
 
-    protected bool candleEnabled = true;
-    protected GameObject flickerObject;
-    protected GameObject staticFlickerObject;
-    protected GameObject parentObject;
-    protected GameObject superGlowObject;
-    protected CandleIgniter candleIgniter;
-    protected int layer;
+    static int instances = 0;
+    int id = -1;
+
+    bool candleEnabled = true;
+    GameObject flickerObject;
+    GameObject staticFlickerObject;
+    GameObject parentObject;
+    GameObject superGlowObject;
+    ParticleSystem flareEmberParticles;
+    CandleIgniter candleIgniter;
+    int layer;
     //overlaps is used to count how many solid objects the light is colliding with
     //the candle can only reignite if overlaps == 0
-    protected int overlaps = 0;
+    int overlaps = 0;
 
     //keeps track of the id of each candle this candle is touching
-    protected List<int> touching = new List<int>();
+    List<int> touching = new List<int>();
 
 
-    virtual protected void Awake(){
-        parentObject = transform.parent.parent.gameObject;
+    void Awake(){
+
+        parentObject = transform.parent.gameObject;
 
         flickerObject = transform.Find("flicker").gameObject;
         superGlowObject = transform.Find("super_glow").gameObject;
-        staticFlickerObject = flickerObject.transform.Find("better_flicker_0").gameObject;
+        staticFlickerObject = transform.Find("back light").gameObject;
+        flareEmberParticles = transform.Find("flare ember particles").GetComponent<ParticleSystem>();
+        flareEmberParticles.Stop();
+        flareEmberParticles.Clear();
+
         layer = LayerMask.NameToLayer("flame");
 
         candleIgniter = staticFlickerObject.GetComponent<CandleIgniter>();
         candleIgniter.setParentCandleScript(this);
         disableBackLight();
+
+        if (isFlare) {
+            convertToFlare();
+        }
 
     }
 
@@ -75,19 +91,22 @@ public class CandleLightController : MonoBehaviour {
     }
 
 
-    virtual public void disableLight() {
-        candleEnabled = false;
-        flickerObject.GetComponent<SpriteRenderer>().enabled = false;
-        staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
-        GetComponent<SpriteRenderer>().enabled = false;
-        candleIgniter.setActive(false);
-        staticFlickerObject.GetComponent<CircleCollider2D>().enabled = false;
-        superGlowObject.GetComponent<ParticleSystem>().Stop();
-        superGlowObject.GetComponent<ParticleSystem>().Clear();
+    public void disableLight() {
+        //flares cannot be extinguished
+        if (!isFlare) {
+            candleEnabled = false;
+            flickerObject.GetComponent<SpriteRenderer>().enabled = false;
+            staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<SpriteRenderer>().enabled = false;
+            candleIgniter.setActive(false);
+            staticFlickerObject.GetComponent<CircleCollider2D>().enabled = false;
+            superGlowObject.GetComponent<ParticleSystem>().Stop();
+            superGlowObject.GetComponent<ParticleSystem>().Clear();
+        }
     }
 
 
-    virtual public void enableLight() {
+    public void enableLight() {
         staticFlickerObject.GetComponent<CircleCollider2D>().enabled = true;
         candleEnabled = true;
         flickerObject.GetComponent<SpriteRenderer>().enabled = true;
@@ -96,15 +115,37 @@ public class CandleLightController : MonoBehaviour {
         candleIgniter.setActive(true);
     }
 
-    virtual protected void enableBackLight() {
+    void enableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = true;
         superGlowObject.GetComponent<ParticleSystem>().Play();
     }
 
-    virtual protected void disableBackLight() {
+    void disableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = false;
         superGlowObject.GetComponent<ParticleSystem>().Stop();
         superGlowObject.GetComponent<ParticleSystem>().Clear();
+    }
+
+
+    public void convertToFlare() {
+        isFlare = true;
+
+        enableLight();
+
+        staticFlickerObject.GetComponent<SpriteRenderer>().color = flareBackLightColor;
+        flickerObject.GetComponent<SpriteRenderer>().color = flareFlickerColor;
+
+        //change color of super glow
+        ParticleSystem.MainModule x = superGlowObject.GetComponent<ParticleSystem>().main;
+        x.startColor = new ParticleSystem.MinMaxGradient(flareGlowColor);
+        flareEmberParticles.Play();
+
+        //make the candle fire invisible
+        Color temp = GetComponent<SpriteRenderer>().color;
+        temp.a = 0;
+        GetComponent<SpriteRenderer>().color = temp;
+
+        transform.localScale = new Vector3(0.75f, 0.75f, 1);
     }
 
 
@@ -188,7 +229,7 @@ public class CandleLightController : MonoBehaviour {
 
     //make sure the candle flame cant be extinguished by its own candle base
     //this is for checking if a top level candle gameObject is the same as this object's top level candle gameObject
-    virtual public bool isParent(GameObject obj) {
+    public bool isParent(GameObject obj) {
         return parentObject == obj;
     }
 
@@ -208,8 +249,8 @@ public class CandleLightController : MonoBehaviour {
         instances = 0;
     }
 
-    public void destroySelf() {
-        
+    public bool isCurrentlyFlare() {
+        return isFlare;
     }
 
 }
