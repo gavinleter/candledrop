@@ -8,8 +8,8 @@ public class GameManager : MonoBehaviour, IMenu
 {
     public GameObject[] canObjects = new GameObject[12];
     public Transform teleCoords;
-    public float minTurnDuration = 2.0f; // Minimum turn duration in seconds
-    public float velocityCheckDelay = 0.05f; // Delay before checking velocity
+    float minTurnDuration = 0.0f; // Minimum turn duration in seconds
+    float velocityCheckDelay = 0.05f; // Delay before checking velocity
 
     private GameObject selectedCan;
     private bool isTurnActive = false;
@@ -34,6 +34,22 @@ public class GameManager : MonoBehaviour, IMenu
     int currentSkinId = 0;
     int currentCandlePrefabId = 0;
 
+
+    bool eventHorizonEventActive = false;
+    float eventHorizonEventStartTime;
+    [SerializeField] float blackHoleSpawnDelay;
+    [SerializeField] float eventHorizonEventDuration;
+    [SerializeField] ParticleSystem[] eventHorizonParticles;
+
+    bool solarRainEventActive = false;
+    float solarRainEventStartTime;
+    float solarRainEventLastEmberTime;
+    float solarRainEventNextEmberDelay;
+    [SerializeField] float solarRainEventDuration;
+    [SerializeField] float solarRainEventSpawnDelayRange;
+    [SerializeField] ParticleSystem[] solarRainParticles;
+
+
     [SerializeField] float startingCandleGravity;
     [SerializeField] Camera mainCamera;
 
@@ -46,6 +62,7 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] GameObject leftCandlePlacementLimit;
     [SerializeField] GameObject rightCandlePlacementLimit;
 
+    [SerializeField] GameObject emberPrefab;
 
     [SerializeField] GameObject[] starterCandles;
 
@@ -170,7 +187,15 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[18].onPress(() => {
             //pause();
             //adSpinnerMenu.pause();
-            convertAllCandlesToFlares();
+            //convertAllCandlesToFlares();
+            //spawnEmber(-1.5f);
+            startEventHorizonEvent();
+        });
+        buttons[19].onPress(() => {
+            startSolarRainEvent();
+        });
+        buttons[20].onPress(() => {
+            startFlaringFieldsEvent();
         });
 
         //spawn the starting candle
@@ -190,20 +215,24 @@ public class GameManager : MonoBehaviour, IMenu
                 rb = selectedCan.GetComponent<Rigidbody2D>();
             }
 
-            if (rb == null || (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.velocity.magnitude < 0.01f))
+            //velocityCheckDelay is important because the candle starts out at 0 velocity, so we have to wait for it to fall a bit first
+            //the next "candle" can also spawn if an event horizon is active and a shorter timer runs out while the previous black hole is moving still
+            if ( rb == null || (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.velocity.magnitude < 0.01f) || 
+                eventHorizonEventActive && Time.time - lastMoveTime >= blackHoleSpawnDelay && rb.velocity.magnitude > 0.1f)
             {
                 //object has stopped moving, start a new turn
                 StartTurn();
             }
         }
 
+        updateEvents();
 
     }
 
 
     //attempt to drop the candle if it has spawned, other dropped candles aren't moving, and a time delay has finished between now and the last drop
     private void dropCandle() {
-
+        
         if (isTurnActive && Time.time - turnStartTime >= minTurnDuration && !hasMoved) {
             Rigidbody2D rb = rb = selectedCan.GetComponent<Rigidbody2D>();
 
@@ -218,17 +247,7 @@ public class GameManager : MonoBehaviour, IMenu
 
                 Vector3 newPosition = new Vector3(tapPosition.x, selectedCan.transform.position.y, 0);
 
-                //check if the tapped position is too far off screen first and adjust if necessary
-                if (tapPosition.x + selectedCan.GetComponent<Collider2D>().bounds.size.x / 2 > rightCandlePlacementLimit.transform.position.x) {
-
-                    newPosition.x = rightCandlePlacementLimit.transform.position.x - selectedCan.GetComponent<Collider2D>().bounds.size.x / 2;
-                }
-                if (tapPosition.x - selectedCan.GetComponent<Collider2D>().bounds.size.x / 2 < leftCandlePlacementLimit.transform.position.x) {
-
-                    newPosition.x = leftCandlePlacementLimit.transform.position.x + selectedCan.GetComponent<Collider2D>().bounds.size.x / 2;
-                }
-
-                selectedCan.transform.position = newPosition;
+                selectedCan.transform.position = clampObjectPositionToGameArea(newPosition, selectedCan);
 
                 canMove = true;
                 lastMoveTime = Time.time + velocityCheckDelay;
@@ -239,18 +258,35 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
 
+    //used to ensure that a candle or ember being spawned does not go too far to the left or right of the screen
+    private Vector3 clampObjectPositionToGameArea(Vector3 initialPosition, GameObject obj) {
+        Vector3 newPosition = initialPosition;
+
+        //check if the tapped position is too far off screen first and adjust if necessary
+        if (initialPosition.x + obj.GetComponent<Collider2D>().bounds.size.x / 2 > rightCandlePlacementLimit.transform.position.x) {
+
+            newPosition.x = rightCandlePlacementLimit.transform.position.x - obj.GetComponent<Collider2D>().bounds.size.x / 2;
+        }
+        if (initialPosition.x - obj.GetComponent<Collider2D>().bounds.size.x / 2 < leftCandlePlacementLimit.transform.position.x) {
+
+            newPosition.x = leftCandlePlacementLimit.transform.position.x + obj.GetComponent<Collider2D>().bounds.size.x / 2;
+        }
+
+        return newPosition;
+    }
+
+
     //spawn a new candle to be dropped
     public void StartTurn()
     {
         gameStarted = true;
         int randomIndex = UnityEngine.Random.Range(0,canObjects.Length);
-        /*if(randomIndex > 7) {
-            randomIndex = 8;
+
+        //only black holes can spawn during the event horizon event
+        if (eventHorizonEventActive) {
+            randomIndex = 12;
         }
-        else {
-            randomIndex = 0;
-        }*/
-        randomIndex = 0;
+        
         selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
         selectedCan.SetActive(true);
 
@@ -300,6 +336,23 @@ public class GameManager : MonoBehaviour, IMenu
             }
         }
         return null;
+    }
+
+
+    //destroys the held candle and starts a new turn, but does not destroy a held special object
+    void destroyHeldCandle() {
+
+        if (selectedCan != null && selectedCan.GetComponentInChildren<CandleLightController>() != null) {
+            //if the candle has not been dropped yet, destroy it
+            if (!canMove) {
+                int heldCandleId = selectedCan.GetComponentInChildren<CandleLightController>().getId();
+                destroyCandle(heldCandleId);
+            }
+            //always spawn the next "candle" in case the previously dropped one is still moving
+            //this is to stop a moving candle from taking the event horizon event hostage
+            StartTurn();
+        }
+
     }
 
 
@@ -403,12 +456,94 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
 
-    void convertAllCandlesToFlares() {
+    private void convertAllCandlesToFlares() {
 
         for(int i = 0; i < currentCandles.Count; i++) {
             if (currentCandles[i] != null && !currentCandles[i].isCurrentlyFlare()) {
 
                 currentCandles[i].convertToFlare();
+
+            }
+        }
+
+    }
+
+
+    private void spawnEmber(float yOffset) {
+
+        GameObject x = Instantiate(emberPrefab);
+        x.transform.position = new Vector3(teleCoords.position.x + UnityEngine.Random.Range(-1f, 1f), teleCoords.position.y + yOffset, x.transform.position.z);
+        for (int i = 0; i < buttons.Count; i++) {
+            Physics2D.IgnoreCollision(x.GetComponent<Collider2D>(), buttons[i].GetComponent<Collider2D>());
+        }
+        //x.transform.position = clampObjectPositionToGameArea(x.transform.position, x);
+
+    }
+
+
+    //make only black holes spawn for a limited time
+    public void startEventHorizonEvent() {
+        eventHorizonEventActive = true;
+        eventHorizonEventStartTime = Time.time;
+
+        for (int i = 0; i < eventHorizonParticles.Length; i++) {
+            eventHorizonParticles[i].Play();
+        }
+
+        destroyHeldCandle();
+    }
+
+
+    public bool isEventHorizonEventActive() { 
+        return eventHorizonEventActive;
+    }
+
+
+    //make embers start falling from the top of the screen
+    public void startSolarRainEvent() {
+        solarRainEventActive = true;
+        solarRainEventStartTime = Time.time;
+        solarRainEventLastEmberTime = Time.time;
+        solarRainEventNextEmberDelay = UnityEngine.Random.Range(0, solarRainEventSpawnDelayRange);
+
+        for (int i = 0; i < solarRainParticles.Length; i++) {
+            solarRainParticles[i].Play();
+        }
+    }
+
+
+    //convert all candles on screen to flares
+    public void startFlaringFieldsEvent() {
+        convertAllCandlesToFlares();
+    }
+
+
+    void updateEvents() {
+
+        if (eventHorizonEventActive && eventHorizonEventStartTime + eventHorizonEventDuration < Time.time) {
+            eventHorizonEventActive = false;
+
+            for(int i = 0; i < eventHorizonParticles.Length; i++) {
+                eventHorizonParticles[i].Stop();
+            }
+
+        }
+
+        if (solarRainEventActive) {
+
+            //if enough time has passed between the last ember spawn and now, set a new random time to wait between ember spawns and spawn an ember
+            if(solarRainEventLastEmberTime + solarRainEventNextEmberDelay < Time.time) {
+                solarRainEventLastEmberTime = Time.time;
+                solarRainEventNextEmberDelay = UnityEngine.Random.Range(0, solarRainEventSpawnDelayRange);
+                spawnEmber(3f);
+            }
+
+            if (solarRainEventStartTime + solarRainEventDuration < Time.time) {
+                solarRainEventActive = false;
+
+                for (int i = 0; i < solarRainParticles.Length; i++) {
+                    solarRainParticles[i].Stop();
+                }
 
             }
         }

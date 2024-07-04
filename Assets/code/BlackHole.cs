@@ -22,13 +22,16 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
         }
 
-        destroySelf();
+        //destroy self only when touching something that is not another black hole
+        if (other.gameObject.GetComponentInChildren<BlackHole>() == null) {
+            destroySelf();
+        }
 
     }
 
 
     public void destroySelf() {
-
+        
         RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, gameManagerScript.blackHoleDestroyRadius, Vector2.one);
 
         for (int i = 0; i < hits.Length; i++) {
@@ -36,6 +39,10 @@ public class BlackHole : MonoBehaviour, ISpecialObject
             if (o != null) {
                 gameManagerScript.destroyCandle(o.getId());
             }
+        }
+
+        if (gameManagerScript.isEventHorizonEventActive()) {
+            //gameManagerScript.StartTurn();
         }
 
         GameObject holeExplode = Instantiate(holeExplodePrefab, transform.position, Quaternion.identity);

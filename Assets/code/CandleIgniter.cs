@@ -7,18 +7,6 @@ public class CandleIgniter : MonoBehaviour
     bool isActive = true;
     CandleLightController parentCandle;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     public void setParentCandleScript(CandleLightController p) {
         parentCandle = p;

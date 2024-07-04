@@ -63,6 +63,11 @@ public class CandleLightController : MonoBehaviour {
 
 
     private void OnTriggerExit2D(Collider2D collision) {
+        //nothing should happen if touching a button, ember, or the ad spinner lever
+        if (colliderContainsScript(collision)) {
+            return;
+        }
+
         if (collision.gameObject.layer != layer && !isParent(collision.gameObject)) {
             overlaps--;
         }
@@ -73,8 +78,8 @@ public class CandleLightController : MonoBehaviour {
     //keep track of any incoming collisions and turn off candle light if it hits something
     private void testCollisionCandleLight(Collider2D collider) {
 
-        //nothing should happen if touching a button or the ad spinner lever
-        if(collider.GetComponent<ButtonPress>() != null || collider.GetComponent<AdSpinnerLever>() != null) {
+        //nothing should happen if touching a button, ember, or the ad spinner lever
+        if(colliderContainsScript(collider)) {
             return;
         }
 
@@ -91,17 +96,20 @@ public class CandleLightController : MonoBehaviour {
     }
 
 
+    private bool colliderContainsScript(Collider2D collider) {
+        return (collider.GetComponent<ButtonPress>() != null || collider.GetComponent<AdSpinnerLever>() != null || collider.GetComponent<EmberController>() != null);
+    }
+
+
     public void disableLight() {
         //flares cannot be extinguished
         if (!isFlare) {
             candleEnabled = false;
-            flickerObject.GetComponent<SpriteRenderer>().enabled = false;
             staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<SpriteRenderer>().enabled = false;
             candleIgniter.setActive(false);
             staticFlickerObject.GetComponent<CircleCollider2D>().enabled = false;
-            superGlowObject.GetComponent<ParticleSystem>().Stop();
-            superGlowObject.GetComponent<ParticleSystem>().Clear();
+            disableBackLight();
         }
     }
 
@@ -109,7 +117,6 @@ public class CandleLightController : MonoBehaviour {
     public void enableLight() {
         staticFlickerObject.GetComponent<CircleCollider2D>().enabled = true;
         candleEnabled = true;
-        flickerObject.GetComponent<SpriteRenderer>().enabled = true;
         staticFlickerObject.GetComponent<SpriteRenderer>().enabled = true;
         GetComponent<SpriteRenderer>().enabled = true;
         candleIgniter.setActive(true);

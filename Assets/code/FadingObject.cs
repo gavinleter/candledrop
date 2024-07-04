@@ -14,6 +14,9 @@ public class FadingObject : MonoBehaviour
     protected ParticleSystem[] childrenParticles;
     protected CanvasGroup canvasGroup;
 
+    [SerializeField] bool playParticlesOnFadeIn;
+    [SerializeField] bool destroyParticlesOnFadeOut;
+
 
     virtual protected void Start(){
 
@@ -74,9 +77,11 @@ public class FadingObject : MonoBehaviour
     virtual public void fadeIn() {
         lerp = 0f;
         active = true;
- 
-        for (int i = 0; i < childrenParticles.Length; i++) {
-            childrenParticles[i].Play();
+
+        if (playParticlesOnFadeIn) {
+            for (int i = 0; i < childrenParticles.Length; i++) {
+                childrenParticles[i].Play();
+            }
         }
     }
 
@@ -85,9 +90,11 @@ public class FadingObject : MonoBehaviour
         lerp = 1f;
         active = false;
 
-        for (int i = 0; i < childrenParticles.Length; i++) {
-            childrenParticles[i].Clear();
-            childrenParticles[i].Stop();
+        if (destroyParticlesOnFadeOut) {
+            for (int i = 0; i < childrenParticles.Length; i++) {
+                childrenParticles[i].Clear();
+                childrenParticles[i].Stop();
+            }
         }
     }
 

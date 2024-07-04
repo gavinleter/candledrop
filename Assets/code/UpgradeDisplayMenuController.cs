@@ -40,6 +40,19 @@ public class UpgradeDisplayMenuController : FadingMenuController
         disableSpriteRenderers();
 
         upgradeSpriteRenderers[x].enabled = true;
+        upgradeSpriteRenderers[x].GetComponentInChildren<ParticleSystem>().Play();
+
+        switch (x) {
+            case 0:
+                gameManager.startEventHorizonEvent();
+                break;
+            case 1:
+                gameManager.startSolarRainEvent();
+                break;
+            case 2:
+                gameManager.startFlaringFieldsEvent();
+                break;
+        }
     }
 
 
