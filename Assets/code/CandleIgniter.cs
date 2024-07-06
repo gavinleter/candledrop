@@ -22,9 +22,9 @@ public class CandleIgniter : MonoBehaviour
         CandleLightController other = collision.gameObject.GetComponent<CandleLightController>();
 
         CandleIgniter o = collision.gameObject.GetComponent<CandleIgniter>();
-
+        
         if (o != null) {
-
+            
             //keep track of any candle light that comes into contact with this one
             parentCandle.addToList(o.getParentCandleScript());
 

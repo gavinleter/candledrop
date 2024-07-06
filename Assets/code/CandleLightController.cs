@@ -24,6 +24,8 @@ public class CandleLightController : MonoBehaviour {
     //overlaps is used to count how many solid objects the light is colliding with
     //the candle can only reignite if overlaps == 0
     int overlaps = 0;
+    //how many candle lights that are enabled this is touching
+    int lightOverlaps = 0;
 
     //keeps track of the id of each candle this candle is touching
     List<int> touching = new List<int>();
@@ -55,7 +57,7 @@ public class CandleLightController : MonoBehaviour {
 
 
     void OnTriggerEnter2D(Collider2D collider){
-
+        
         testCollisionCandleLight(collider);
         //addTouchingCandleToList(collider);
 
@@ -68,10 +70,19 @@ public class CandleLightController : MonoBehaviour {
             return;
         }
 
+        if (collision.GetComponent<CandleIgniter>() != null) {
+            lightOverlaps--;
+        }
+
         if (collision.gameObject.layer != layer && !isParent(collision.gameObject)) {
             overlaps--;
         }
-        //removeTouchingCandleFromList(collision);
+        
+        //if there are no more non-flame overlaps and there is currently a candle touching this, reignite
+        if(overlaps == 0 && lightOverlaps > 0) {
+            enableLight();
+            enableBackLight();
+        }
     }
 
 
@@ -81,6 +92,10 @@ public class CandleLightController : MonoBehaviour {
         //nothing should happen if touching a button, ember, or the ad spinner lever
         if(colliderContainsScript(collider)) {
             return;
+        }
+
+        if(collider.GetComponent<CandleIgniter>() != null) {
+            lightOverlaps++;
         }
 
         //make sure what is colliding is not the parent of the candle
