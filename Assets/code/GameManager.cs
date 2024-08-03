@@ -41,6 +41,13 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] float eventHorizonEventDuration;
     [SerializeField] ParticleSystem[] eventHorizonParticles;
 
+    //the mini sun event is what the solar rain event is currently
+    bool miniSunEventActive = false;
+    float miniSunEventStartTime;
+    [SerializeField] float miniSunSpawnDelay;
+    [SerializeField] float miniSunEventDuration;
+
+    //old unused event
     bool solarRainEventActive = false;
     float solarRainEventStartTime;
     float solarRainEventLastEmberTime;
@@ -192,7 +199,8 @@ public class GameManager : MonoBehaviour, IMenu
             startEventHorizonEvent();
         });
         buttons[19].onPress(() => {
-            startSolarRainEvent();
+            //startSolarRainEvent();
+            startMiniSunEvent();
         });
         buttons[20].onPress(() => {
             startFlaringFieldsEvent();
@@ -285,6 +293,10 @@ public class GameManager : MonoBehaviour, IMenu
         //only black holes can spawn during the event horizon event
         if (eventHorizonEventActive) {
             randomIndex = 12;
+        }
+        //only mini suns can spawn during solar rain event
+        else if (miniSunEventActive) {
+            randomIndex = 13;
         }
         
         selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
@@ -500,6 +512,7 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     //make embers start falling from the top of the screen
+    //this is the old solar rain event and isnt used currently
     public void startSolarRainEvent() {
         solarRainEventActive = true;
         solarRainEventStartTime = Time.time;
@@ -518,6 +531,19 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
 
+    //make only mini suns appear for a limited time, this is the current solar rain event
+    public void startMiniSunEvent() {
+        miniSunEventActive = true;
+        miniSunEventStartTime = Time.time;
+
+        for (int i = 0; i < solarRainParticles.Length; i++) {
+            solarRainParticles[i].Play();
+        }
+
+        destroyHeldCandle();
+    }
+
+
     void updateEvents() {
 
         if (eventHorizonEventActive && eventHorizonEventStartTime + eventHorizonEventDuration < Time.time) {
@@ -525,6 +551,15 @@ public class GameManager : MonoBehaviour, IMenu
 
             for(int i = 0; i < eventHorizonParticles.Length; i++) {
                 eventHorizonParticles[i].Stop();
+            }
+
+        }
+
+        if (miniSunEventActive && miniSunEventStartTime + miniSunEventDuration < Time.time) {
+            miniSunEventActive = false;
+
+            for (int i = 0; i < solarRainParticles.Length; i++) {
+                solarRainParticles[i].Stop();
             }
 
         }

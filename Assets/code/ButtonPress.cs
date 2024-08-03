@@ -22,6 +22,10 @@ public class ButtonPress : MonoBehaviour
 
     [SerializeField] private bool active = false;
 
+    private void Awake() {
+        actions = new List<System.Action>();
+    }
+
     virtual protected void Start(){
         rend = GetComponent<SpriteRenderer>();
         buttonCollider = GetComponent<Collider2D>();
@@ -34,8 +38,6 @@ public class ButtonPress : MonoBehaviour
         audioSourceDown = gameObject.AddComponent<AudioSource>();
         audioSourceDown.clip = btnDownSound;
 
-
-        actions = new List<System.Action>();
     }
 
     private void OnMouseDown(){

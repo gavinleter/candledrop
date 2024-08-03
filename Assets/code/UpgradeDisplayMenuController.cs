@@ -47,7 +47,7 @@ public class UpgradeDisplayMenuController : FadingMenuController
                 gameManager.startEventHorizonEvent();
                 break;
             case 1:
-                gameManager.startSolarRainEvent();
+                gameManager.startMiniSunEvent();
                 break;
             case 2:
                 gameManager.startFlaringFieldsEvent();

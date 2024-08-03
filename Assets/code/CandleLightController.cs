@@ -65,7 +65,7 @@ public class CandleLightController : MonoBehaviour {
 
 
     private void OnTriggerExit2D(Collider2D collision) {
-        //nothing should happen if touching a button, ember, or the ad spinner lever
+        //nothing should happen if touching a button, ember, the ad spinner lever, etc
         if (colliderContainsScript(collision)) {
             return;
         }
@@ -89,7 +89,7 @@ public class CandleLightController : MonoBehaviour {
     //keep track of any incoming collisions and turn off candle light if it hits something
     private void testCollisionCandleLight(Collider2D collider) {
 
-        //nothing should happen if touching a button, ember, or the ad spinner lever
+        //nothing should happen if touching a button, ember, the ad spinner lever, etc
         if(colliderContainsScript(collider)) {
             return;
         }
@@ -112,7 +112,8 @@ public class CandleLightController : MonoBehaviour {
 
 
     private bool colliderContainsScript(Collider2D collider) {
-        return (collider.GetComponent<ButtonPress>() != null || collider.GetComponent<AdSpinnerLever>() != null || collider.GetComponent<EmberController>() != null);
+        return (collider.GetComponent<ButtonPress>() != null || collider.GetComponent<AdSpinnerLever>() != null || collider.GetComponent<EmberController>() != null
+            || collider.GetComponent<MiniSunExplosion>());
     }
 
 
