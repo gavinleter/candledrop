@@ -12,7 +12,7 @@ public class FadingObject : MonoBehaviour
     protected SpriteRenderer sr;
     protected SpriteRenderer[] childrenRenderers;
     protected ParticleSystem[] childrenParticles;
-    protected CanvasGroup canvasGroup;
+    protected CanvasGroup[] canvasGroup;
 
     [SerializeField] bool playParticlesOnFadeIn;
     [SerializeField] bool destroyParticlesOnFadeOut;
@@ -23,7 +23,7 @@ public class FadingObject : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         childrenRenderers = GetComponentsInChildren<SpriteRenderer>(true);
         childrenParticles = GetComponentsInChildren<ParticleSystem>(true);
-        canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup = GetComponentsInChildren<CanvasGroup>();
 
     }
 
@@ -70,7 +70,11 @@ public class FadingObject : MonoBehaviour
         sr.color = temp;
         //set opacity of any canvas elements on this menu
         if (canvasGroup != null) {
-            canvasGroup.alpha = opacity;
+
+            for (int i = 0; i < canvasGroup.Length; i++) {
+                canvasGroup[i].alpha = opacity;
+            }
+
         }
     }
 

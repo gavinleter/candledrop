@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour, IMenu
     SkinManager skinManager;
 
     [SerializeField] AudioClip snowyChirpSound;
-
+    [SerializeField] GameOverMenuController gameOverMenuController;
 
     private void Start()
     {
@@ -204,6 +204,12 @@ public class GameManager : MonoBehaviour, IMenu
         });
         buttons[20].onPress(() => {
             startFlaringFieldsEvent();
+        });
+
+        buttons[21].onPress(() => {
+            pause();
+            gameOverMenuController.setScores(20, 0);
+            gameOverMenuController.pause();
         });
 
         //spawn the starting candle
