@@ -113,7 +113,7 @@ public class CandleLightController : MonoBehaviour {
 
     private bool colliderContainsScript(Collider2D collider) {
         return (collider.GetComponent<ButtonPress>() != null || collider.GetComponent<AdSpinnerLever>() != null || collider.GetComponent<EmberController>() != null
-            || collider.GetComponent<MiniSunExplosion>());
+            || collider.GetComponent<MiniSunExplosion>() || collider.GetComponent<GameOverChain>());
     }
 
 

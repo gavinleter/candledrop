@@ -82,6 +82,8 @@ public class GameManager : MonoBehaviour, IMenu
     SkinManager skinManager;
 
     [SerializeField] AudioClip snowyChirpSound;
+
+    [SerializeField] GameOverChain gameOverChain;
     [SerializeField] GameOverMenuController gameOverMenuController;
 
     private void Start()
@@ -467,6 +469,7 @@ public class GameManager : MonoBehaviour, IMenu
         specialObjects.Clear();
 
         CandleLightController.reset();
+        gameOverChain.resetChain();
 
         GameObject x = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
