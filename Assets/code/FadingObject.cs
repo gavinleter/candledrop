@@ -14,6 +14,8 @@ public class FadingObject : MonoBehaviour
     protected ParticleSystem[] childrenParticles;
     protected CanvasGroup[] canvasGroup;
 
+    [SerializeField] float fadeSpeed;
+
     [SerializeField] bool playParticlesOnFadeIn;
     [SerializeField] bool destroyParticlesOnFadeOut;
 
@@ -25,6 +27,10 @@ public class FadingObject : MonoBehaviour
         childrenParticles = GetComponentsInChildren<ParticleSystem>(true);
         canvasGroup = GetComponentsInChildren<CanvasGroup>();
 
+        //default fading speed
+        if(fadeSpeed == 0f) {
+            fadeSpeed = 0.1f;
+        }
     }
 
 
@@ -41,14 +47,14 @@ public class FadingObject : MonoBehaviour
 
 
     virtual protected void increaseLerp() {
-        lerp += 0.1f * Time.deltaTime;
+        lerp += fadeSpeed * Time.deltaTime;
         opacity = Mathf.Lerp(opacity, 1f, lerp);
         setAlpha();
     }
 
 
     virtual protected void decreaseLerp() {
-        lerp -= 0.1f * Time.deltaTime;
+        lerp -= fadeSpeed * Time.deltaTime;
         opacity = Mathf.Lerp(0f, opacity, lerp);
         setAlpha();
     }
@@ -106,17 +112,19 @@ public class FadingObject : MonoBehaviour
     virtual public void forceAppear() {
         fadeIn();
         lerp = 1f;
+        opacity = 1f;
     }
 
     //instantly make this object disappear
     virtual public void forceDisappear() {
         fadeOut();
         lerp = 0f;
+        opacity = 0f;
     }
 
 
     //if the object has finished going away, this returns true
     virtual public bool fadeOutFinished() {
-        return opacity < 0.05f;
+        return opacity < 0.01f;
     }
 }

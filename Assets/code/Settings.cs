@@ -1,13 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class Settings
 {
 
-    public static bool soundEnabled = true;
-    public static bool musicEnabled = true;
-    private static int secretButtonCounter = 0;
+    private static bool soundEnabled = true;
+    private static bool musicEnabled = true;
+
+    private static int highScore = 0;
+
+    private static bool[] secretButtonFound = new bool[3];
+    private static readonly string secretButtonPrefName = "secretButton";
+
+
+    public static void initSettings() {
+
+        //by default music and sound are enabled
+        soundEnabled = isSoundEnabled();
+        musicEnabled = isMusicEnabled();
+
+        highScore = getHighScore();
+
+        for (int i = 0; i < secretButtonFound.Length; i++) {
+            secretButtonFound[i] = isSecretButtonFound(i);
+        }
+
+    }
 
 
     public static int getStarterCandleId() {
@@ -30,15 +51,66 @@ public class Settings
     }
 
     public static bool isSecretButtonFound(int id) {
-        return false;
+        return PlayerPrefs.GetInt(secretButtonPrefName + id, 0) == 1;
     }
 
     public static void setSecretButtonFound(int id) {
-        secretButtonCounter++;
+        PlayerPrefs.SetInt(secretButtonPrefName + id, 1);
+        PlayerPrefs.Save();
+
+        secretButtonFound[id] = true;
     }
 
     public static int getSecretButtonCounter() {
-        return secretButtonCounter;
+        int result = 0;
+
+        for(int i = 0; i < secretButtonFound.Length; i++) {
+            if (secretButtonFound[i]) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+
+
+    public static void toggleMusic(bool x) {
+        musicEnabled = x;
+        int xInt = x ? 1 : 0;
+
+        PlayerPrefs.SetInt("musicEnabled", xInt);
+        PlayerPrefs.Save();
+    }
+
+
+    public static bool isMusicEnabled() {
+        return PlayerPrefs.GetInt("musicEnabled", 1) == 1;
+    }
+
+
+    public static void toggleSound(bool x) {
+        soundEnabled = x;
+        int xInt = x ? 1 : 0;
+
+        PlayerPrefs.SetInt("soundEnabled", xInt);
+        PlayerPrefs.Save();
+    }
+
+    public static bool isSoundEnabled() {
+        return PlayerPrefs.GetInt("soundEnabled", 1) == 1;
+    }
+
+
+
+    public static void setHighScore(int x) {
+        PlayerPrefs.SetInt("highScore", x);
+        PlayerPrefs.Save();
+    }
+
+
+    public static int getHighScore() {
+        return PlayerPrefs.GetInt("highScore", 0);
     }
 
 

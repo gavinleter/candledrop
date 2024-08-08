@@ -18,7 +18,7 @@ public class MiniSun : MonoBehaviour, ISpecialObject
 
     private void OnCollisionEnter2D(Collision2D other) { 
         
-        GameObject x = Instantiate(ExplosionPrefab, new Vector3(transform.position.x, transform.position.y, -2f), transform.rotation);
+        GameObject x = Instantiate(ExplosionPrefab, new Vector3(transform.position.x, transform.position.y, -0.99f), transform.rotation);
         Destroy(x, 3f);
         destroySelf();
 

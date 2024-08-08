@@ -8,6 +8,8 @@ public class PauseMenuController : FadingMenuController
     [SerializeField] GameObject parentMenuObject;
     IMenu parentMenu;
 
+    [SerializeField] DeleteSaveMenuController deleteMenu;
+
     [SerializeField] GameObject achievementMenuObject;
 
     [SerializeField] Sprite soundEnabledSprite;
@@ -17,14 +19,15 @@ public class PauseMenuController : FadingMenuController
     // Start is called before the first frame update
     protected override void Start(){
         base.Start();
-
+        
+        setSoundButtonSprite();
 
         parentMenu = parentMenuObject.GetComponent<IMenu>();
 
         GameObject mainCam = transform.parent.gameObject;
 
         //resume button
-        btns[0].onPress(delegate() { 
+        btns[0].onPress(() => { 
             unpause();
             parentMenu.unpause();
             /*if (parentMenuObject.GetComponent<GameManager>().isGameStarted()) {
@@ -33,7 +36,7 @@ public class PauseMenuController : FadingMenuController
         });
 
         //restart button
-        btns[1].onPress(delegate() {
+        btns[1].onPress(() => {
             parentMenuObject.GetComponent<GameManager>().resetGame();
             mainCam.GetComponent<CameraController>().restartTransition();
             unpause();
@@ -41,22 +44,22 @@ public class PauseMenuController : FadingMenuController
         });
 
         //achievements button
-        btns[2].onPress(delegate() {
+        btns[2].onPress(() => {
             unpause();
             achievementMenuObject.GetComponent<AchievementMenuController>().unpause();
         });
 
         //sound enable/disable button
-        btns[3].onPress(delegate () {
-            Settings.soundEnabled = !Settings.soundEnabled;
+        btns[3].onPress(() => {
+            Settings.toggleSound(!Settings.isSoundEnabled());
 
-            if (Settings.soundEnabled) {
-                btns[3].GetComponent<SpriteRenderer>().sprite = soundEnabledSprite;
-            }
-            else {
-                btns[3].GetComponent<SpriteRenderer>().sprite = soundDisabledSprite;
-            }
+            setSoundButtonSprite();
 
+        });
+
+        btns[4].onPress(() => {
+            unpause();
+            deleteMenu.pause();
         });
 
     }
@@ -75,5 +78,14 @@ public class PauseMenuController : FadingMenuController
         base.unpause();
     }
 
+
+    void setSoundButtonSprite() {
+        if (Settings.isSoundEnabled()) {
+            btns[3].GetComponent<SpriteRenderer>().sprite = soundEnabledSprite;
+        }
+        else {
+            btns[3].GetComponent<SpriteRenderer>().sprite = soundDisabledSprite;
+        }
+    }
 
 }

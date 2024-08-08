@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour, IMenu
 {
@@ -86,15 +87,22 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] GameOverChain gameOverChain;
     [SerializeField] GameOverMenuController gameOverMenuController;
 
+    [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] TextMeshProUGUI highScoreText;
+    int currentScore = 0;
+    int lastHighScore = 0;
+
+    [SerializeField] Sprite[] bonusTexts;
+
     private void Start()
     {
+
+        Settings.initSettings();
 
         skinManager = GetComponent<SkinManager>();
 
         //get the starting candle prefab and skin
         setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
-
-        startingFloor.forceAppear();
 
 
         //pause the game and pull up pause menu when a settings button is pressed
@@ -210,13 +218,16 @@ public class GameManager : MonoBehaviour, IMenu
 
         buttons[21].onPress(() => {
             pause();
-            gameOverMenuController.setScores(20, 0);
+            gameOverMenuController.setScores(getScore(), getLastHighScore());
             gameOverMenuController.pause();
         });
 
         //spawn the starting candle
-        GameObject x = Instantiate(startingCandlePrefab);
-        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
+        /*GameObject x = Instantiate(startingCandlePrefab);
+        setCandleId(x, currentCandlePrefabId);
+        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);*/
+        resetGame();
+        
 
     }
 
@@ -323,6 +334,7 @@ public class GameManager : MonoBehaviour, IMenu
         //if a candle has spawned instead of a special item like the black hole, add it to the list to keep track of
         if (selectedCan.GetComponentInChildren<CandleLightController>() != null) {
             addCandleLight(selectedCan);
+            setCandleId(selectedCan, randomIndex);
 
         } else if(selectedCan.GetComponent<ISpecialObject>() != null) {
 
@@ -451,6 +463,10 @@ public class GameManager : MonoBehaviour, IMenu
         selectedCan = null;
         isTurnActive = false;
         gameStarted = false;
+
+        lastHighScore = Settings.getHighScore();
+        highScoreText.text = "" + lastHighScore;
+        setScore(0);
 
         startingFloor.forceAppear();
 
@@ -649,6 +665,43 @@ public class GameManager : MonoBehaviour, IMenu
 
     public void fadeOutStartingFloor() {
         startingFloor.fadeOut();
+    }
+
+
+    void setCandleId(GameObject can, int id) {
+        can.GetComponent<CandleId>().setInfo(id, currentCandlePrefabId == id);
+    }
+
+
+    void setScore(int s) {
+        currentScore = s;
+        scoreText.text = "" + s;
+
+        if(s > lastHighScore) {
+            highScoreText.text = "" + s;
+            Settings.setHighScore(s);
+        }
+
+    }
+
+
+    public void addScore(int s) {
+        setScore(currentScore + s);
+    }
+
+
+    public int getScore() {
+        return currentScore;
+    }
+
+
+    public int getLastHighScore() {
+        return lastHighScore;
+    }
+
+
+    public Sprite getBonusText(int x) {
+        return bonusTexts[x];
     }
 
 }

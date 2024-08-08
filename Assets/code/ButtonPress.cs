@@ -48,7 +48,7 @@ public class ButtonPress : MonoBehaviour
     }
 
     virtual protected void MouseDown() {
-        if (audioSourceDown.clip != null && Settings.soundEnabled) {
+        if (audioSourceDown.clip != null && Settings.isSoundEnabled()) {
             audioSourceDown.Play();
         }
 
@@ -75,7 +75,7 @@ public class ButtonPress : MonoBehaviour
             executeAction(i);
         }
 
-        if (audioSourceUp.clip != null && Settings.soundEnabled) {
+        if (audioSourceUp.clip != null && Settings.isSoundEnabled()) {
             audioUp();
         }
     }

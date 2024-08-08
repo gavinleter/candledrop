@@ -36,7 +36,7 @@ public class GameOverChain : MonoBehaviour
 
             if(lerp >= 1 && !gameOver) {
                 gameManager.pause();
-                gameOverMenu.setScores(20, 0);
+                gameOverMenu.setScores(gameManager.getScore(), gameManager.getLastHighScore());
                 gameOverMenu.pause();
                 gameOver = true;
             }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8295338333388708316}
   - component: {fileID: 1900802163792089457}
   - component: {fileID: -1377051959136538218}
+  - component: {fileID: 674913732789389744}
   m_Layer: 0
   m_Name: flare starter candle
   m_TagString: Untagged
@@ -188,6 +189,18 @@ MonoBehaviour:
   initialGravity: 0
   gameControllerObject: {fileID: 0}
   mainCam: {fileID: 0}
+--- !u!114 &674913732789389744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3717247453703850631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18d05c5886f2b46448b5ce44047668c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &967298281832135008
 PrefabInstance:
   m_ObjectHideFlags: 0

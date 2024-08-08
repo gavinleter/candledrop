@@ -10,17 +10,24 @@ public class CandleRowDestroyer : MonoBehaviour
     [SerializeField] GameObject CandleDestroyParticle;
     [SerializeField] GameObject gameManager;
     [SerializeField] ParticleSystem leftParticleSystem;
+    [SerializeField] GameObject defaultBonusTextLocation;
     GameManager gameManagerScript;
     RightWall otherSideScript;
 
-    // Start is called before the first frame update
+    [SerializeField] GameObject bonusTextPrefab;
+
+    [SerializeField] float rowDestructionBonusTime;
+    float rowDestructionInitialTime = 0;
+    
+
+    
     void Start(){
         otherSideScript = otherSide.GetComponent<RightWall>();
         gameManagerScript = gameManager.GetComponent<GameManager>();
         leftParticleSystem.Stop();
     }
 
-    // Update is called once per frame
+    
     void Update(){
         
     }
@@ -29,6 +36,45 @@ public class CandleRowDestroyer : MonoBehaviour
     void FixedUpdate() { 
         List<int> r = findRow();
 
+        if (r.Count > 0) {
+
+            int multiplier = 1;
+            int points;
+            BonusText bonusText;
+
+            //if the last row destruction bonus has not passed yet
+            if (rowDestructionInitialTime + rowDestructionBonusTime > Time.time) {
+                multiplier *= 2;
+                bonusText = Instantiate(bonusTextPrefab, defaultBonusTextLocation.transform.position, Quaternion.identity).GetComponent<BonusText>();
+                bonusText.setSprite(gameManagerScript.getBonusText(2));
+            }
+
+            rowDestructionInitialTime = Time.time;
+
+            for (int i = 0; i < r.Count; i++) {
+                CandleId can = GameManager.getCandleById(r[i]).getParentObject().GetComponent<CandleId>();
+                bonusText = Instantiate(bonusTextPrefab, can.transform.position, Quaternion.identity).GetComponent<BonusText>();
+
+                if (can.isStarterCandle()) {
+                    multiplier *= 2;
+                    bonusText.setSprite(gameManagerScript.getBonusText(1));
+                }
+                else {
+                    bonusText.setSprite(gameManagerScript.getBonusText(0));
+                }
+
+            }
+
+            points = r.Count * multiplier;
+            gameManagerScript.addScore(points);
+
+            destroyRow(r);
+        }
+        
+    }
+
+
+    void destroyRow(List<int> r) {
         for (int i = 0; i < r.Count; i++) {
             GameObject c = GameManager.getCandleById(r[i]).getParentObject();
             GameObject p = Instantiate(CandleDestroyParticle);
