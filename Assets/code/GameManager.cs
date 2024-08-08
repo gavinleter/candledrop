@@ -94,8 +94,12 @@ public class GameManager : MonoBehaviour, IMenu
 
     [SerializeField] Sprite[] bonusTexts;
 
+    List<int> spawnPotentials = new List<int>();
+
     private void Start()
     {
+
+        setSpawnPotentials();
 
         Settings.initSettings();
 
@@ -307,7 +311,7 @@ public class GameManager : MonoBehaviour, IMenu
     public void StartTurn()
     {
         gameStarted = true;
-        int randomIndex = UnityEngine.Random.Range(0,canObjects.Length);
+        int randomIndex = spawnPotentials[UnityEngine.Random.Range(0, spawnPotentials.Count)];
 
         //only black holes can spawn during the event horizon event
         if (eventHorizonEventActive) {
@@ -317,8 +321,17 @@ public class GameManager : MonoBehaviour, IMenu
         else if (miniSunEventActive) {
             randomIndex = 13;
         }
-        
-        selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
+
+        //if the index is -1, spawn the starter candle again
+        if(randomIndex == -1) {
+            selectedCan = Instantiate(starterCandles[currentCandlePrefabId], teleCoords.position, Quaternion.identity);
+            Destroy(selectedCan.GetComponent<StartCandleFall>());
+            selectedCan.GetComponent<SpriteRenderer>().sprite = startingCandleSkin;
+        }
+        else {
+            selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
+        }
+
         selectedCan.SetActive(true);
 
         Rigidbody2D rb = selectedCan.GetComponent<Rigidbody2D>();
@@ -488,6 +501,7 @@ public class GameManager : MonoBehaviour, IMenu
         gameOverChain.resetChain();
 
         GameObject x = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
+        x.GetComponent<CandleId>().setInfo(-1, true);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
 
     }
@@ -669,7 +683,7 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     void setCandleId(GameObject can, int id) {
-        can.GetComponent<CandleId>().setInfo(id, currentCandlePrefabId == id);
+        can.GetComponent<CandleId>().setInfo(id, id == -1);
     }
 
 
@@ -702,6 +716,24 @@ public class GameManager : MonoBehaviour, IMenu
 
     public Sprite getBonusText(int x) {
         return bonusTexts[x];
+    }
+
+
+    private void setSpawnPotentials() {
+
+        //the "normal" 12 candles all have twice as high of a spawn chance than the special ones
+        for(int i = 0; i < 12; i++) {
+            spawnPotentials.Add(i);
+            spawnPotentials.Add(i);
+        }
+
+        //black hole and mini sun
+        spawnPotentials.Add(12);
+        spawnPotentials.Add(13);
+
+        //special chance of a starter candle spawning
+        spawnPotentials.Add(-1);
+
     }
 
 }
