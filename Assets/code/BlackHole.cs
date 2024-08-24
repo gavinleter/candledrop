@@ -18,6 +18,10 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
         //check if the colliding object is a candle
         if (o != null){
+            CandleId can = GameManager.getCandleById(o.getId()).getParentObject().GetComponent<CandleId>();
+            gameManagerScript.createMultiplierlessBonusText(can, 0);
+            gameManagerScript.addScore(1);
+
             gameManagerScript.destroyCandle(o.getId());
 
         }
@@ -37,12 +41,9 @@ public class BlackHole : MonoBehaviour, ISpecialObject
         for (int i = 0; i < hits.Length; i++) {
             CandleLightController o = hits[i].collider.gameObject.GetComponentInChildren<CandleLightController>();
             if (o != null) {
+
                 gameManagerScript.destroyCandle(o.getId());
             }
-        }
-
-        if (gameManagerScript.isEventHorizonEventActive()) {
-            //gameManagerScript.StartTurn();
         }
 
         GameObject holeExplode = Instantiate(holeExplodePrefab, transform.position, Quaternion.identity);

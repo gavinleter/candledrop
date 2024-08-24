@@ -10,11 +10,8 @@ public class CandleRowDestroyer : MonoBehaviour
     [SerializeField] GameObject CandleDestroyParticle;
     [SerializeField] GameObject gameManager;
     [SerializeField] ParticleSystem leftParticleSystem;
-    [SerializeField] GameObject defaultBonusTextLocation;
     GameManager gameManagerScript;
     RightWall otherSideScript;
-
-    [SerializeField] GameObject bonusTextPrefab;
 
     [SerializeField] float rowDestructionBonusTime;
     float rowDestructionInitialTime = 0;
@@ -38,49 +35,42 @@ public class CandleRowDestroyer : MonoBehaviour
 
         if (r.Count > 0) {
 
+            int totalCandles = 0;
             int multiplier = 1;
             int points;
-            BonusText bonusText;
 
             //if the last row destruction bonus has not passed yet
             if (rowDestructionInitialTime + rowDestructionBonusTime > Time.time) {
                 multiplier *= 2;
-                bonusText = Instantiate(bonusTextPrefab, defaultBonusTextLocation.transform.position, Quaternion.identity).GetComponent<BonusText>();
-                bonusText.setSprite(gameManagerScript.getBonusText(2));
+                gameManagerScript.createRowDestructionBonusText();
             }
 
             rowDestructionInitialTime = Time.time;
 
             for (int i = 0; i < r.Count; i++) {
-                CandleId can = GameManager.getCandleById(r[i]).getParentObject().GetComponent<CandleId>();
-                bonusText = Instantiate(bonusTextPrefab, can.transform.position, Quaternion.identity).GetComponent<BonusText>();
 
-                if (can.isStarterCandle()) {
-                    multiplier *= 2;
-                    bonusText.setSprite(gameManagerScript.getBonusText(1));
-                }
-                else {
-                    bonusText.setSprite(gameManagerScript.getBonusText(0));
+                //"r" holds ids for every candle light, this null check is necessary because of candles with multiple lights being entered multiple times
+                if (GameManager.getCandleById(r[i]) != null) {
+                    multiplier = gameManagerScript.createBonusText(r[i], multiplier);
+                    destroyCandle(r, i);
+                    totalCandles++;
                 }
 
             }
 
-            points = r.Count * multiplier;
+            points = totalCandles * multiplier;
             gameManagerScript.addScore(points);
 
-            destroyRow(r);
         }
         
     }
 
 
-    void destroyRow(List<int> r) {
-        for (int i = 0; i < r.Count; i++) {
-            GameObject c = GameManager.getCandleById(r[i]).getParentObject();
-            GameObject p = Instantiate(CandleDestroyParticle);
-            p.transform.position = c.transform.position;
-            gameManagerScript.destroyCandle(r[i]);
-        }
+    void destroyCandle(List<int> r, int i) {
+        GameObject c = GameManager.getCandleById(r[i]).getParentObject();
+        GameObject p = Instantiate(CandleDestroyParticle);
+        p.transform.position = c.transform.position;
+        gameManagerScript.destroyCandle(r[i]);
     }
 
 

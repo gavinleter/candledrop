@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour, IMenu
 {
@@ -93,6 +94,8 @@ public class GameManager : MonoBehaviour, IMenu
     int lastHighScore = 0;
 
     [SerializeField] Sprite[] bonusTexts;
+    [SerializeField] GameObject bonusTextPrefab;
+    [SerializeField] GameObject defaultBonusTextLocation;
 
     List<int> spawnPotentials = new List<int>();
 
@@ -315,11 +318,11 @@ public class GameManager : MonoBehaviour, IMenu
 
         //only black holes can spawn during the event horizon event
         if (eventHorizonEventActive) {
-            randomIndex = 12;
+            randomIndex = canObjects.Length - 2;
         }
         //only mini suns can spawn during solar rain event
         else if (miniSunEventActive) {
-            randomIndex = 13;
+            randomIndex = canObjects.Length - 1;
         }
 
         //if the index is -1, spawn the starter candle again
@@ -376,7 +379,7 @@ public class GameManager : MonoBehaviour, IMenu
             Debug.Log(i + " " + id + " " + currentCandles[i].transform.parent.parent.name);
         }*/
         for (int i = 0; i < currentCandles.Count; i++) {
-            if (currentCandles[i].getId() == id) {
+            if (currentCandles[i] != null && currentCandles[i].getId() == id) {
                 return currentCandles[i];
             }
         }
@@ -402,11 +405,35 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void destroyCandle(int id) {
-        if(currentCandles[id] == selectedCan) {
-            selectedCan = null;
+
+        GameObject canParent = getCandleById(id).getParentObject();
+
+        //currentCandles holds candle lights, not candles, which is a problem for candles with multiple lights
+        //since they could be in this list twice. So this goes through all lights that have the same parent object
+        for(int i = 0; i < currentCandles.Count; i++) {
+            if (currentCandles[i] != null && currentCandles[i].getParentObject() == canParent) {
+
+                //if the currently held candle is being deleted, set the selected candle to null to avoid error when the candle is deleted
+                if (currentCandles[i] == selectedCan) {
+                    selectedCan = null;
+                }
+
+                currentCandles[i] = null;
+            }
         }
 
-        Destroy(getCandleById(id).getParentObject());
+        Destroy(canParent);
+
+    }
+
+
+    void destroyAllCandles() {
+        for (int i = 0; i < currentCandles.Count; i++) {
+            if(currentCandles[i] != null) {
+                destroyCandle(currentCandles[i].getId());
+            }
+        }
+        currentCandles.Clear();
     }
 
 
@@ -483,11 +510,7 @@ public class GameManager : MonoBehaviour, IMenu
 
         startingFloor.forceAppear();
 
-        //clear all candles
-        for(int i = 0; i < currentCandles.Count; i++) {
-            Destroy(currentCandles[i].getParentObject());
-        }
-        currentCandles.Clear();
+        destroyAllCandles();
 
         //clear all special objects
         for (int i = 0; i < specialObjects.Count; i++) {
@@ -722,18 +745,52 @@ public class GameManager : MonoBehaviour, IMenu
     private void setSpawnPotentials() {
 
         //the "normal" 12 candles all have twice as high of a spawn chance than the special ones
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < canObjects.Length - 2; i++) {
             spawnPotentials.Add(i);
             spawnPotentials.Add(i);
         }
 
-        //black hole and mini sun
-        spawnPotentials.Add(12);
-        spawnPotentials.Add(13);
-
         //special chance of a starter candle spawning
         spawnPotentials.Add(-1);
 
+        //black hole and mini sun
+        spawnPotentials.Add(canObjects.Length - 2);
+        spawnPotentials.Add(canObjects.Length - 1);
+
     }
+
+
+    //creates a new bonus text given the candle being destroyed and the current point multiplier, returns the new multiplier
+    public int createBonusText(int canId, int multiplier) {
+
+        int newMult = multiplier;
+
+        CandleId can = getCandleById(canId).getParentObject().GetComponent<CandleId>();
+        int spriteId = 0;
+
+        if (can.isStarterCandle()) {
+            newMult *= 2;
+            spriteId = 1;
+        }
+
+        createMultiplierlessBonusText(can, spriteId);
+        Debug.Log(can.name + " " + multiplier);
+
+        return newMult;
+    }
+
+
+    public void createMultiplierlessBonusText(CandleId can, int bonusTextId) {
+        BonusText bonusText = Instantiate(bonusTextPrefab, can.transform.position, Quaternion.identity).GetComponent<BonusText>();
+        bonusText.setSprite(getBonusText(bonusTextId));
+    }
+
+
+    //creates the bonus text for the bonus from destroying a single row
+    public void createRowDestructionBonusText() {
+        BonusText bonusText = Instantiate(bonusTextPrefab, defaultBonusTextLocation.transform.position, Quaternion.identity).GetComponent<BonusText>();
+        bonusText.setSprite(getBonusText(2));
+    }
+
 
 }

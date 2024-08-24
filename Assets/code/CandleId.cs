@@ -19,7 +19,8 @@ public class CandleId : MonoBehaviour
         return starterCandle;
     }
 
-
+    //id here means the id for the candle model being used, for unique id for this specific
+    //candle instance, use getId() in CandleLightController
     public int getId() {
         return id;
     }

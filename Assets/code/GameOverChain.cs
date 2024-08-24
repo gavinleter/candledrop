@@ -34,7 +34,7 @@ public class GameOverChain : MonoBehaviour
 
             lerp = Mathf.Min(lerp + Time.deltaTime / timeToGameOver, 1);
 
-            if(lerp >= 1 && !gameOver) {
+            if(lerp >= 0.7 && !gameOver) {
                 gameManager.pause();
                 gameOverMenu.setScores(gameManager.getScore(), gameManager.getLastHighScore());
                 gameOverMenu.pause();
