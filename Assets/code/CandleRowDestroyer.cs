@@ -90,10 +90,6 @@ public class CandleRowDestroyer : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < result.Count; i++) { 
-            //Debug.Log(result[i]);
-        }
-        //Debug.Log("-------");
         //check if any recorded candles are touching the right wall
         for (int i = 0; i < result.Count; i++) {
             if (otherSideScript.containsId(result[i])) {

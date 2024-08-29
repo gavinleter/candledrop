@@ -14,8 +14,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] float delayBeforeTransition;
     [SerializeField] float candleFallTransitionSpeed;
 
+    [SerializeField] FadingObject blackFadeObject;
+
     private float transitionStartTime;
     private bool isTransitioning = false;
+    private bool isBlackFadeTransitioning = false;
+    private bool initialBlackFadeInCompleted = false;
 
     private bool introDelayFinished = false;
 
@@ -56,6 +60,21 @@ public class CameraController : MonoBehaviour
             if (journeyFraction >= 1.0f)
             {
                 isTransitioning = false;
+            }
+        }
+
+
+        if (isBlackFadeTransitioning) {
+            if (blackFadeObject.fadeInFinished() && !initialBlackFadeInCompleted) {
+
+                blackFadeObject.fadeOut();
+                transform.position = targetPosition;
+                initialBlackFadeInCompleted = true;
+            }
+            if (blackFadeObject.fadeOutFinished() && initialBlackFadeInCompleted) {
+
+                isBlackFadeTransitioning = false;
+                initialBlackFadeInCompleted = false;
             }
         }
     }
@@ -121,6 +140,27 @@ public class CameraController : MonoBehaviour
 
 
     public bool currentlyTransitioning() {
-        return isTransitioning;
+        return isTransitioning || isBlackFadeTransitioning;
     }
+
+
+    public void fadeToBlackTransition(Vector3 targetPosition, float fadeSpeed) {
+        blackFadeObject.forceDisappear();
+        blackFadeObject.transform.position = new Vector3(transform.position.x, transform.position.y, -1f);
+        blackFadeObject.setSpeed(fadeSpeed);
+        blackFadeObject.fadeIn();
+        this.targetPosition = targetPosition;
+        isBlackFadeTransitioning = true;
+    }
+
+
+    public void fadeToBlackTransitionToTop(float fadeSpeed) {
+        fadeToBlackTransition(gameStartPosition, fadeSpeed);
+    }
+
+
+    public void fadeToBlackTransitionToBottom(float fadeSpeed) {
+        fadeToBlackTransition(gamePosition, fadeSpeed);
+    }
+
 }

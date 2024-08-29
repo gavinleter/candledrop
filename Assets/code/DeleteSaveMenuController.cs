@@ -6,13 +6,14 @@ public class DeleteSaveMenuController : FadingMenuController
 {
 
     [SerializeField] PauseMenuController pauseMenuController;
+    [SerializeField] GameManager gameManager;
 
     protected override void Start() {
         base.Start();
 
         //delete save data button
-        btns[0].onPress(() => { 
-            PlayerPrefs.DeleteAll();
+        btns[0].onPress(() => {
+            Settings.deleteAllSaveData(gameManager);
             unpause();
             pauseMenuController.pause();
         });

@@ -127,4 +127,14 @@ public class FadingObject : MonoBehaviour
     virtual public bool fadeOutFinished() {
         return opacity < 0.01f;
     }
+
+
+    virtual public bool fadeInFinished() {
+        return opacity > 0.99f;
+    }
+
+
+    public void setSpeed(float speed) {
+        fadeSpeed = speed;
+    }
 }

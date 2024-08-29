@@ -50,7 +50,8 @@ public class GameOverMenuController : FadingMenuController
         btns[0].onPress(() => { 
             unpause();
             gameManager.resetGame();
-            mainCam.restartTransition();
+            //mainCam.restartTransition();
+            mainCam.fadeToBlackTransitionToTop(0.1f);
             gameManager.unpause();
         });
 
@@ -105,7 +106,7 @@ public class GameOverMenuController : FadingMenuController
 
     public override void pause() {
         base.pause();
-
+        
         transform.position = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, 0f);
         initialTime = Time.time;
         highScoreText.fontSize = initialFontSize;

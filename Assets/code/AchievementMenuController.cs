@@ -31,10 +31,12 @@ public class AchievementMenuController : MonoBehaviour, IMenu
             parentMenuObject.GetComponent<PauseMenuController>().pause();
 
             if (gameManager.isGameStarted()) {
-                mainCam.GetComponent<CameraController>().transitionToBottom(60f);
+                //mainCam.GetComponent<CameraController>().transitionToBottom(60f);
+                mainCam.GetComponent<CameraController>().fadeToBlackTransitionToBottom(0.1f);
             }
             else {
-                mainCam.GetComponent<CameraController>().transitionToTop(60f);
+                //mainCam.GetComponent<CameraController>().transitionToTop(60f);
+                mainCam.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
             }
             
         });
@@ -49,8 +51,9 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
 
     public void unpause() {
-        mainCam.GetComponent<CameraController>().setNewTarget(transitionPosition, 60f);
-        mainCam.GetComponent<CameraController>().startTransition();
+        //mainCam.GetComponent<CameraController>().setNewTarget(transitionPosition, 60f);
+        //mainCam.GetComponent<CameraController>().startTransition();
+        mainCam.GetComponent<CameraController>().fadeToBlackTransition(transitionPosition, 0.1f);
         GetComponent<achcam>().setActive(true);
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(true);

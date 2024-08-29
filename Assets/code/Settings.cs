@@ -16,7 +16,7 @@ public class Settings
     private static readonly string secretButtonPrefName = "secretButton";
 
 
-    public static void initSettings() {
+    public static void initSettings(GameManager gameManager) {
 
         //by default music and sound are enabled
         soundEnabled = isSoundEnabled();
@@ -28,6 +28,16 @@ public class Settings
             secretButtonFound[i] = isSecretButtonFound(i);
         }
 
+
+        gameManager.toggleWaffleRain(isWaffleRainEnabled());
+        gameManager.toggleSnowy(isSnowyEnabled());
+
+    }
+
+
+    public static void deleteAllSaveData(GameManager gameManager) {
+        PlayerPrefs.DeleteAll();
+        initSettings(gameManager);
     }
 
 
@@ -74,13 +84,20 @@ public class Settings
     }
 
 
+    private static void toggleOption(string key, bool x) {
+        int xInt = x ? 1 : 0;
+
+        PlayerPrefs.SetInt(key, xInt);
+        PlayerPrefs.Save();
+    }
+
+
+
+
 
     public static void toggleMusic(bool x) {
         musicEnabled = x;
-        int xInt = x ? 1 : 0;
-
-        PlayerPrefs.SetInt("musicEnabled", xInt);
-        PlayerPrefs.Save();
+        toggleOption("musicEnabled", x);
     }
 
 
@@ -91,15 +108,14 @@ public class Settings
 
     public static void toggleSound(bool x) {
         soundEnabled = x;
-        int xInt = x ? 1 : 0;
-
-        PlayerPrefs.SetInt("soundEnabled", xInt);
-        PlayerPrefs.Save();
+        toggleOption("soundEnabled", x);
     }
 
     public static bool isSoundEnabled() {
         return PlayerPrefs.GetInt("soundEnabled", 1) == 1;
     }
+
+
 
 
 
@@ -111,6 +127,39 @@ public class Settings
 
     public static int getHighScore() {
         return PlayerPrefs.GetInt("highScore", 0);
+    }
+
+
+
+
+
+    public static bool waffleRainUnlocked() {
+        return PlayerPrefs.GetInt("waffleRainUnlock", 0) == 1 || true;
+    }
+
+
+    public static bool isWaffleRainEnabled() {
+        return PlayerPrefs.GetInt("waffleRain", 0) == 1;
+    }
+
+
+    public static void toggleWaffleRain(bool x) {
+        toggleOption("waffleRain", x);
+    }
+
+
+    public static bool snowyUnlocked() {
+        return PlayerPrefs.GetInt("snowyUnlock", 0) == 1 || true;
+    }
+
+
+    public static bool isSnowyEnabled() {
+        return PlayerPrefs.GetInt("snowy", 0) == 1;
+    }
+
+
+    public static void toggleSnowy(bool x) {
+        toggleOption("snowy", x);
     }
 
 

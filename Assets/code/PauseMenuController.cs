@@ -9,8 +9,10 @@ public class PauseMenuController : FadingMenuController
     IMenu parentMenu;
 
     [SerializeField] DeleteSaveMenuController deleteMenu;
-
+    [SerializeField] LockedFeatureMenuController lockedFeatureMenu;
     [SerializeField] GameObject achievementMenuObject;
+
+    [SerializeField] GameManager gameManager;
 
     [SerializeField] Sprite soundEnabledSprite;
     [SerializeField] Sprite soundDisabledSprite;
@@ -30,15 +32,13 @@ public class PauseMenuController : FadingMenuController
         btns[0].onPress(() => { 
             unpause();
             parentMenu.unpause();
-            /*if (parentMenuObject.GetComponent<GameManager>().isGameStarted()) {
-                parentMenu.unpause();
-            }*/
         });
 
         //restart button
         btns[1].onPress(() => {
             parentMenuObject.GetComponent<GameManager>().resetGame();
-            mainCam.GetComponent<CameraController>().restartTransition();
+            //mainCam.GetComponent<CameraController>().restartTransition();
+            mainCam.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
             unpause();
             parentMenu.unpause();
         });
@@ -57,9 +57,54 @@ public class PauseMenuController : FadingMenuController
 
         });
 
+        //delete save data button
         btns[4].onPress(() => {
             unpause();
             deleteMenu.pause();
+        });
+
+        //waffle rain button
+        btns[5].onPress(() => {
+
+            //toggle waffle rain if unlocked, otherwise bring up locked feature menu
+            if (Settings.waffleRainUnlocked()) {
+
+                Settings.toggleWaffleRain(!Settings.isWaffleRainEnabled());
+                gameManager.toggleWaffleRain(Settings.isWaffleRainEnabled());
+                unpause();
+                parentMenu.unpause();
+
+            }
+            else {
+
+                unpause();
+                lockedFeatureMenu.setDefaultExitAction(this);
+                lockedFeatureMenu.pause();
+
+            }
+
+        });
+
+        //snowy button
+        btns[6].onPress(() => {
+
+            //toggle snowy if unlocked, otherwise bring up locked feature menu
+            if (Settings.snowyUnlocked()) {
+
+                Settings.toggleSnowy(!Settings.isSnowyEnabled());
+                gameManager.toggleSnowy(Settings.isSnowyEnabled());
+                unpause();
+                parentMenu.unpause();
+
+            }
+            else {
+
+                unpause();
+                lockedFeatureMenu.setDefaultExitAction(this);
+                lockedFeatureMenu.pause();
+
+            }
+
         });
 
     }

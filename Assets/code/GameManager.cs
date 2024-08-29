@@ -97,6 +97,9 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] GameObject bonusTextPrefab;
     [SerializeField] GameObject defaultBonusTextLocation;
 
+    [SerializeField] GameObject waffleRainParentObject;
+    [SerializeField] GameObject snowyParentObject;
+
     List<int> spawnPotentials = new List<int>();
 
     private void Start()
@@ -104,7 +107,7 @@ public class GameManager : MonoBehaviour, IMenu
 
         setSpawnPotentials();
 
-        Settings.initSettings();
+        Settings.initSettings(this);
 
         skinManager = GetComponent<SkinManager>();
 
@@ -144,14 +147,16 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[5].onPress(delegate () {
             if (canPause) {
                 canPause = false;
-                mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
-                mainCamera.GetComponent<CameraController>().startTransition();
+                //mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
+                //mainCamera.GetComponent<CameraController>().startTransition();
+                mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
             }
         });
         //button to go back up from basement
         buttons[6].onPress(delegate () {
             canPause = true;
-            mainCamera.GetComponent<CameraController>().transitionToTop(40f);
+            //mainCamera.GetComponent<CameraController>().transitionToTop(40f);
+            mainCamera.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
         });
         //button to drop a candle (invisible over game area)
         buttons[7].onPress(delegate () {
@@ -774,7 +779,6 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
         createMultiplierlessBonusText(can, spriteId);
-        Debug.Log(can.name + " " + multiplier);
 
         return newMult;
     }
@@ -790,6 +794,38 @@ public class GameManager : MonoBehaviour, IMenu
     public void createRowDestructionBonusText() {
         BonusText bonusText = Instantiate(bonusTextPrefab, defaultBonusTextLocation.transform.position, Quaternion.identity).GetComponent<BonusText>();
         bonusText.setSprite(getBonusText(2));
+    }
+
+
+    public void toggleWaffleRain(bool x) {
+
+        ParticleSystem[] particles = waffleRainParentObject.GetComponentsInChildren<ParticleSystem>();
+
+        for (int i = 0; i < particles.Length; i++) {
+
+            if (x) {
+                particles[i].Play();
+            }
+            else {
+                particles[i].Stop();
+                particles[i].Clear();
+            }
+
+        }
+
+    }
+
+
+    //moves snowy far off screen if disabled
+    public void toggleSnowy(bool x) {
+        
+        if (x) {
+            snowyParentObject.transform.GetChild(0).transform.localPosition = new Vector3(0, 0, 0);
+        }
+        else {
+            snowyParentObject.transform.GetChild(0).transform.localPosition = new Vector3(100f, 0, 0);
+        }
+
     }
 
 
