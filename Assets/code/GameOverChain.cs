@@ -8,6 +8,10 @@ public class GameOverChain : MonoBehaviour
     [SerializeField] GameOverMenuController gameOverMenu;
     [SerializeField] GameManager gameManager;
 
+    //a list of any menu that needs to be closed before a game over happens
+    //this is a list of GameObject rather than IMenu because unity doesn't work with serializing interfaces
+    [SerializeField] GameObject[] menusToClose;
+
     [SerializeField] float timeToGameOver;
     [SerializeField] float sensingDelay;
 
@@ -39,6 +43,10 @@ public class GameOverChain : MonoBehaviour
                 gameOverMenu.setScores(gameManager.getScore(), gameManager.getLastHighScore());
                 gameOverMenu.pause();
                 gameOver = true;
+
+                for (int i = 0; i < menusToClose.Length; i++) {
+                    menusToClose[i].GetComponent<IMenu>().unpause();
+                }
             }
 
         }

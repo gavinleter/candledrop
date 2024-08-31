@@ -5,11 +5,6 @@ using UnityEngine;
 public class LockedFeatureMenuController : FadingMenuController
 {
 
-    protected override void Start(){
-        base.Start();
-
-    }
-
 
     public override void pause() {
         base.pause();

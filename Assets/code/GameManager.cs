@@ -147,9 +147,9 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[5].onPress(delegate () {
             if (canPause) {
                 canPause = false;
-                //mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
-                //mainCamera.GetComponent<CameraController>().startTransition();
-                mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
+                mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
+                mainCamera.GetComponent<CameraController>().startTransition();
+                //mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
             }
         });
         //button to go back up from basement
@@ -238,7 +238,7 @@ public class GameManager : MonoBehaviour, IMenu
         /*GameObject x = Instantiate(startingCandlePrefab);
         setCandleId(x, currentCandlePrefabId);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);*/
-        resetGame();
+        resetGame(true);
         
 
     }
@@ -505,6 +505,10 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void resetGame() {
+        resetGame(false);
+    }
+
+    public void resetGame(bool initialStart) {
         selectedCan = null;
         isTurnActive = false;
         gameStarted = false;
@@ -527,6 +531,15 @@ public class GameManager : MonoBehaviour, IMenu
 
         CandleLightController.reset();
         gameOverChain.resetChain();
+
+        //not everything may be initialized when this is called at the start because both fadingObject
+        //and starting the game use the Start() method, so these aren't called if the game is doing its
+        //initial game reset when the game first opens
+        if (!initialStart) {
+            adSpinnerMenu.unpause();
+            pauseMenuObject.GetComponent<IMenu>().unpause();
+            lockedFeatureMenu.unpause();
+        }
 
         GameObject x = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
         x.GetComponent<CandleId>().setInfo(-1, true);

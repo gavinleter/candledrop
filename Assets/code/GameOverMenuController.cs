@@ -15,6 +15,7 @@ public class GameOverMenuController : FadingMenuController
     [SerializeField] TextMeshProUGUI highScoreText;
 
     [SerializeField] GameManager gameManager;
+
     [SerializeField] CameraController mainCam;
 
     //these two control the high score ticking up after a better score is achieved
@@ -45,7 +46,7 @@ public class GameOverMenuController : FadingMenuController
         for (int i = 0; i < sideCandleSmoke.Length; i++) {
             sideCandleSmoke[i] = transform.GetChild(i).GetComponent<ParticleSystem>();
         }
-
+        
         //restart button
         btns[0].onPress(() => { 
             unpause();
