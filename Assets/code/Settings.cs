@@ -37,6 +37,11 @@ public class Settings
 
     public static void deleteAllSaveData(GameManager gameManager) {
         PlayerPrefs.DeleteAll();
+
+        //music and sound are the only settings that shouldn't be deleted
+        toggleMusic(musicEnabled);
+        toggleSound(soundEnabled);
+
         initSettings(gameManager);
     }
 

@@ -4999,6 +4999,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbf3199221b42ac44a5fdbbaf60760a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  touching: []
 --- !u!50 &8659772128480844902
 Rigidbody2D:
   serializedVersion: 4
@@ -9867,8 +9868,8 @@ GameObject:
   - component: {fileID: 623980609942861833}
   - component: {fileID: 342122584537885085}
   - component: {fileID: 3750647524745475022}
-  - component: {fileID: 3450838155652654869}
   - component: {fileID: 499571770129220811}
+  - component: {fileID: 6959969764729898251}
   m_Layer: 3
   m_Name: candle_light
   m_TagString: Untagged
@@ -10016,18 +10017,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.015
---- !u!114 &3450838155652654869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8809281867397101790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1755c861685e18546a8ac47ae22ad4cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &499571770129220811
 Rigidbody2D:
   serializedVersion: 4
@@ -10055,6 +10044,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &6959969764729898251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8809281867397101790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1755c861685e18546a8ac47ae22ad4cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &369680984579215304
 PrefabInstance:
   m_ObjectHideFlags: 0

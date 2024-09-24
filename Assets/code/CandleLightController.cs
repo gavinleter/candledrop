@@ -10,8 +10,8 @@ public class CandleLightController : MonoBehaviour {
     Color32 flareBackLightColor = new Color32(108, 0, 11, 150);
     Color32 flareGlowColor = new Color32(0xCA, 0x0C, 0x0E, 0xFF);
 
-    static int instances = 0;
     int id = -1;
+    //static int instances = 0;
 
     bool candleEnabled = true;
     GameObject flickerObject;
@@ -21,14 +21,9 @@ public class CandleLightController : MonoBehaviour {
     ParticleSystem flareEmberParticles;
     CandleIgniter candleIgniter;
     int layer;
-    //overlaps is used to count how many solid objects the light is colliding with
-    //the candle can only reignite if overlaps == 0
-    int overlaps = 0;
-    //how many candle lights that are enabled this is touching
-    int lightOverlaps = 0;
-
-    //keeps track of the id of each candle this candle is touching
-    List<int> touching = new List<int>();
+    //overlaps is used to count how many solid non-light objects this light is colliding with
+    //the candle can only reignite if overlaps.Count == 0 and all null objects are removed
+    List<Collider2D> overlaps = new List<Collider2D>();
 
 
     void Awake(){
@@ -52,34 +47,54 @@ public class CandleLightController : MonoBehaviour {
             convertToFlare();
         }
 
+        /*id = instances;
+        instances++;
+        getParentObject().name += " | ID: " + id;
+        name += " | ID: " + id;*/
+
     }
 
 
+    //If a candle is extinguished due to another candle sitting on top of it while it is also in
+    //range of a light, it will potentially not re-ignite because OnTriggerExit2D is not called
+    //if the collider of the top candle is deleted. Hence this FixedUpdate code.
+    /*private void FixedUpdate() {
 
-    void OnTriggerEnter2D(Collider2D collider){
-        
+        if (canIgnite()) {
+            enableLight();
+
+            if (lightOverlaps > 0) {
+                enableBackLight();
+            }
+        }
+
+    }*/
+
+
+
+    protected void OnTriggerEnter2D(Collider2D collider){
+
         testCollisionCandleLight(collider);
         //addTouchingCandleToList(collider);
 
     }
 
 
-    private void OnTriggerExit2D(Collider2D collision) {
+    protected void OnTriggerExit2D(Collider2D collision) {
+
         //nothing should happen if touching a button, ember, the ad spinner lever, etc
         if (colliderContainsScript(collision)) {
             return;
         }
 
-        if (collision.GetComponent<CandleIgniter>() != null) {
-            lightOverlaps--;
+        if (collision.gameObject.layer != layer && !isParent(collision.gameObject)) {
+            overlaps.Remove(collision);
         }
 
-        if (collision.gameObject.layer != layer && !isParent(collision.gameObject)) {
-            overlaps--;
-        }
+        overlaps.RemoveAll((Collider2D coll) => { return coll == null; });
         
-        //if there are no more non-flame overlaps and there is currently a candle touching this, reignite
-        if(overlaps == 0 && lightOverlaps > 0) {
+        //if there are no more non-flame overlaps and there is currently a candle light touching this, reignite
+        if(overlaps.Count == 0 && candleIgniter.isTouchingAnyCandles()) {
             enableLight();
             enableBackLight();
         }
@@ -94,13 +109,11 @@ public class CandleLightController : MonoBehaviour {
             return;
         }
 
-        if(collider.GetComponent<CandleIgniter>() != null) {
-            lightOverlaps++;
-        }
-
         //make sure what is colliding is not the parent of the candle
         if (collider.gameObject.layer != layer && !isParent(collider.gameObject)) {
-            overlaps++;
+            if (!overlaps.Contains(collider)) {
+                overlaps.Add(collider);
+            }
         }
         //disable candle light if it hits something solid
         //candles are re-enabled inside of CandleIgniter, attached to the static flicker child object
@@ -138,12 +151,12 @@ public class CandleLightController : MonoBehaviour {
         candleIgniter.setActive(true);
     }
 
-    void enableBackLight() {
+    public void enableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = true;
         superGlowObject.GetComponent<ParticleSystem>().Play();
     }
 
-    void disableBackLight() {
+    public void disableBackLight() {
         flickerObject.GetComponent<SpriteRenderer>().enabled = false;
         superGlowObject.GetComponent<ParticleSystem>().Stop();
         superGlowObject.GetComponent<ParticleSystem>().Clear();
@@ -171,49 +184,61 @@ public class CandleLightController : MonoBehaviour {
         transform.localScale = new Vector3(0.75f, 0.75f, 1);
     }
 
-
+    //DELeTE ME
     //need to keep track of all other candle ids that are touching this one
-    public void addToList(CandleLightController other) {
+    /*public override void addToList(CandleLightController other) {
+
+        //if this candle has an invalid id do nothing (in the case of candles just out in the open not being used in game)
+        if (other.getId() != -1) {
+
+            base.addToList(other);
+
+            if (candleEnabled) {
+                enableBackLight();
+            }
+        }
+
+    }*/
+
+    //DELETE ME
+    /*public override void removeFromList(CandleLightController other) {
         
-        //if this candle has an invalid id (in the case of candles just out in the open not being used in game)
-        if (other.getId() == -1) {
-            return;
-        }
+        base.removeFromList(other);
 
-        //make sure this candle isnt already in the list
-        if (findIndex(other.getId()) == -1) {
-            touching.Add(other.getId());
-        }
-
-        if (candleEnabled) {
-            enableBackLight();
-        }
-    }
-
-    public void removeFromList(CandleLightController other) {
-        //make sure this candle is in the list
-        int index = findIndex(other.getId());
-        if (index != -1) {
-            touching.RemoveAt(index);
-        }
-
-        if(touching.Count == 0) {
+        if(isTouchingAnyCandles()) {
             disableBackLight();
         }
-    }
+    }*/
+
+
+    //DELETE ME
+    //removes this candle light from the touching list of any candle light also touching this
+    /*public void removeSelfFromOthers() {
+
+        for (int i = 0; i < touching.Count; i++) {
+            CandleLightController c = GameManager.getCandleById(touching[i]);
+            if(c == null) {
+                Debug.Log(touching[i]);
+            }
+            c.removeFromList(this);
+        }
+
+    }*/
 
 
     //go through every candle that is touching this one and is ignited
     //if the candle being looked at has not been visited, repeat the process for it
-    public void traverse(List<int> visited) {
-        for (int i = 0; i < touching.Count; i++) {
-            if (!visited.Contains(touching[i])) {
-                CandleLightController c = GameManager.getCandleById(touching[i]);
-                if (c.isEnabled()) {
-                    visited.Add(touching[i]);
-                    c.traverse(visited);
-                }
+    public void traverse(HashSet<CandleLightController> visited) {
+
+        foreach (CandleLightController can in candleIgniter.touching) {
+
+            //do the recursive call if the touching candle is not null, not already visited in a previous call, and is enabled
+            if (can != null && !visited.Contains(can) && can.isEnabled()) {
+
+                visited.Add(can);
+                can.traverse(visited);
             }
+
         }
 
     }
@@ -229,20 +254,19 @@ public class CandleLightController : MonoBehaviour {
     }
 
 
-    private int findIndex(int id) {
+    //DELETE ME
+    /*private int findIndex(int id) {
         for (int i = 0; i < touching.Count; i++) {
             if (touching[i] == id) {
                 return i;
             }
         }
         return -1;
-    }
+    }*/
 
 
-    public int assignId() {
-        id = instances;
-        instances++;
-        return id;
+    public void assignId(int id) {
+        this.id = id;
     }
 
 
@@ -261,19 +285,25 @@ public class CandleLightController : MonoBehaviour {
     }
 
     public bool canIgnite() {
-        return overlaps == 0 && !candleEnabled;
+        overlaps.RemoveAll((Collider2D coll) => { return coll == null; });
+        return overlaps.Count == 0 && !candleEnabled;
     }
 
     public GameObject getParentObject() {
         return parentObject;
     }
 
-    public static void reset() {
-        instances = 0;
-    }
-
     public bool isCurrentlyFlare() {
         return isFlare;
+    }
+
+    //this is for debug purposes and should be deleted later
+    public CandleIgniter getCandleIgniter() { 
+        return candleIgniter;
+    }
+
+    public string getName() {
+        return getParentObject().name + " | " + getId();
     }
 
 }
