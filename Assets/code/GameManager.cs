@@ -268,7 +268,8 @@ public class GameManager : MonoBehaviour, IMenu
                     Debug.Log("this candle slot is empty");
                 }
                 else {
-                    currentCandles[i].getCandleIgniter().printTouchingList();
+                    //currentCandles[i].getCandleIgniter().printTouchingList();
+                    currentCandles[i].printCollisionsList();
                 }
             }
 
@@ -415,7 +416,8 @@ public class GameManager : MonoBehaviour, IMenu
             int id = nextCandleId();
             c[i].assignId(id);
             currentCandles[id] = c[i];
-            candle.name = candle.name + " ID: " + c[i].getId();
+            candle.name += " ID: " + c[i].getId();
+            c[i].gameObject.name += " ID: " + c[i].getId();
         }
     }
 
@@ -433,21 +435,6 @@ public class GameManager : MonoBehaviour, IMenu
         return currentCandles.Count - 1;
     }
 
-    //DELETE ME
-    //no longer used
-    /*private static CandleLightController getCandleById(int id) {
-        for (int i = 0; i < currentCandles.Count; i++) {
-            Debug.Log(i + " " + id + " " + currentCandles[i].transform.parent.parent.name);
-        }
-
-        for (int i = 0; i < currentCandles.Count; i++) {
-            if (currentCandles[i] != null && currentCandles[i].getId() == id) {
-                return currentCandles[i];
-            }
-        }
-        return null;
-    }*/
-
 
     //destroys the held candle and starts a new turn, but does not destroy a held special object
     void destroyHeldCandle() {
@@ -464,42 +451,6 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
     }
-
-    //DELETE ME
-    //no longer used, new method created
-    /*public void destroyCandle(int id) {
-        
-        CandleLightController can = getCandleById(id);
-        GameObject canParent = can.getParentObject();
-
-
-        for(int i = 0; i < currentCandles.Count; i++) {
-
-            if(currentCandles[i] != null) {
-
-                //each candle has a list of other candles touching it, so the candle being deleted needs to be removed from here too
-                currentCandles[i].removeFromList(can);
-
-                //currentCandles holds candle lights, not candles, which is a problem for candles with multiple lights
-                //since they could be in this list twice. So this goes through all lights that have the same parent object
-                if (currentCandles[i].getParentObject() == canParent) {
-                    //if the currently held candle is being deleted, set the selected candle to null to avoid error when the candle is deleted
-                    if (currentCandles[i] == selectedCan) {
-                        selectedCan = null;
-                    }
-
-                    leftWall.removeFromList(can);
-                    rightWall.removeFromList(can);
-                    currentCandles[i].removeSelfFromOthers();
-                    currentCandles[i] = null;
-                }
-            }
-
-        }
-
-        Destroy(canParent);
-
-    }*/
 
 
     public void destroyCandle(GameObject can) {

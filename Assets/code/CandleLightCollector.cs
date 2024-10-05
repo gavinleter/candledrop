@@ -4,123 +4,56 @@ using UnityEngine;
 public class CandleLightCollector : MonoBehaviour
 {
     
-    public List<CandleLightController> touching = new List<CandleLightController>();
+    public readonly List<Collider2D> touching = new List<Collider2D>();
+    protected int touchingLength = 0;
     List<string> touchingHistory = new List<string>();
 
+    protected Collider2D coll;
+    protected ContactFilter2D contactFilter;
 
-    protected virtual void OnTriggerEnter2D(Collider2D collision) {
-        CandleIgniter o = collision.GetComponent<CandleIgniter>();
-        /*if(o != null) {
-            touchingHistory.Add("Starting collision with " + o.getParentCandleScript().getName());
-        }*/
-        
-        if (o != null && o.isLightActive()) {
 
-            CandleLightController other = o.getParentCandleScript();
+    private void Awake() {
 
-            //keep track of any candle that comes into contact with this one
-            //since this class is inherited by CandleLightController, it also shouldnt detect itself
-            if (other.gameObject != gameObject) {
-                addToList(other);
-                //Debug.Log(collision.gameObject.name + " " + gameObject.name);
-            }
-
-            /*if(GetComponent<CandleIgniter>() != null) {
-                CandleLightController selfCan = GetComponent<CandleIgniter>().getParentCandleScript();
-                //Debug.Log(selfCan.getParentObject().name + " | " + selfCan.getId() + " started touching " + other.getParentObject().name + " | " + other.getId());
-            }*/
-
-        }
-
+        coll = GetComponent<Collider2D>();
+        contactFilter = new ContactFilter2D().NoFilter();
 
     }
 
 
-    protected virtual void OnTriggerExit2D(Collider2D collision) {
-        CandleIgniter o = collision.GetComponent<CandleIgniter>();
 
-        if (o != null) {
+    public int updateTouchingList() {
 
-            CandleLightController other = o.getParentCandleScript();
-            //touchingHistory.Add("Stopping collision with " + other.getName());
-
-            //keep track of any candle that comes into contact with this one
-            //since this class is inherited by CandleLightController, it also shouldnt detect itself
-            if (other.gameObject != gameObject) {
-                removeFromList(other);
-            }
-
-            /*if (GetComponent<CandleIgniter>() != null) {
-                CandleLightController selfCan = GetComponent<CandleIgniter>().getParentCandleScript();
-                //Debug.Log(selfCan.getParentObject().name + " | " + selfCan.getId() + " stopped touching " + other.getParentObject().name + " | " + other.getId());
-            }*/
-
-        }
-    }
-
-
-    public void addToList(CandleLightController can) {
-        //touchingHistory.Add("Started touching " + can.getName());
-
-        if (!touching.Contains(can)) {
-
-            for (int i = 0; i < touching.Count; i++) {
-                if (touching[i] == null) {
-                    touching[i] = can;
-                    return;
-                }
-            }
-
-            touching.Add(can);
-
-        }
-
-    }
-
-
-    public virtual void removeFromList(CandleLightController can) {
-        //bool x = touching.Remove(can);
-        
-        for (int i = 0; i < touching.Count; i++) {
-            //Debug.Log(touching[i].getParentObject().name + " viewing " + can.getParentObject().name);
-            if (touching[i] == can) {
-                touching[i] = null;
-                //touchingHistory.Add("Removed " + can.getName());
-                return;
-            }
-        }
-        /*touchingHistory.Add("UNTRACKED " + can.getName());
-        if (GetComponent<CandleIgniter>() != null) {
-            Debug.Log("Origin: " + GetComponent<CandleIgniter>().getParentCandleScript().getParentObject().name + " | " + GetComponent<CandleIgniter>().getParentCandleScript().getId());
-        }
-        else {
-            Debug.Log("Origin: " + gameObject.name);
-        }
-        Debug.Log("Untracked candle attempted to be removed\nTouching:");
-        for (int i = 0; i < touching.Count; i++) {
-            if (touching[i] != null) {
-                Debug.Log(touching[i].getParentObject().name + " | " + touching[i].getId());
-            }
-            else {
-                Debug.Log("Null");
-            }
-        }
-        Debug.Log("Untracked candle: " + can.getParentObject().name + " | " + can.getId());
-        //Debug.Log("");*/
+        touchingLength = coll.OverlapCollider(contactFilter, touching);
+        return touchingLength;
     }
 
 
     public bool containsCandle(CandleLightController c) {
-        return touching.Contains(c);
+        Collider2D otherColl = c.getCandleIgniter().GetComponent<Collider2D>();
+
+        for(int i = 0; i < touchingLength; i++) {
+            if (touching[i] == otherColl) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
 
     public bool isTouchingAnyCandles() {
 
-        for (int i = 0; i < touching.Count; i++) {
-            if (touching[i] != null && touching[i].isEnabled()) {
-                return true;
+        CandleIgniter c;
+
+        for (int i = 0; i < touchingLength; i++) {
+
+            c = touching[i].GetComponent<CandleIgniter>();
+
+            if(c && c != this && c.isLightActive()) { 
+                return true; 
             }
+
         }
 
         return false;
@@ -139,7 +72,8 @@ public class CandleLightCollector : MonoBehaviour
             Debug.Log("---------\norigin: " + name);
         }
         
-        foreach(CandleLightController x in touching) {
+        for(int i = 0; i < touchingLength; i++) {
+            CandleLightController x = touching[i].GetComponent<CandleLightController>();
             if(x != null) {
                 Debug.Log(x.getParentObject().name + " | " + x.getId());
             }

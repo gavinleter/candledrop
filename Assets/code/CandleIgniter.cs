@@ -8,6 +8,49 @@ public class CandleIgniter : CandleLightCollector
     CandleLightController parentCandle;
 
 
+    private void FixedUpdate() {
+
+        updateTouchingList();
+
+        CandleIgniter otherLight;
+        CandleLightController otherLightController;
+
+        bool isTouchingCandles = isTouchingAnyCandles();
+
+        for (int i = 0; i < touchingLength; i++) {
+            otherLight = touching[i].GetComponent<CandleIgniter>();
+            otherLightController = touching[i].GetComponent<CandleLightController>();
+
+            //if the currently touched object is a CandleIgniter
+            if (otherLight && otherLight != this) {
+
+                if (isTouchingCandles && isActive) {
+                    parentCandle.enableBackLight();
+                }
+
+                //continue since we know at this point this object is not a CandleLightController
+                continue;
+            }
+
+            //if the currently touched object is a CandleLightController
+            if (otherLightController && otherLightController.getCandleIgniter() != this) {
+
+                //if this candle is active and the other can ignite, turn on its light
+                if (isActive && otherLightController.canIgnite()) {
+                    otherLightController.enableLight();
+                }
+
+            }
+
+        }
+
+        if(!isTouchingCandles && isActive) {
+            parentCandle.disableBackLight();
+        }
+
+    }
+
+
     public void setParentCandleScript(CandleLightController p) {
         parentCandle = p;
     }
@@ -18,79 +61,6 @@ public class CandleIgniter : CandleLightCollector
     }
 
 
-    /*private void OnTriggerEnter2D(Collider2D collision) {
-        CandleLightController other = collision.gameObject.GetComponent<CandleLightController>();
-
-        CandleIgniter o = collision.gameObject.GetComponent<CandleIgniter>();
-        
-        if (o != null) {
-            
-            //keep track of any candle light that comes into contact with this one
-            parentCandle.addToList(o.getParentCandleScript());
-
-            //this object is a CandleIgniter, so we don't check if its a CandleLightController. Exit early
-            return;
-        }
-
-        if (other != null) {
-
-            //if this candle is active and the other candle can be ignited, enable its light
-            if(other.canIgnite() && isActive) {
-                other.enableLight();
-            }
-
-        }
-
-    }*/
-
-    protected override void OnTriggerEnter2D(Collider2D collision) {
-        base.OnTriggerEnter2D(collision);
-
-        CandleIgniter other = collision.GetComponent<CandleIgniter>();
-        
-        if (other != null) {
-
-            CandleLightController otherCan = other.getParentCandleScript();
-            
-            //if this candle is active and the other candle can be ignited, enable its light
-            if (otherCan.canIgnite() && isActive) {
-                otherCan.enableLight();
-            }
-            
-            //if this candle is active and touching any other candle, enable the backlight
-            if (isTouchingAnyCandles() && isActive) {
-                parentCandle.enableBackLight();
-            }
-
-            //since this is hitting a candleIgniter, we can stop and return at this point
-            return;
-        }
-
-        CandleLightController can = collision.GetComponent<CandleLightController>();
-
-        //if the candle touching this can ignite and this is active, turn it on
-        if (can != null && can.canIgnite() && isActive) {
-            can.enableLight();
-            //can.enableBackLight();
-        }
-    }
-
-
-    protected override void OnTriggerExit2D(Collider2D collision) {
-        base.OnTriggerExit2D(collision);
-
-        CandleIgniter other = collision.GetComponent<CandleIgniter>();
-
-        if (other != null) {
-            //Debug.Log(isTouchingAnyCandles());
-            //printTouchingList();
-            if (!isTouchingAnyCandles()) {
-                parentCandle.disableBackLight();
-            }
-
-        }
-
-    }
 
     public void setActive(bool x) {
         isActive = x;
@@ -99,6 +69,26 @@ public class CandleIgniter : CandleLightCollector
 
     public bool isLightActive() {
         return isActive;
+    }
+
+
+    public void printCollisionsList() {
+        updateTouchingList();
+        Debug.Log("Origin: " + getParentCandleScript().getName());
+
+        for (int i = 0; i < touchingLength; i++) {
+            CandleIgniter c = touching[i].GetComponent<CandleIgniter>();
+
+            if (c != null) {
+                Debug.Log(c.getParentCandleScript().getName());
+            }
+            else {
+                Debug.Log(touching[i].name);
+            }
+
+
+        }
+
     }
 
 }

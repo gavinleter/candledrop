@@ -9,8 +9,10 @@ public class RightWall : CandleLightCollector
 
     void FixedUpdate() {
 
-        if (isTouchingAnyCandles()) {
+        updateTouchingList();
 
+        if (isTouchingAnyCandles()) {
+            
             if (!rightParticleSystem.isPlaying) {
                 rightParticleSystem.Play();
             }

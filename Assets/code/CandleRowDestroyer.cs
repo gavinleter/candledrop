@@ -26,6 +26,7 @@ public class CandleRowDestroyer : CandleLightCollector
     }
 
 
+
     void FixedUpdate() { 
         CandleLightController[] r = findRow().ToArray();
 
@@ -68,6 +69,7 @@ public class CandleRowDestroyer : CandleLightCollector
     }
 
 
+
     void destroyCandle(CandleLightController can) {
         GameObject c = can.getParentObject();
         GameObject p = Instantiate(CandleDestroyParticle);
@@ -81,6 +83,8 @@ public class CandleRowDestroyer : CandleLightCollector
     CandleLightController[] findRow() {
         HashSet<CandleLightController> result = new HashSet<CandleLightController>();
 
+        updateTouchingList();
+
         //if the left wall is touching nothing exit early
         if(isTouchingAnyCandles()) {
 
@@ -89,17 +93,28 @@ public class CandleRowDestroyer : CandleLightCollector
                 leftParticleSystem.Play();
             }
 
-            //go through each candle and record the ids of all touching candles
-            foreach (CandleLightController can in touching) {
-                if (can != null && can.isEnabled() && !result.Contains(can)) {
-                    result.Add(can);
-                    can.traverse(result);
+            CandleIgniter canLight;
+            CandleLightController can;
+
+            //go through each candle and all of the touching candles
+            for (int i = 0; i < touchingLength; i++) {
+
+                canLight = touching[i].GetComponent<CandleIgniter>();
+
+                if (canLight) {
+                    can = canLight.getParentCandleScript();
+
+                    if (can != null && can.isEnabled() && !result.Contains(can)) {
+                        result.Add(can);
+                        can.traverse(result);
+                    }
                 }
+
             }
 
             //check if any recorded candles are touching the right wall
-            foreach (CandleLightController can in result) {
-                if (otherSide.containsCandle(can)) {
+            foreach (CandleLightController c in result) {
+                if (otherSide.containsCandle(c)) {
                     return result.ToArray();
                 }
             }
@@ -108,6 +123,9 @@ public class CandleRowDestroyer : CandleLightCollector
             //right wall so we should return nothing
             return new CandleLightController[0];
 
+        }
+        else {
+            leftParticleSystem.Stop();
         }
 
         return result.ToArray();
@@ -123,14 +141,6 @@ public class CandleRowDestroyer : CandleLightCollector
             leftParticleSystem.Play();
         }
     }*/
-
-    public override void removeFromList(CandleLightController other) {
-        base.removeFromList(other);
-
-        if (!isTouchingAnyCandles()) {
-            leftParticleSystem.Stop();
-        }
-    }
 
 
 }
