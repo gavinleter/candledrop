@@ -27,7 +27,7 @@ public class StartCandleFall : MonoBehaviour
     }
 
 
-    void OnMouseDown() {
+    public void dropCandle() {
         if (!activated && readyToDrop && !gameStarted) {
             activated = true;
             rb.gravityScale = initialGravity;

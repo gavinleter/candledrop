@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
 using UnityEngine;
 
@@ -20,7 +19,7 @@ public class GameOverMenuController : FadingMenuController
 
     //these two control the high score ticking up after a better score is achieved
     [SerializeField] float highScoreInitialDelay;
-    [SerializeField] float highScoreTickingDelay;
+    float highScoreTickingDelay;
     float initialTime = 0;
     float tickingTime = 0;
     bool waitingForTick = false;
@@ -71,7 +70,7 @@ public class GameOverMenuController : FadingMenuController
         }
         
 
-        if (active) {
+        if (lerpingIn) {
 
             //once the initial delay has passed, get ready to start ticking the new high score up
             if(!waitingForTick && Time.time > highScoreInitialDelay + initialTime && highScore < currentScore) {
@@ -113,6 +112,8 @@ public class GameOverMenuController : FadingMenuController
         highScoreText.fontSize = initialFontSize;
         highScoreText.color = initialFontColor;
         textLerp = 0f;
+        //the minimum speed points go up by on the game over menu is 0.4f - it cant go slower
+        highScoreTickingDelay = Mathf.Min(0.4f, 1f/Mathf.Abs(currentScore - highScore));
 
         for (int i = 0; i < sideCandleSmoke.Length; i++) {
             sideCandleSmoke[i].Play();

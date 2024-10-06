@@ -12,10 +12,12 @@ public class CandleLightController : MonoBehaviour {
     //static int instances = 0;
 
     bool candleEnabled = true;
+    bool beingDestroyed = false;
     GameObject flickerObject;
     GameObject staticFlickerObject;
     GameObject parentObject;
     GameObject superGlowObject;
+    GameObject flareOutline;
     ParticleSystem flareEmberParticles;
     CandleIgniter candleIgniter;
     Collider2D igniterCollider;
@@ -36,6 +38,7 @@ public class CandleLightController : MonoBehaviour {
         flickerObject = transform.Find("flicker").gameObject;
         superGlowObject = transform.Find("super_glow").gameObject;
         staticFlickerObject = transform.Find("back light").gameObject;
+        flareOutline = transform.Find("flare outline").gameObject;
         flareEmberParticles = transform.Find("flare ember particles").GetComponent<ParticleSystem>();
         flareEmberParticles.Stop();
         flareEmberParticles.Clear();
@@ -98,14 +101,26 @@ public class CandleLightController : MonoBehaviour {
 
 
     public void disableLight() {
-        //flares cannot be extinguished
-        if (!isFlare) {
+        disableLight(false);
+    }
+
+
+    public void disableLight(bool flareOverride) {
+        //flares cannot be extinguished normally
+        if (!isFlare || flareOverride) {
             candleEnabled = false;
             staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<SpriteRenderer>().enabled = false;
             candleIgniter.setActive(false);
             staticFlickerObject.GetComponent<CircleCollider2D>().enabled = false;
             disableBackLight();
+
+            if (isCurrentlyFlare()) {
+                flareOutline.GetComponent<SpriteRenderer>().enabled = false;
+                flareEmberParticles.Stop();
+                flareEmberParticles.Clear();
+            }
+
         }
     }
 
@@ -139,6 +154,7 @@ public class CandleLightController : MonoBehaviour {
 
         staticFlickerObject.GetComponent<SpriteRenderer>().color = flareBackLightColor;
         flickerObject.GetComponent<SpriteRenderer>().color = flareFlickerColor;
+        flareOutline.GetComponent<SpriteRenderer>().enabled =  true;
 
         //change color of super glow
         ParticleSystem.MainModule x = superGlowObject.GetComponent<ParticleSystem>().main;
@@ -213,7 +229,7 @@ public class CandleLightController : MonoBehaviour {
     }
 
     public bool canIgnite() {
-        return overlaps == 0 && !candleEnabled;
+        return overlaps == 0 && !candleEnabled && !beingDestroyed;
 
     }
 
@@ -252,5 +268,11 @@ public class CandleLightController : MonoBehaviour {
         }*/
         candleIgniter.printCollisionsList();
 
+    }
+
+
+    public void startDestroy() {
+        beingDestroyed = true;
+        disableLight(true);
     }
 }

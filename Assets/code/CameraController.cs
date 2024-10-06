@@ -67,7 +67,7 @@ public class CameraController : MonoBehaviour
         if (isBlackFadeTransitioning) {
             if (blackFadeObject.fadeInFinished() && !initialBlackFadeInCompleted) {
 
-                blackFadeObject.fadeOut();
+                blackFadeObject.lerpOut();
                 transform.position = targetPosition;
                 initialBlackFadeInCompleted = true;
             }
@@ -145,10 +145,10 @@ public class CameraController : MonoBehaviour
 
 
     public void fadeToBlackTransition(Vector3 targetPosition, float fadeSpeed) {
-        blackFadeObject.forceDisappear();
+        blackFadeObject.forceLerpOut();
         blackFadeObject.transform.position = new Vector3(transform.position.x, transform.position.y, -1f);
         blackFadeObject.setSpeed(fadeSpeed);
-        blackFadeObject.fadeIn();
+        blackFadeObject.lerpIn();
         this.targetPosition = targetPosition;
         isBlackFadeTransitioning = true;
     }

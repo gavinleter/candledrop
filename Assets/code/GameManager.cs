@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour, IMenu
     float velocityCheckDelay = 0.05f; // Delay before checking velocity
 
     private GameObject selectedCan;
+    //the initial candle that needs to be dropped at the title screen
+    private GameObject starterCandle;
     private bool isTurnActive = false;
     private bool canMove = false;
     private float turnStartTime;
@@ -103,6 +105,12 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] CandleRowDestroyer leftWall;
     [SerializeField] RightWall rightWall;
 
+    //the size and color that candles lerp to when they are destroyed by a black hole
+    [SerializeField] Vector3 candleBlackHoleDestructionSize;
+    [SerializeField] Color candleBlackHoleDestructionColorFade;
+
+    [SerializeField] ParticleSystem guideArrows;
+
     List<int> spawnPotentials = new List<int>();
 
     private void Start()
@@ -164,7 +172,27 @@ public class GameManager : MonoBehaviour, IMenu
         //button to drop a candle (invisible over game area)
         buttons[7].onPress(delegate () {
             dropCandle();
+
+            guideArrows.Stop();
         });
+        buttons[7].onMouseStay(() => {
+
+            if (selectedCan != null && !hasMoved) {
+
+                if (!guideArrows.isPlaying) {
+                    guideArrows.Play();
+                }
+
+                float mouseXPos = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+                Vector3 newPosition = new Vector3(mouseXPos, selectedCan.transform.position.y, selectedCan.transform.position.z);
+                selectedCan.transform.position = clampObjectPositionToGameArea(newPosition, selectedCan);
+
+                guideArrows.transform.position = selectedCan.transform.position;
+
+            }
+            
+        });
+        
 
 
         //generates an anonymous method for each candle prefab select button
@@ -216,28 +244,34 @@ public class GameManager : MonoBehaviour, IMenu
         });
 
         //button 17 doesn't need its onPress method set because it uses the AdBoosterButton class
+
+        //the inivisble button that drops the initial candle on the title screen
         buttons[18].onPress(() => {
+            getInitialCandle().GetComponent<StartCandleFall>().dropCandle();
+        });
+
+        buttons[19].onPress(() => {
             //pause();
             //adSpinnerMenu.pause();
             //convertAllCandlesToFlares();
             //spawnEmber(-1.5f);
             startEventHorizonEvent();
         });
-        buttons[19].onPress(() => {
+        buttons[20].onPress(() => {
             //startSolarRainEvent();
             startMiniSunEvent();
         });
-        buttons[20].onPress(() => {
+        buttons[21].onPress(() => {
             startFlaringFieldsEvent();
         });
 
-        buttons[21].onPress(() => {
+        buttons[22].onPress(() => {
             pause();
             gameOverMenuController.setScores(getScore(), getLastHighScore());
             gameOverMenuController.pause();
         });
 
-        buttons[22].onPress(() => {
+        buttons[23].onPress(() => {
             string x = "";
             for (int i = 0; i < currentCandles.Count; i++) {
                 x = i + ": ";
@@ -261,9 +295,9 @@ public class GameManager : MonoBehaviour, IMenu
 
         });
 
-        buttons[23].onPress(() => { 
+        buttons[24].onPress(() => { 
             
-            for(int i = 0; i < currentCandles.Count; i++) {
+            /*for(int i = 0; i < currentCandles.Count; i++) {
                 if(currentCandles[i] == null) {
                     Debug.Log("this candle slot is empty");
                 }
@@ -271,7 +305,8 @@ public class GameManager : MonoBehaviour, IMenu
                     //currentCandles[i].getCandleIgniter().printTouchingList();
                     currentCandles[i].printCollisionsList();
                 }
-            }
+            }*/
+            destroyAllCandles(true);
 
         });
 
@@ -454,16 +489,53 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void destroyCandle(GameObject can) {
+        destroyCandle(can, false);
+    }
 
-        Destroy(can);
+
+    public void destroyCandle(GameObject can, bool destroyedByBlackHole) {
+
+        if (destroyedByBlackHole) {
+            CandleLightController[] c = can.GetComponentsInChildren<CandleLightController>(); 
+
+            for(int i = 0; i < c.Length; i++) {
+                c[i].startDestroy();
+            }
+
+            ColorFadingObject col = can.AddComponent<ColorFadingObject>();
+            GrowingObject grow = can.AddComponent<GrowingObject>();
+
+            col.setTargetColor(candleBlackHoleDestructionColorFade);
+            col.canChangeAlpha(true);
+            grow.setTargetSizeMultiplier(candleBlackHoleDestructionSize);
+            col.setSpeed(2f);
+            grow.setSpeed(0.7f);
+            col.setActive(true);
+            grow.setActive(true);
+            col.lerpIn();
+            grow.lerpIn();
+
+            Rigidbody2D canRB = can.GetComponent<Rigidbody2D>();
+            canRB.gravityScale = -0.1f;
+            canRB.AddTorque(UnityEngine.Random.Range(-5f, 5f));
+
+            Destroy(can, 1.5f);
+        }
+        else {
+            Destroy(can);
+        }
 
     }
 
 
     void destroyAllCandles() {
+        destroyAllCandles(false);
+    }
+
+    void destroyAllCandles(bool x) {
         for (int i = 0; i < currentCandles.Count; i++) {
-            if(currentCandles[i] != null) {
-                destroyCandle(currentCandles[i].getParentObject());
+            if (currentCandles[i] != null) {
+                destroyCandle(currentCandles[i].getParentObject(), x);
             }
         }
         currentCandles.Clear();
@@ -545,7 +617,7 @@ public class GameManager : MonoBehaviour, IMenu
         highScoreText.text = "" + lastHighScore;
         setScore(0);
 
-        startingFloor.forceAppear();
+        startingFloor.forceLerpIn();
 
         destroyAllCandles();
 
@@ -567,11 +639,17 @@ public class GameManager : MonoBehaviour, IMenu
             pauseMenuObject.GetComponent<IMenu>().unpause();
             lockedFeatureMenu.unpause();
         }
+        
+        starterCandle = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
+        starterCandle.GetComponent<CandleId>().setInfo(-1, true);
+        starterCandle.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
+    }
 
-        GameObject x = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
-        x.GetComponent<CandleId>().setInfo(-1, true);
-        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);
 
+    //this returns the candle that needs to be dropped from the title screen
+    //only used for the button that drops this candle
+    public GameObject getInitialCandle() {
+        return starterCandle;
     }
 
 
@@ -746,7 +824,7 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void fadeOutStartingFloor() {
-        startingFloor.fadeOut();
+        startingFloor.lerpOut();
     }
 
 
@@ -816,17 +894,29 @@ public class GameManager : MonoBehaviour, IMenu
         if (can.isStarterCandle()) {
             newMult *= 2;
             spriteId = 1;
+            createMultiplierlessBonusText(can, spriteId, true);
+        }
+        else {
+            createMultiplierlessBonusText(can, spriteId);
         }
 
-        createMultiplierlessBonusText(can, spriteId);
+        
 
         return newMult;
     }
 
 
     public void createMultiplierlessBonusText(CandleId can, int bonusTextId) {
+        createMultiplierlessBonusText(can, bonusTextId, false);
+    }
+
+
+    public void createMultiplierlessBonusText(CandleId can, int bonusTextId, bool highlighted) {
         BonusText bonusText = Instantiate(bonusTextPrefab, can.transform.position, Quaternion.identity).GetComponent<BonusText>();
         bonusText.setSprite(getBonusText(bonusTextId));
+        if (highlighted) {
+            bonusText.enableHighlight();
+        }
     }
 
 
@@ -834,6 +924,7 @@ public class GameManager : MonoBehaviour, IMenu
     public void createRowDestructionBonusText() {
         BonusText bonusText = Instantiate(bonusTextPrefab, defaultBonusTextLocation.transform.position, Quaternion.identity).GetComponent<BonusText>();
         bonusText.setSprite(getBonusText(2));
+        bonusText.enableHighlight();
     }
 
 

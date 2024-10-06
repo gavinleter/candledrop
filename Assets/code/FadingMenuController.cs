@@ -16,7 +16,7 @@ public class FadingMenuController : FadingObject, IMenu
 
 
     virtual public void pause() {
-        base.fadeIn();
+        base.lerpIn();
 
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(true);
@@ -26,7 +26,7 @@ public class FadingMenuController : FadingObject, IMenu
 
     //when the game unpauses, start lerping in reverse
     virtual public void unpause() {
-        base.fadeOut();
+        base.lerpOut();
 
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(false);
@@ -36,13 +36,13 @@ public class FadingMenuController : FadingObject, IMenu
 
 
     //instantly make this object appear
-    override public void forceAppear() {
+    override public void forceLerpIn() {
         pause();
         lerp = 1f;
     }
 
     //instantly make this object disappear
-    override public void forceDisappear() {
+    override public void forceLerpOut() {
         unpause();
         lerp = 0f;
     }

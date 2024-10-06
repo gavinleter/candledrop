@@ -1,60 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
-public class FadingObject : MonoBehaviour
+public class FadingObject : Lerpable
 {
 
     protected float opacity = 0f;
-    protected float lerp = 0f;
-    protected bool active = false;
 
     protected SpriteRenderer sr;
     protected SpriteRenderer[] childrenRenderers;
     protected ParticleSystem[] childrenParticles;
     protected CanvasGroup[] canvasGroup;
 
-    [SerializeField] float fadeSpeed;
-
     [SerializeField] bool playParticlesOnFadeIn;
     [SerializeField] bool destroyParticlesOnFadeOut;
 
 
-    virtual protected void Start(){
+    private void Awake() {
+        
+    }
+
+
+    override protected void Start(){
+        base.Start();
 
         sr = GetComponent<SpriteRenderer>();
         childrenRenderers = GetComponentsInChildren<SpriteRenderer>(true);
         childrenParticles = GetComponentsInChildren<ParticleSystem>(true);
         canvasGroup = GetComponentsInChildren<CanvasGroup>();
 
-        //default fading speed
-        if(fadeSpeed == 0f) {
-            fadeSpeed = 0.1f;
-        }
     }
 
 
-    virtual protected void Update(){
-
-        if (active) {
-            increaseLerp();
-        }
-        else if (lerp > 0f) {
-            decreaseLerp();
-        }
-
-    }
-
-
-    virtual protected void increaseLerp() {
-        lerp += fadeSpeed * Time.deltaTime;
+    override protected void increaseLerp() {
+        base.increaseLerp();
         opacity = Mathf.Lerp(opacity, 1f, lerp);
         setAlpha();
     }
 
 
-    virtual protected void decreaseLerp() {
-        lerp -= fadeSpeed * Time.deltaTime;
+    override protected void decreaseLerp() {
+        base.decreaseLerp();
         opacity = Mathf.Lerp(0f, opacity, lerp);
         setAlpha();
     }
@@ -69,7 +54,7 @@ public class FadingObject : MonoBehaviour
             temp.a = opacity;
             childrenRenderers[i].color = temp;
         }
-
+        
         //set opacity of this object
         temp = sr.color;
         temp.a = opacity;
@@ -84,9 +69,9 @@ public class FadingObject : MonoBehaviour
         }
     }
 
-    virtual public void fadeIn() {
+    override public void lerpIn() {
+        base.lerpIn();
         lerp = 0f;
-        active = true;
 
         if (playParticlesOnFadeIn) {
             for (int i = 0; i < childrenParticles.Length; i++) {
@@ -96,9 +81,9 @@ public class FadingObject : MonoBehaviour
     }
 
     //when the object fades out, start lerping in reverse
-    virtual public void fadeOut() {
+    override public void lerpOut() {
+        base.lerpOut();
         lerp = 1f;
-        active = false;
 
         if (destroyParticlesOnFadeOut) {
             for (int i = 0; i < childrenParticles.Length; i++) {
@@ -109,16 +94,14 @@ public class FadingObject : MonoBehaviour
     }
 
     //instantly make this object appear
-    virtual public void forceAppear() {
-        fadeIn();
-        lerp = 1f;
+    override public void forceLerpIn() {
+        base.forceLerpIn();
         opacity = 1f;
     }
 
     //instantly make this object disappear
-    virtual public void forceDisappear() {
-        fadeOut();
-        lerp = 0f;
+    override public void forceLerpOut() {
+        base.forceLerpOut();
         opacity = 0f;
     }
 
@@ -133,8 +116,4 @@ public class FadingObject : MonoBehaviour
         return opacity > 0.99f;
     }
 
-
-    public void setSpeed(float speed) {
-        fadeSpeed = speed;
-    }
 }

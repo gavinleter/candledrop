@@ -22,7 +22,7 @@ public class BlackHole : MonoBehaviour, ISpecialObject
             gameManagerScript.createMultiplierlessBonusText(can, 0);
             gameManagerScript.addScore(1);
 
-            gameManagerScript.destroyCandle(o.getParentObject());
+            gameManagerScript.destroyCandle(o.getParentObject(), true);
 
         }
 
@@ -42,7 +42,7 @@ public class BlackHole : MonoBehaviour, ISpecialObject
             CandleLightController o = hits[i].collider.gameObject.GetComponentInChildren<CandleLightController>();
             if (o != null) {
 
-                gameManagerScript.destroyCandle(o.getParentObject());
+                gameManagerScript.destroyCandle(o.getParentObject(), true);
             }
         }
 

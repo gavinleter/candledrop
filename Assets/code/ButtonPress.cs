@@ -20,12 +20,14 @@ public class ButtonPress : MonoBehaviour
 
     private List<System.Action> actions;
     private List<System.Action> downActions;
+    private List<System.Action> stayActions;
 
     [SerializeField] private bool active = false;
 
     private void Awake() {
         actions = new List<System.Action>();
         downActions = new List<System.Action>();
+        stayActions = new List<System.Action>();
     }
 
     virtual protected void Start(){
@@ -86,6 +88,18 @@ public class ButtonPress : MonoBehaviour
         }
     }
 
+
+    virtual protected void OnMouseDrag() {
+        if(active && isPressed) {
+
+            for (int i = 0; i < stayActions.Count; i++) {
+                stayActions[i]();
+            }
+
+        }
+    }
+
+
     //this is here because the SecretButton class plays more than one sound when pressed
     virtual protected void audioUp() {
         audioSourceUp.Play();
@@ -113,6 +127,11 @@ public class ButtonPress : MonoBehaviour
     //takes in anonymous method that runs when button is pressed but not released
     public void onPressDown(System.Action action) {
         downActions.Add(action);
+    }
+
+
+    public void onMouseStay(System.Action action) {
+        stayActions.Add(action);
     }
 
 

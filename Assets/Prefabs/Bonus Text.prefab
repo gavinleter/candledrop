@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3711338986982238552}
   - component: {fileID: 6623661746891665573}
   - component: {fileID: 160758742446899640}
+  - component: {fileID: 6941111639365542632}
+  - component: {fileID: 2553352537853876563}
   m_Layer: 0
   m_Name: Bonus Text
   m_TagString: Untagged
@@ -97,8 +99,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8861a3f212606443a370ec41e6f79d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 0.001
+  lerpSpeed: 0.005
+  currentlyActive: 0
   playParticlesOnFadeIn: 0
   destroyParticlesOnFadeOut: 0
   riseSpeed: 0.5
   riseSpeedRandomRange: 1
+--- !u!114 &6941111639365542632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9104870467222839393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4074e90488676a4084d162dda734a24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lerpSpeed: 2
+  currentlyActive: 0
+--- !u!114 &2553352537853876563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9104870467222839393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06d67c2c7c00d2f4ca329d9b8fc1b8f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lerpSpeed: 2
+  currentlyActive: 0
+  targetSizeMultiplier: {x: 1.04, y: 1.04, z: 1}
+  looping: 1
