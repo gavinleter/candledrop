@@ -46,7 +46,7 @@ public class PauseMenuController : FadingMenuController
         //achievements button
         btns[2].onPress(() => {
             unpause();
-            achievementMenuObject.GetComponent<AchievementMenuController>().unpause();
+            achievementMenuObject.GetComponent<AchievementMenuController>().pause();
         });
 
         //sound enable/disable button

@@ -19,11 +19,13 @@ public class ButtonPress : MonoBehaviour
     private Collider2D buttonCollider;
 
     private List<System.Action> actions;
+    private List<System.Action> downActions;
 
     [SerializeField] private bool active = false;
 
     private void Awake() {
         actions = new List<System.Action>();
+        downActions = new List<System.Action>();
     }
 
     virtual protected void Start(){
@@ -54,6 +56,10 @@ public class ButtonPress : MonoBehaviour
 
         isPressed = true;
         rend.material.color = pressedColor;
+
+        for (int i = 0; i < downActions.Count; i++) {
+            downActions[i]();
+        }
     }
 
 
@@ -72,7 +78,7 @@ public class ButtonPress : MonoBehaviour
 
         //execute each action when this button is pressed
         for (int i = 0; i < actions.Count; i++) {
-            executeAction(i);
+            actions[i]();
         }
 
         if (audioSourceUp.clip != null && Settings.isSoundEnabled()) {
@@ -98,14 +104,15 @@ public class ButtonPress : MonoBehaviour
     }
 
 
-    //takes in an anonmymous method that should run when this button is pressed
+    //takes in anonymous method that runs when button is pressed and then released
     public void onPress(System.Action action) {
         actions.Add(action);
     }
 
 
-    private void executeAction(int index) {
-        actions[index]();
+    //takes in anonymous method that runs when button is pressed but not released
+    public void onPressDown(System.Action action) {
+        downActions.Add(action);
     }
 
 

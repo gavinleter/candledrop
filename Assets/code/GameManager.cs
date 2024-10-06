@@ -100,6 +100,9 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] GameObject waffleRainParentObject;
     [SerializeField] GameObject snowyParentObject;
 
+    [SerializeField] CandleRowDestroyer leftWall;
+    [SerializeField] RightWall rightWall;
+
     List<int> spawnPotentials = new List<int>();
 
     private void Start()
@@ -147,9 +150,9 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[5].onPress(delegate () {
             if (canPause) {
                 canPause = false;
-                //mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
-                //mainCamera.GetComponent<CameraController>().startTransition();
-                mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
+                mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
+                mainCamera.GetComponent<CameraController>().startTransition();
+                //mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
             }
         });
         //button to go back up from basement
@@ -234,11 +237,49 @@ public class GameManager : MonoBehaviour, IMenu
             gameOverMenuController.pause();
         });
 
+        buttons[22].onPress(() => {
+            string x = "";
+            for (int i = 0; i < currentCandles.Count; i++) {
+                x = i + ": ";
+                if (currentCandles[i] != null) {
+                    x += currentCandles[i].getParentObject().name;
+                }
+                else {
+                    x += "null";
+                }
+
+                /*x += " | ";
+
+                if (currentCandles[i] != null &&  getCandleById(currentCandles[i].getId()) != null) {
+                    x += getCandleById(currentCandles[i].getId()).getParentObject().name;
+                }
+                else {
+                    x += "null";
+                }*/
+                Debug.Log(x);
+            }
+
+        });
+
+        buttons[23].onPress(() => { 
+            
+            for(int i = 0; i < currentCandles.Count; i++) {
+                if(currentCandles[i] == null) {
+                    Debug.Log("this candle slot is empty");
+                }
+                else {
+                    //currentCandles[i].getCandleIgniter().printTouchingList();
+                    currentCandles[i].printCollisionsList();
+                }
+            }
+
+        });
+
         //spawn the starting candle
         /*GameObject x = Instantiate(startingCandlePrefab);
         setCandleId(x, currentCandlePrefabId);
         x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);*/
-        resetGame();
+        resetGame(true);
         
 
     }
@@ -320,7 +361,7 @@ public class GameManager : MonoBehaviour, IMenu
     {
         gameStarted = true;
         int randomIndex = spawnPotentials[UnityEngine.Random.Range(0, spawnPotentials.Count)];
-
+        //randomIndex = 1;
         //only black holes can spawn during the event horizon event
         if (eventHorizonEventActive) {
             randomIndex = canObjects.Length - 2;
@@ -372,23 +413,26 @@ public class GameManager : MonoBehaviour, IMenu
         CandleLightController[] c = candle.GetComponentsInChildren<CandleLightController>();
 
         for (int i = 0; i < candle.transform.childCount; i++) {
-            currentCandles.Add(c[i]);
-            c[i].assignId();
-            candle.name = candle.name + " ID: " + c[i].getId();
+            int id = nextCandleId();
+            c[i].assignId(id);
+            currentCandles[id] = c[i];
+            candle.name += " ID: " + c[i].getId();
+            c[i].gameObject.name += " ID: " + c[i].getId();
         }
     }
 
 
-    public static CandleLightController getCandleById(int id) {
-        /*for (int i = 0; i < currentCandles.Count; i++) {
-            Debug.Log(i + " " + id + " " + currentCandles[i].transform.parent.parent.name);
-        }*/
+    //returns the index of the next empty slot available for a candle light in the currentCandles array
+    public int nextCandleId() {
+
         for (int i = 0; i < currentCandles.Count; i++) {
-            if (currentCandles[i] != null && currentCandles[i].getId() == id) {
-                return currentCandles[i];
+            if (currentCandles[i] == null) {
+                return i;
             }
         }
-        return null;
+
+        currentCandles.Add(null);
+        return currentCandles.Count - 1;
     }
 
 
@@ -398,8 +442,8 @@ public class GameManager : MonoBehaviour, IMenu
         if (selectedCan != null && selectedCan.GetComponentInChildren<CandleLightController>() != null) {
             //if the candle has not been dropped yet, destroy it
             if (!canMove) {
-                int heldCandleId = selectedCan.GetComponentInChildren<CandleLightController>().getId();
-                destroyCandle(heldCandleId);
+                //int heldCandleId = selectedCan.GetComponentInChildren<CandleLightController>().getId();
+                destroyCandle(selectedCan);
             }
             //always spawn the next "candle" in case the previously dropped one is still moving
             //this is to stop a moving candle from taking the event horizon event hostage
@@ -409,25 +453,9 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
 
-    public void destroyCandle(int id) {
+    public void destroyCandle(GameObject can) {
 
-        GameObject canParent = getCandleById(id).getParentObject();
-
-        //currentCandles holds candle lights, not candles, which is a problem for candles with multiple lights
-        //since they could be in this list twice. So this goes through all lights that have the same parent object
-        for(int i = 0; i < currentCandles.Count; i++) {
-            if (currentCandles[i] != null && currentCandles[i].getParentObject() == canParent) {
-
-                //if the currently held candle is being deleted, set the selected candle to null to avoid error when the candle is deleted
-                if (currentCandles[i] == selectedCan) {
-                    selectedCan = null;
-                }
-
-                currentCandles[i] = null;
-            }
-        }
-
-        Destroy(canParent);
+        Destroy(can);
 
     }
 
@@ -435,7 +463,7 @@ public class GameManager : MonoBehaviour, IMenu
     void destroyAllCandles() {
         for (int i = 0; i < currentCandles.Count; i++) {
             if(currentCandles[i] != null) {
-                destroyCandle(currentCandles[i].getId());
+                destroyCandle(currentCandles[i].getParentObject());
             }
         }
         currentCandles.Clear();
@@ -505,6 +533,10 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void resetGame() {
+        resetGame(false);
+    }
+
+    public void resetGame(bool initialStart) {
         selectedCan = null;
         isTurnActive = false;
         gameStarted = false;
@@ -525,8 +557,16 @@ public class GameManager : MonoBehaviour, IMenu
         }
         specialObjects.Clear();
 
-        CandleLightController.reset();
         gameOverChain.resetChain();
+
+        //not everything may be initialized when this is called at the start because both fadingObject
+        //and starting the game use the Start() method, so these aren't called if the game is doing its
+        //initial game reset when the game first opens
+        if (!initialStart) {
+            adSpinnerMenu.unpause();
+            pauseMenuObject.GetComponent<IMenu>().unpause();
+            lockedFeatureMenu.unpause();
+        }
 
         GameObject x = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
         x.GetComponent<CandleId>().setInfo(-1, true);
@@ -766,11 +806,11 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     //creates a new bonus text given the candle being destroyed and the current point multiplier, returns the new multiplier
-    public int createBonusText(int canId, int multiplier) {
+    public int createBonusText(GameObject candle, int multiplier) {
 
         int newMult = multiplier;
 
-        CandleId can = getCandleById(canId).getParentObject().GetComponent<CandleId>();
+        CandleId can = /*getCandleById(canId).getParentObject().GetComponent<CandleId>()*/candle.GetComponent<CandleId>();
         int spriteId = 0;
 
         if (can.isStarterCandle()) {

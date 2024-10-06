@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AdSpinnerMenuController : FadingMenuController
 {
+    //the last sprite in this is the one used for the spinning animation
+    [SerializeField] Sprite[] upgradeSprites;
 
     [SerializeField] Camera mainCamera;
     [SerializeField] AdSpinnerLever lever;
@@ -79,9 +81,11 @@ public class AdSpinnerMenuController : FadingMenuController
         if(spinnerAnimator.speed < 0.5f) {
 
             spinnerAnimator.speed = 0;
+            spinnerAnimator.enabled = false;
             spinning = false;
             closeMenu = true;
             startTime = Time.time;
+            spriteRenderer.sprite = upgradeSprites[x];
 
         }
 
@@ -92,6 +96,7 @@ public class AdSpinnerMenuController : FadingMenuController
         base.pause();
 
         lever.enable();
+        spriteRenderer.sprite = upgradeSprites[upgradeSprites.Length - 1];
         transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0);
     }
 

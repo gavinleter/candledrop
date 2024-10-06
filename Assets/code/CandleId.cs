@@ -5,6 +5,10 @@ using UnityEngine;
 public class CandleId : MonoBehaviour
 {
 
+    //THIS CLASS IS NOT FOR THE UNIQUE ID OF CANDLES
+    //IT IS FOR THE ID OF THE PREFAB USED ON THIS CANDLE
+    //specifically the id here is the index of the prefab used in GameManager.CanObjects[]
+    //this is so that the game can give bonuses for special candles
     int id = 0;
     bool starterCandle = false;
 

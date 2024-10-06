@@ -1,17 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class CandleRowDestroyer : MonoBehaviour
+public class CandleRowDestroyer : CandleLightCollector
 {
 
-    List<int> touching = new List<int>();
-    [SerializeField] GameObject otherSide;
+    [SerializeField] RightWall otherSide;
     [SerializeField] GameObject CandleDestroyParticle;
-    [SerializeField] GameObject gameManager;
+    [SerializeField] GameManager gameManager;
     [SerializeField] ParticleSystem leftParticleSystem;
-    GameManager gameManagerScript;
-    RightWall otherSideScript;
 
     [SerializeField] float rowDestructionBonusTime;
     float rowDestructionInitialTime = 0;
@@ -19,8 +17,6 @@ public class CandleRowDestroyer : MonoBehaviour
 
     
     void Start(){
-        otherSideScript = otherSide.GetComponent<RightWall>();
-        gameManagerScript = gameManager.GetComponent<GameManager>();
         leftParticleSystem.Stop();
     }
 
@@ -30,10 +26,11 @@ public class CandleRowDestroyer : MonoBehaviour
     }
 
 
-    void FixedUpdate() { 
-        List<int> r = findRow();
 
-        if (r.Count > 0) {
+    void FixedUpdate() { 
+        CandleLightController[] r = findRow().ToArray();
+
+        if (r.Length > 0) {
 
             int totalCandles = 0;
             int multiplier = 1;
@@ -42,132 +39,108 @@ public class CandleRowDestroyer : MonoBehaviour
             //if the last row destruction bonus has not passed yet
             if (rowDestructionInitialTime + rowDestructionBonusTime > Time.time) {
                 multiplier *= 2;
-                gameManagerScript.createRowDestructionBonusText();
+                if(gameManager != null) {
+                    gameManager.createRowDestructionBonusText();
+                }
             }
 
             rowDestructionInitialTime = Time.time;
 
-            for (int i = 0; i < r.Count; i++) {
+            for (int i = 0; i < r.Length; i++) {
 
                 //"r" holds ids for every candle light, this null check is necessary because of candles with multiple lights being entered multiple times
-                if (GameManager.getCandleById(r[i]) != null) {
-                    multiplier = gameManagerScript.createBonusText(r[i], multiplier);
-                    destroyCandle(r, i);
+                if (r[i] != null) {
+                    if (gameManager != null) {
+                        multiplier = gameManager.createBonusText(r[i].getParentObject(), multiplier);
+                    }
+                    destroyCandle(r[i]);
                     totalCandles++;
                 }
 
             }
 
             points = totalCandles * multiplier;
-            gameManagerScript.addScore(points);
+            if (gameManager != null) {
+                gameManager.addScore(points);
+            }
 
         }
         
     }
 
 
-    void destroyCandle(List<int> r, int i) {
-        GameObject c = GameManager.getCandleById(r[i]).getParentObject();
+
+    void destroyCandle(CandleLightController can) {
+        GameObject c = can.getParentObject();
         GameObject p = Instantiate(CandleDestroyParticle);
         p.transform.position = c.transform.position;
-        gameManagerScript.destroyCandle(r[i]);
+        if (gameManager != null) {
+            gameManager.destroyCandle(c);
+        }
     }
 
 
-    List<int> findRow() {
-        List<int> result = new List<int>();
+    CandleLightController[] findRow() {
+        HashSet<CandleLightController> result = new HashSet<CandleLightController>();
+
+        updateTouchingList();
 
         //if the left wall is touching nothing exit early
-        if(touching.Count == 0) {
-            return result;
-        }
+        if(isTouchingAnyCandles()) {
 
-        //go through each candle and record the ids of all touching candles
-        for(int i = 0; i < touching.Count; i++) {
-            if (!result.Contains(touching[i])) {
-                result.Add(touching[i]);
-                GameManager.getCandleById(touching[i]).traverse(result);
+            //start wall shine if something is touching the wall
+            if (!leftParticleSystem.isPlaying) {
+                leftParticleSystem.Play();
             }
-        }
 
-        //check if any recorded candles are touching the right wall
-        for (int i = 0; i < result.Count; i++) {
-            if (otherSideScript.containsId(result[i])) {
-                return result;
+            CandleIgniter canLight;
+            CandleLightController can;
+
+            //go through each candle and all of the touching candles
+            for (int i = 0; i < touchingLength; i++) {
+
+                canLight = touching[i].GetComponent<CandleIgniter>();
+
+                if (canLight) {
+                    can = canLight.getParentCandleScript();
+
+                    if (can != null && can.isEnabled() && !result.Contains(can)) {
+                        result.Add(can);
+                        can.traverse(result);
+                    }
+                }
+
             }
-        }
 
-        return new List<int>();
-    }
+            //check if any recorded candles are touching the right wall
+            foreach (CandleLightController c in result) {
+                if (otherSide.containsCandle(c)) {
+                    return result.ToArray();
+                }
+            }
 
-
-
-    void OnTriggerEnter2D(Collider2D collision) {
-        CandleIgniter o = collision.gameObject.GetComponent<CandleIgniter>();
-        
-        if (o != null) {
-            CandleLightController other = o.getParentCandleScript();
-            //keep track of any candle that comes into contact with this one
-            addToList(other);
-            
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D collision) {
-        CandleIgniter o = collision.gameObject.GetComponent<CandleIgniter>();
-
-        if (o != null) {
-            CandleLightController other = o.getParentCandleScript();
-
-            //keep track of any candle that comes into contact with this one
-            removeFromList(other);
+            //if it has gotten to this point, then there are no candles touching the
+            //right wall so we should return nothing
+            return new CandleLightController[0];
 
         }
+        else {
+            leftParticleSystem.Stop();
+        }
+
+        return result.ToArray();
     }
-
-
 
 
     //need to keep track of all other candle ids that are touching the wall
-    public void addToList(CandleLightController other) {
-        //make sure this candle isnt already in the list
-        if (findIndex(other.getId()) == -1) {
-            touching.Add(other.getId());
-            
-            //start wall shine if something is touching the wall
-            if(touching.Count > 0) {
-                leftParticleSystem.Play();
-            }
+    /*public override void addToList(CandleLightController other) {
+        base.addToList(other);
+
+        //start wall shine if something is touching the wall
+        if (isTouchingAnyCandles()) {
+            leftParticleSystem.Play();
         }
-    }
-
-    public void removeFromList(CandleLightController other) {
-        //make sure this candle is in the list
-        int index = findIndex(other.getId());
-        if (index != -1) {
-            touching.RemoveAt(index);
-
-            //stop wall shine if something is touching the wall
-            if (touching.Count < 1) {
-                leftParticleSystem.Stop();
-            }
-        }
-    }
-
-
-    private int findIndex(int id) {
-        for (int i = 0; i < touching.Count; i++) {
-            if (touching[i] == id) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-
-    public bool containsId(int id) {
-        return findIndex(id) != -1;
-    }
+    }*/
 
 
 }
