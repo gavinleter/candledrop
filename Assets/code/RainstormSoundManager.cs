@@ -39,7 +39,7 @@ public class RainstormSoundManager : MonoBehaviour
         else if (mainCamera.position.y > 0.0 && mainCamera.position.y < 45.0)
         {
                 // Camera is above 65, set volume to 0% instantly
-                audioSource.volume = Mathf.Lerp(audioSource.volume, 0.5f, Time.deltaTime * volumeTransitionSpeed * 0.2f);
+                audioSource.volume = Mathf.Lerp(audioSource.volume, 0.05f, Time.deltaTime * volumeTransitionSpeed * 0.2f);
         }
 
         else

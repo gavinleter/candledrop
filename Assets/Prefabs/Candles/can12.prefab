@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5772640887352402823}
   - component: {fileID: 1394939431512466872}
   - component: {fileID: 8385512048685681991}
+  - component: {fileID: -789773694066934742}
   m_Layer: 0
   m_Name: can12
   m_TagString: Untagged
@@ -184,6 +185,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d05c5886f2b46448b5ce44047668c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-789773694066934742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8876858822319839045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 925d0013b907af24e988e3fdff724bb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  candleHitSound: {fileID: 8300000, guid: 72c87ef97ae0d654e9ca7f9d9f90f743, type: 3}
 --- !u!1001 &1304341180470395051
 PrefabInstance:
   m_ObjectHideFlags: 0

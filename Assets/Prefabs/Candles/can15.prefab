@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2777500667977984262}
   - component: {fileID: 9120492706701115374}
   - component: {fileID: 8514673419421179924}
+  - component: {fileID: -2270322386240290859}
   m_Layer: 0
   m_Name: can15
   m_TagString: Untagged
@@ -318,6 +319,19 @@ PolygonCollider2D:
       - {x: 0.08504557, y: -0.12509698}
       - {x: 0.09498127, y: -0.12501773}
   m_UseDelaunayMesh: 0
+--- !u!114 &-2270322386240290859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854789459276125003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 925d0013b907af24e988e3fdff724bb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  candleHitSound: {fileID: 8300000, guid: 72c87ef97ae0d654e9ca7f9d9f90f743, type: 3}
 --- !u!1001 &3369102982088672725
 PrefabInstance:
   m_ObjectHideFlags: 0
