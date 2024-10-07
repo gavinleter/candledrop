@@ -27,11 +27,11 @@ public class MiniSunExplosion : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision) {
 
-        //if touching a candle light, ignite it if it is able to
+        //if touching a candle light, ignite it
         CandleLightController can = collision.GetComponent<CandleLightController>();
 
-        if (can != null && can.canIgnite()) {
-            can.enableLight();
+        if (can != null) {
+            can.miniSunIgnite();
         }
 
     }

@@ -13,11 +13,16 @@ public class CandleLightController : MonoBehaviour {
 
     bool candleEnabled = true;
     bool beingDestroyed = false;
+
+    float miniSunIgnitionTime = 0;
+    float miniSunIgnitionDuration = 3;
+
     GameObject flickerObject;
     GameObject staticFlickerObject;
     GameObject parentObject;
     GameObject superGlowObject;
     GameObject flareOutline;
+    SpriteRenderer miniSunLight;
     ParticleSystem flareEmberParticles;
     CandleIgniter candleIgniter;
     Collider2D igniterCollider;
@@ -32,7 +37,7 @@ public class CandleLightController : MonoBehaviour {
 
 
     void Awake(){
-
+        
         parentObject = transform.parent.gameObject;
 
         flickerObject = transform.Find("flicker").gameObject;
@@ -42,6 +47,8 @@ public class CandleLightController : MonoBehaviour {
         flareEmberParticles = transform.Find("flare ember particles").GetComponent<ParticleSystem>();
         flareEmberParticles.Stop();
         flareEmberParticles.Clear();
+        miniSunLight = transform.Find("Mini sun light").GetComponent<SpriteRenderer>();
+        miniSunLight.enabled = false;
 
         wickCollider = GetComponent<Collider2D>();
 
@@ -96,6 +103,10 @@ public class CandleLightController : MonoBehaviour {
             }
         }
 
+        if (!isMiniSunIgnited()) {
+            miniSunDeignite();
+        }
+
         return x;
     }
 
@@ -105,9 +116,9 @@ public class CandleLightController : MonoBehaviour {
     }
 
 
-    public void disableLight(bool flareOverride) {
-        //flares cannot be extinguished normally
-        if (!isFlare || flareOverride) {
+    public void disableLight(bool forceDisable) {
+        //flares and candles ignited by mini suns cannot be extinguished normally
+        if ((!isCurrentlyFlare() && !isMiniSunIgnited()) || forceDisable) {
             candleEnabled = false;
             staticFlickerObject.GetComponent<SpriteRenderer>().enabled = false;
             GetComponent<SpriteRenderer>().enabled = false;
@@ -144,6 +155,28 @@ public class CandleLightController : MonoBehaviour {
         flickerObject.GetComponent<SpriteRenderer>().enabled = false;
         superGlowObject.GetComponent<ParticleSystem>().Stop();
         superGlowObject.GetComponent<ParticleSystem>().Clear();
+    }
+
+
+    //mini sun explosions force non-flare candles to stay on for a short time
+    public void miniSunIgnite() {
+
+        if (!isCurrentlyFlare()) {
+            miniSunIgnitionTime = Time.time;
+            enableLight();
+            miniSunLight.enabled = true;
+        }
+
+    }
+
+
+    void miniSunDeignite() {
+        miniSunLight.enabled = false;
+    }
+
+
+    public bool isMiniSunIgnited() {
+        return Time.time < miniSunIgnitionTime + miniSunIgnitionDuration;
     }
 
 

@@ -17,6 +17,8 @@ public class GameOverMenuController : FadingMenuController
 
     [SerializeField] CameraController mainCam;
 
+    [SerializeField] LosingVignette losingVignette;
+
     //these two control the high score ticking up after a better score is achieved
     [SerializeField] float highScoreInitialDelay;
     float highScoreTickingDelay;
@@ -50,6 +52,7 @@ public class GameOverMenuController : FadingMenuController
         btns[0].onPress(() => { 
             unpause();
             gameManager.resetGame();
+            losingVignette.clearParticles();
             //mainCam.restartTransition();
             mainCam.fadeToBlackTransitionToTop(0.1f);
             gameManager.unpause();

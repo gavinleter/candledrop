@@ -331,9 +331,9 @@ public class GameManager : MonoBehaviour, IMenu
             }
 
             //velocityCheckDelay is important because the candle starts out at 0 velocity, so we have to wait for it to fall a bit first
-            //the next "candle" can also spawn if an event horizon is active and a shorter timer runs out while the previous black hole is moving still
+            //the next "candle" can also spawn if an event horizon/mini sun event is active and a shorter timer runs out while the previous black hole is moving still
             if ( rb == null || (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.velocity.magnitude < 0.01f) || 
-                eventHorizonEventActive && Time.time - lastMoveTime >= blackHoleSpawnDelay && rb.velocity.magnitude > 0.1f)
+                (eventHorizonEventActive || miniSunEventActive) && Time.time - lastMoveTime >= blackHoleSpawnDelay && rb.velocity.magnitude > 0.1f)
             {
                 //object has stopped moving, start a new turn
                 StartTurn();

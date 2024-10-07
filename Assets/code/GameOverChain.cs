@@ -8,12 +8,14 @@ public class GameOverChain : MonoBehaviour
     [SerializeField] GameOverMenuController gameOverMenu;
     [SerializeField] GameManager gameManager;
 
-    //a list of any menu that needs to be closed before a game over happens
+    //a list of any menu that could potentially be open that needs to be closed before a game over happens
     //this is a list of GameObject rather than IMenu because unity doesn't work with serializing interfaces
     [SerializeField] GameObject[] menusToClose;
 
     [SerializeField] float timeToGameOver;
     [SerializeField] float sensingDelay;
+
+    [SerializeField] LosingVignette losingVignette;
 
     SpriteRenderer sr;
 
@@ -33,6 +35,8 @@ public class GameOverChain : MonoBehaviour
   
     void Update(){
 
+        losingVignette.updateParticlePosition(lerp);
+
         //if currently touching a candle and the initial delay has passed, start lerping
         if (isTouching() && Time.time > initialTouchTime + sensingDelay) {
 
@@ -48,11 +52,18 @@ public class GameOverChain : MonoBehaviour
                     menusToClose[i].GetComponent<IMenu>().unpause();
                 }
             }
+            else if (!gameOver){
+                losingVignette.startParticles();
+            }
+            else {
+                losingVignette.stopParticles();
+            }
 
         }
         else {
 
             lerp = Mathf.Max(lerp - Time.deltaTime / (timeToGameOver / 2f), 0);
+            losingVignette.stopParticles();
         }
 
         Color newColor = sr.color;
