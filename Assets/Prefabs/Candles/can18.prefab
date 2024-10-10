@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 8876858822319839045}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.69, y: 3.6, z: 0}
+  m_LocalPosition: {x: 22.69, y: 3.656, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 6b7c0241c24fdae47b4d78ac7c9024ac, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 17bc8650dd67ae24686e6dad39e6ab3d, type: 3}
   m_Color: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,7 +101,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.5147758
+  m_Mass: 0.6371722
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0.6
@@ -177,7 +177,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.27, y: 0.21}
+    oldSize: {x: 0.27, y: 0.35}
     newSize: {x: 0.07, y: 0.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -208,8 +208,12 @@ PolygonCollider2D:
       - {x: -0.11501937, y: -0.04501957}
       - {x: -0.115019366, y: -0.05502024}
       - {x: -0.12501948, y: -0.05501959}
-      - {x: -0.12501894, y: -0.09501953}
-      - {x: -0.09501943, y: -0.09501944}
+      - {x: -0.12501925, y: -0.14501958}
+      - {x: -0.11501906, y: -0.14501932}
+      - {x: -0.11501937, y: -0.16501947}
+      - {x: -0.10502042, y: -0.16502063}
+      - {x: -0.10501946, y: -0.14501943}
+      - {x: -0.09501942, y: -0.14501931}
       - {x: -0.095019236, y: -0.08501861}
       - {x: -0.08501932, y: -0.085019454}
       - {x: -0.08501931, y: -0.075019136}
@@ -248,8 +252,12 @@ PolygonCollider2D:
       - {x: 0.08498139, y: -0.07501899}
       - {x: 0.08498076, y: -0.085019335}
       - {x: 0.09498131, y: -0.0850191}
-      - {x: 0.09498067, y: -0.09501916}
-      - {x: 0.12498069, y: -0.09501955}
+      - {x: 0.09498068, y: -0.14501931}
+      - {x: 0.10498058, y: -0.14501943}
+      - {x: 0.1049809, y: -0.16501726}
+      - {x: 0.11498049, y: -0.16501929}
+      - {x: 0.114980176, y: -0.14501941}
+      - {x: 0.12498006, y: -0.14501931}
       - {x: 0.12498037, y: -0.05501965}
       - {x: 0.11498018, y: -0.05501976}
       - {x: 0.114980176, y: -0.04501973}
@@ -273,7 +281,7 @@ PolygonCollider2D:
       - {x: 0.024979705, y: 0.044979632}
       - {x: 0.01498043, y: 0.044980306}
       - {x: 0.014979516, y: 0.05497978}
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1
 --- !u!1001 &1304341180470395051
 PrefabInstance:
   m_ObjectHideFlags: 0

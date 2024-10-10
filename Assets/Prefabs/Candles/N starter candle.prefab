@@ -183,7 +183,7 @@ PolygonCollider2D:
       - {x: 0.04498052, y: -0.14001943}
       - {x: 0.07498083, y: -0.14002343}
       - {x: 0.07498051, y: 0.09998056}
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1
 --- !u!50 &976823213297399499
 Rigidbody2D:
   serializedVersion: 4
@@ -196,7 +196,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.8511167
+  m_Mass: 0.85116524
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0

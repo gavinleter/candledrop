@@ -104,7 +104,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 1.0171958
+  m_Mass: 1.0172687
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0.6
@@ -318,7 +318,7 @@ PolygonCollider2D:
       - {x: 0.08498232, y: -0.11501831}
       - {x: 0.08504557, y: -0.12509698}
       - {x: 0.09498127, y: -0.12501773}
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1
 --- !u!114 &-2270322386240290859
 MonoBehaviour:
   m_ObjectHideFlags: 0
