@@ -5,15 +5,32 @@ using UnityEngine;
 public class BlackHole : MonoBehaviour, ISpecialObject
 {
     [SerializeField] GameObject holeExplodePrefab;
+
+    //next two lines are gavin code for sound
+    [SerializeField] private AudioClip holeExplode;
     GameManager gameManagerScript;
     int id = 0;
 
     public void setup(GameManager g, int id) {
         gameManagerScript = g;
         this.id = id;
+
     }
 
     private void OnCollisionEnter2D(Collision2D other){
+        
+        //next eight lines are gavin code for sound
+        //all below steps ensures a sound can still be produced from a game object that has been destroyed.
+        GameObject tempAudio = new GameObject("TempAudioSource");   //create extra instance of gameObject to hold temporary source temporarily
+        AudioSource tempSource = tempAudio.AddComponent<AudioSource>(); //create temporary source to be held
+        tempSource.clip = holeExplode;  //set clip
+        tempSource.pitch = Random.Range(1.5f, 2.5f);  //randomizes pitch of sound
+        tempSource.volume = 0.5f;
+        tempSource.Play();  //plays sound
+        DontDestroyOnLoad(tempAudio);  // Prevents destruction when transitioning scenes or objects
+        Destroy(tempAudio, holeExplode.length);  // Destroy the audio object after the sound finishes
+
+
         CandleLightController o = other.gameObject.GetComponentInChildren<CandleLightController>();
 
         //check if the colliding object is a candle

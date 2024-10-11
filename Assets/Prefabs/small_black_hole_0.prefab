@@ -200,6 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holeExplodePrefab: {fileID: 6175462216268171424, guid: ee2c0268390a9fe459faa701dcb23b92, type: 3}
+  holeExplode: {fileID: 8300000, guid: 054461b636423f2459737e63e70d5afa, type: 3}
 --- !u!1 &4421521638613439260
 GameObject:
   m_ObjectHideFlags: 0
