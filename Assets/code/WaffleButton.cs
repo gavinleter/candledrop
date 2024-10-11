@@ -37,13 +37,13 @@ public class WaffleButton : ButtonPress {
             biteCount++;
 
         }
-        else if(biteCount == 11){
+        else if(biteCount == 26){
 
             return;
         }
 
 
-        else if(biteCount == 10){
+        else if(biteCount == 25){
 
             jimmySourceDown.volume = 1;
             jimmySourceDown.Play();
