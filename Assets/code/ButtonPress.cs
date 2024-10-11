@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ButtonPress : MonoBehaviour
@@ -11,9 +12,6 @@ public class ButtonPress : MonoBehaviour
 
     [SerializeField] AudioClip btnDownSound;
     [SerializeField] AudioClip btnUpSound;
-
-    protected AudioSource audioSourceDown;
-    protected AudioSource audioSourceUp;
 
     private bool isPressed = false;
     private Collider2D buttonCollider;
@@ -36,12 +34,6 @@ public class ButtonPress : MonoBehaviour
 
         buttonCollider.enabled = active;
 
-        audioSourceUp = gameObject.AddComponent<AudioSource>();
-        audioSourceUp.clip = btnUpSound;
-
-        audioSourceDown = gameObject.AddComponent<AudioSource>();
-        audioSourceDown.clip = btnDownSound;
-
     }
 
     private void OnMouseDown(){
@@ -52,8 +44,8 @@ public class ButtonPress : MonoBehaviour
     }
 
     virtual protected void MouseDown() {
-        if (audioSourceDown.clip != null && Settings.isSoundEnabled()) {
-            audioSourceDown.Play();
+        if (btnDownSound != null && Settings.isSoundEnabled()) {
+            audioDown();
         }
 
         isPressed = true;
@@ -83,7 +75,7 @@ public class ButtonPress : MonoBehaviour
             actions[i]();
         }
 
-        if (audioSourceUp.clip != null && Settings.isSoundEnabled()) {
+        if (btnUpSound != null && Settings.isSoundEnabled()) {
             audioUp();
         }
     }
@@ -102,9 +94,35 @@ public class ButtonPress : MonoBehaviour
 
     //this is here because the SecretButton class plays more than one sound when pressed
     virtual protected void audioUp() {
-        audioSourceUp.Play();
+        //audioSourceUp.Play();
+
+        AudioSource a = transform.AddComponent<AudioSource>();
+        a.clip = btnUpSound;
+        a.Play();
+
+        Destroy(a, btnUpSound.length);
     }
 
+
+    virtual protected void audioDown() {
+        //audioSourceDown.Play();
+
+        AudioSource a = transform.AddComponent<AudioSource>();
+        a.clip = btnDownSound;
+        a.Play();
+
+        Destroy(a, btnDownSound.length);
+    }
+
+
+    public void setAudioUp(AudioClip a) {
+        btnUpSound = a;
+    }
+
+
+    public void setAudioDown(AudioClip a) {
+        btnDownSound = a;
+    }
 
 
     virtual protected void OnMouseExit(){

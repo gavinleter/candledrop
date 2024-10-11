@@ -8,55 +8,43 @@ public class WaffleButton : ButtonPress {
     [SerializeField] Sprite[] waffleSprites;
     [SerializeField] AudioClip[] waffleBiteSounds;
 
-    [SerializeField] AudioClip jimmyCube;
+    [SerializeField] AudioClip jimmySound;
 
     ParticleSystem[] waffleBiteParticles;
 
-    [SerializeField] private ParticleSystem jimmyRain;
-    private AudioSource jimmySourceDown;
+    [SerializeField] ParticleSystem jimmyRain;
+    AudioSource jimmyAudioSource;
     int biteCount = 0;
 
     protected override void Start() {
         base.Start();
 
         waffleBiteParticles = GetComponentsInChildren<ParticleSystem>();
-        jimmySourceDown =  gameObject.AddComponent<AudioSource>();
-        jimmySourceDown.clip = jimmyCube;
-        audioSourceDown.volume = 1;
-        jimmySourceDown.volume = 0;
+
+        jimmyAudioSource =  gameObject.AddComponent<AudioSource>();
+        jimmyAudioSource.clip = jimmySound;
+        jimmyAudioSource.playOnAwake = false;
+
     }
 
 
     protected override void MouseDown() {
-        
-        if (biteCount < 3) {
-            
-            audioSourceDown.clip = waffleBiteSounds[0];
-            GetComponent<SpriteRenderer>().sprite = waffleSprites[biteCount];
-            waffleBiteParticles[biteCount].Play();
-            biteCount++;
 
-        }
-        else if(biteCount == 26){
+        //using Mathf.Min here to make sure we dont go outside the bounds of the arrays
+        setAudioDown(  waffleBiteSounds[ Mathf.Min(biteCount, waffleBiteSounds.Length - 1) ]  );
+        GetComponent<SpriteRenderer>().sprite = waffleSprites[ Mathf.Min(biteCount, waffleSprites.Length - 1) ];
+        waffleBiteParticles[ Mathf.Min(biteCount, waffleBiteParticles.Length - 1) ].Play();
 
-            return;
-        }
+        if (Settings.isSoundEnabled() && biteCount == 24) {
 
-
-        else if(biteCount == 25){
-
-            jimmySourceDown.volume = 1;
-            jimmySourceDown.Play();
-            biteCount++;
+            setAudioDown(null);
+            jimmyAudioSource.volume = 1f;
+            jimmyAudioSource.Play();
             jimmyRain.Play();
-            return;
-        }
-        else{
-
-            audioSourceDown.clip = waffleBiteSounds[3];
-            biteCount++;
 
         }
+
+        biteCount++;
 
         base.MouseDown();
     }
