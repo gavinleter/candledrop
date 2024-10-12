@@ -9,6 +9,7 @@ public class CandleId : MonoBehaviour
     //IT IS FOR THE ID OF THE PREFAB USED ON THIS CANDLE
     //specifically the id here is the index of the prefab used in GameManager.CanObjects[]
     //this is so that the game can give bonuses for special candles
+    [SerializeField] int points = 1;
     int id = 0;
     bool starterCandle = false;
 
@@ -28,5 +29,9 @@ public class CandleId : MonoBehaviour
     public int getId() {
         return id;
     }
-    
+
+    public int getPoints() { 
+        return points;
+    }
+
 }

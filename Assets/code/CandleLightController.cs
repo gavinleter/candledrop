@@ -27,6 +27,7 @@ public class CandleLightController : MonoBehaviour {
     CandleIgniter candleIgniter;
     Collider2D igniterCollider;
     Collider2D wickCollider;
+    CandleId candleId;
     int layer;
     ContactFilter2D contactFilter;
     //overlaps is used to count how many solid non-light objects this light is colliding with
@@ -49,6 +50,7 @@ public class CandleLightController : MonoBehaviour {
         flareEmberParticles.Clear();
         miniSunLight = transform.Find("Mini sun light").GetComponent<SpriteRenderer>();
         miniSunLight.enabled = false;
+        candleId = parentObject.GetComponent<CandleId>();
 
         wickCollider = GetComponent<Collider2D>();
 
@@ -304,8 +306,21 @@ public class CandleLightController : MonoBehaviour {
     }
 
 
+    //this is called when black holes destroy this candle on a delay which is why the light is disabled
+    //but also when the candle is being destroyed normally because Destroy() does so on the next Update() loop
     public void startDestroy() {
         beingDestroyed = true;
         disableLight(true);
+    }
+
+
+    public bool isBeingDestroyed() {
+        return beingDestroyed;
+    }
+
+
+    //how many points this candle should give for destroying it
+    public int getPoints() {
+        return candleId.getPoints();
     }
 }

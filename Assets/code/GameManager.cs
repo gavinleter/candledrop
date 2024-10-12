@@ -111,6 +111,10 @@ public class GameManager : MonoBehaviour, IMenu
 
     [SerializeField] ParticleSystem guideArrows;
 
+    [SerializeField] LosingVignette losingVignette;
+
+    [SerializeField] float chanceForFlare;
+
     List<int> spawnPotentials = new List<int>();
 
     private void Start()
@@ -248,6 +252,7 @@ public class GameManager : MonoBehaviour, IMenu
         //the inivisble button that drops the initial candle on the title screen
         buttons[18].onPress(() => {
             getInitialCandle().GetComponent<StartCandleFall>().dropCandle();
+            losingVignette.clearParticles();
         });
 
         buttons[19].onPress(() => {
@@ -433,7 +438,19 @@ public class GameManager : MonoBehaviour, IMenu
             addCandleLight(selectedCan);
             setCandleId(selectedCan, randomIndex);
 
-        } else if(selectedCan.GetComponent<ISpecialObject>() != null) {
+            //random chance for the candle to turn into a flare
+            if (chanceForFlare > UnityEngine.Random.Range(0f, 1f)) {
+
+                CandleLightController[] c = selectedCan.GetComponentsInChildren<CandleLightController>();
+
+                for(int i = 0; i < c.Length; i++) {
+                    c[i].convertToFlare();
+                }
+
+            }
+
+        } 
+        else if(selectedCan.GetComponent<ISpecialObject>() != null) {
 
             int specialObjId = nextSpecialObjectId();
             selectedCan.GetComponent<ISpecialObject>().setup(this, specialObjId);
@@ -495,12 +512,13 @@ public class GameManager : MonoBehaviour, IMenu
 
     public void destroyCandle(GameObject can, bool destroyedByBlackHole) {
 
-        if (destroyedByBlackHole) {
-            CandleLightController[] c = can.GetComponentsInChildren<CandleLightController>(); 
+        CandleLightController[] c = can.GetComponentsInChildren<CandleLightController>();
 
-            for(int i = 0; i < c.Length; i++) {
-                c[i].startDestroy();
-            }
+        for (int i = 0; i < c.Length; i++) {
+            c[i].startDestroy();
+        }
+
+        if (destroyedByBlackHole) {
 
             ColorFadingObject col = can.AddComponent<ColorFadingObject>();
             GrowingObject grow = can.AddComponent<GrowingObject>();
@@ -518,6 +536,8 @@ public class GameManager : MonoBehaviour, IMenu
             Rigidbody2D canRB = can.GetComponent<Rigidbody2D>();
             canRB.gravityScale = -0.1f;
             canRB.AddTorque(UnityEngine.Random.Range(-5f, 5f));
+
+            can.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
             Destroy(can, 1.5f);
         }

@@ -5,10 +5,20 @@ using UnityEngine;
 public class BlackHole : MonoBehaviour, ISpecialObject
 {
     [SerializeField] GameObject holeExplodePrefab;
-    [SerializeField] private AudioClip holeExplode;
+    [SerializeField] AudioClip holeExplode;
+    [SerializeField] float destructionRadius;
 
+    CircleCollider2D coll;
+    ContactFilter2D contactFilter;
     GameManager gameManagerScript;
     int id = 0;
+
+
+    void Awake() {
+        coll = GetComponent<CircleCollider2D>();
+        contactFilter = new ContactFilter2D().NoFilter();
+    }
+
 
     public void setup(GameManager g, int id) {
         gameManagerScript = g;
@@ -19,7 +29,8 @@ public class BlackHole : MonoBehaviour, ISpecialObject
     private void OnCollisionEnter2D(Collision2D other){
 
         //create empty gameobject to temporaily hold black hole explosion audiosource
-        if (Settings.isSoundEnabled()) {
+        //this sound should not play when colliding with a black hole or sun
+        if (Settings.isSoundEnabled() && other.transform.GetComponent<ISpecialObject>() == null) {
 
             GameObject tempAudio = new GameObject("BlackHoleExplosionTempAudioSource");
             AudioSource tempSource = tempAudio.AddComponent<AudioSource>();
@@ -38,15 +49,7 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
         CandleLightController o = other.gameObject.GetComponentInChildren<CandleLightController>();
 
-        //check if the colliding object is a candle
-        if (o != null){
-            CandleId can = o.getParentObject().GetComponent<CandleId>();
-            gameManagerScript.createMultiplierlessBonusText(can, 0);
-            gameManagerScript.addScore(1);
-
-            gameManagerScript.destroyCandle(o.getParentObject(), true);
-
-        }
+        destroyCandle(o);
 
         //destroy self only when touching something that is not another black hole
         if (other.gameObject.GetComponentInChildren<BlackHole>() == null) {
@@ -57,19 +60,22 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
 
     public void destroySelf() {
-        
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, gameManagerScript.blackHoleDestroyRadius, Vector2.one);
 
-        for (int i = 0; i < hits.Length; i++) {
-            CandleLightController o = hits[i].collider.gameObject.GetComponentInChildren<CandleLightController>();
-            if (o != null) {
+        coll.radius = destructionRadius;
+        List<Collider2D> hits = new List<Collider2D>(); 
+        int hitCount = coll.OverlapCollider(contactFilter, hits);
 
-                gameManagerScript.destroyCandle(o.getParentObject(), true);
-            }
+        for(int i = 0; i < hitCount; i++) {
+
+            CandleLightController o = hits[i].gameObject.GetComponentInChildren<CandleLightController>();
+
+            destroyCandle(o);
+
         }
+        
 
         GameObject holeExplode = Instantiate(holeExplodePrefab, transform.position, Quaternion.identity);
-        Destroy(holeExplode, 2f); // Destroy the explosion effect after 2 seconds
+        Destroy(holeExplode, 2f);
         gameManagerScript.removeSpecialObject(id);
         Destroy(gameObject);
     }
@@ -77,5 +83,19 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
     public int getId() {
         return id;
+    }
+
+
+    void destroyCandle(CandleLightController o) {
+
+        if(o != null && !o.isBeingDestroyed()) {
+
+            CandleId can = o.getParentObject().GetComponent<CandleId>();
+            gameManagerScript.createMultiplierlessBonusText(can, 0);
+            gameManagerScript.addScore(o.getPoints());
+
+            gameManagerScript.destroyCandle(o.getParentObject(), true);
+        }
+
     }
 }

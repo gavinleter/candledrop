@@ -55,9 +55,7 @@ public class GameOverChain : MonoBehaviour
             else if (!gameOver){
                 losingVignette.startParticles();
             }
-            else {
-                losingVignette.stopParticles();
-            }
+            
 
         }
         else {

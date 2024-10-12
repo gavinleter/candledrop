@@ -20,11 +20,6 @@ public class CandleRowDestroyer : CandleLightCollector
         leftParticleSystem.Stop();
     }
 
-    
-    void Update(){
-        
-    }
-
 
 
     void FixedUpdate() { 
@@ -32,16 +27,13 @@ public class CandleRowDestroyer : CandleLightCollector
 
         if (r.Length > 0) {
 
-            int totalCandles = 0;
             int multiplier = 1;
-            int points;
+            int points = 0;
 
             //if the last row destruction bonus has not passed yet
             if (rowDestructionInitialTime + rowDestructionBonusTime > Time.time) {
                 multiplier *= 2;
-                if(gameManager != null) {
-                    gameManager.createRowDestructionBonusText();
-                }
+                gameManager.createRowDestructionBonusText();
             }
 
             rowDestructionInitialTime = Time.time;
@@ -49,20 +41,17 @@ public class CandleRowDestroyer : CandleLightCollector
             for (int i = 0; i < r.Length; i++) {
 
                 //"r" holds ids for every candle light, this null check is necessary because of candles with multiple lights being entered multiple times
-                if (r[i] != null) {
-                    if (gameManager != null) {
-                        multiplier = gameManager.createBonusText(r[i].getParentObject(), multiplier);
-                    }
+                if (r[i] != null && !r[i].isBeingDestroyed()) {
+
+                    points += r[i].getPoints();
+                    multiplier = gameManager.createBonusText(r[i].getParentObject(), multiplier);
                     destroyCandle(r[i]);
-                    totalCandles++;
+
                 }
 
             }
 
-            points = totalCandles * multiplier;
-            if (gameManager != null) {
-                gameManager.addScore(points);
-            }
+            gameManager.addScore(points * multiplier);
 
         }
         
@@ -74,9 +63,7 @@ public class CandleRowDestroyer : CandleLightCollector
         GameObject c = can.getParentObject();
         GameObject p = Instantiate(CandleDestroyParticle);
         p.transform.position = c.transform.position;
-        if (gameManager != null) {
-            gameManager.destroyCandle(c);
-        }
+        gameManager.destroyCandle(c);
     }
 
 
