@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
-using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class Settings
@@ -47,17 +43,26 @@ public class Settings
 
 
     public static int getStarterCandleId() {
-        return 0;
+        return PlayerPrefs.GetInt("starterCandleId");
     }
 
-
     public static int getStarterCandleSkinId() {
-        return 0;
+        return PlayerPrefs.GetInt("starterCandleSkinId");
+    }
+
+    public static void setStarterCandleId(int x) {
+        PlayerPrefs.SetInt("starterCandleId", x);
+        PlayerPrefs.Save();
+    }
+
+    public static void setStarterCandleSkinId(int x) {
+        PlayerPrefs.SetInt("starterCandleSkinId", x);
+        PlayerPrefs.Save();
     }
 
 
     public static bool skinUnlocked(int candle, int skin) {
-        return skin < 2;
+        return true;
     }
 
 
@@ -89,6 +94,7 @@ public class Settings
     }
 
 
+    //generic method for setting any playerpref
     private static void toggleOption(string key, bool x) {
         int xInt = x ? 1 : 0;
 

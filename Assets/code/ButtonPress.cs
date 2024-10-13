@@ -13,6 +13,10 @@ public class ButtonPress : MonoBehaviour
     [SerializeField] AudioClip btnDownSound;
     [SerializeField] AudioClip btnUpSound;
 
+    float pressUpEffectDelay = 0.1f;
+    float pressDownTime = 0;
+    bool waitingForPressUpEffects = false;
+
     private bool isPressed = false;
     private Collider2D buttonCollider;
 
@@ -36,6 +40,24 @@ public class ButtonPress : MonoBehaviour
 
     }
 
+
+    virtual protected void Update() {
+
+        if (waitingForPressUpEffects && Time.time > (pressDownTime + pressUpEffectDelay)) {
+
+            waitingForPressUpEffects = false;
+            rend.material.color = normalColor;
+
+            if (btnUpSound != null && Settings.isSoundEnabled()) {
+                audioUp();
+            }
+
+        }
+
+    }
+
+
+
     private void OnMouseDown(){
         if (active) {
 
@@ -54,6 +76,9 @@ public class ButtonPress : MonoBehaviour
         for (int i = 0; i < downActions.Count; i++) {
             downActions[i]();
         }
+
+        pressDownTime = Time.time;
+        waitingForPressUpEffects = true;
     }
 
 
@@ -68,16 +93,11 @@ public class ButtonPress : MonoBehaviour
     virtual protected void MouseUp() {
         isPressed = false;
 
-        rend.material.color = normalColor;
-
         //execute each action when this button is pressed
         for (int i = 0; i < actions.Count; i++) {
             actions[i]();
         }
 
-        if (btnUpSound != null && Settings.isSoundEnabled()) {
-            audioUp();
-        }
     }
 
 
@@ -94,7 +114,6 @@ public class ButtonPress : MonoBehaviour
 
     //this is here because the SecretButton class plays more than one sound when pressed
     virtual protected void audioUp() {
-        //audioSourceUp.Play();
 
         AudioSource a = transform.AddComponent<AudioSource>();
         a.clip = btnUpSound;
@@ -105,7 +124,6 @@ public class ButtonPress : MonoBehaviour
 
 
     virtual protected void audioDown() {
-        //audioSourceDown.Play();
 
         AudioSource a = transform.AddComponent<AudioSource>();
         a.clip = btnDownSound;
@@ -127,7 +145,9 @@ public class ButtonPress : MonoBehaviour
 
     virtual protected void OnMouseExit(){
         isPressed = false;
-        rend.material.color = normalColor;
+        if (!waitingForPressUpEffects) {
+            rend.material.color = normalColor;
+        }
     }
 
 

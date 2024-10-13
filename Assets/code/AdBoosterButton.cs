@@ -32,7 +32,7 @@ public class AdBoosterButton : ButtonPress
     }
 
 
-    void Update(){
+    protected override void Update(){
 
         transform.position += new Vector3(-speed * Time.deltaTime, 0, 0);
 
@@ -47,7 +47,7 @@ public class AdBoosterButton : ButtonPress
             resetBooster();
         }
         
-        
+        base.Update();
     }
 
 

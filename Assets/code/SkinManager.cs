@@ -5,33 +5,39 @@ using UnityEngine;
 public class SkinManager : MonoBehaviour
 {
 
-    [SerializeField] Sprite[] can1Skins;
-    [SerializeField] Sprite[] nSkins;
-    [SerializeField] Sprite[] candleabraSkins;
-    [SerializeField] Sprite[] flareSkins;
-    [SerializeField] Sprite[] can7Skins;
+    [SerializeField] GameObject[] can1Prefabs;
+    [SerializeField] GameObject[] nPrefabs;
+    [SerializeField] GameObject[] candleabraPrefabs;
+    [SerializeField] GameObject[] flarePrefabs;
+    [SerializeField] GameObject[] can7Prefabs;
 
-    [SerializeField] Sprite[] candleCoverSkins;
+    [SerializeField] Sprite[] candleCovers;
 
-    List<Sprite[]> skins = new List<Sprite[]>();
+    List<GameObject[]> skins = new List<GameObject[]>();
 
 
     void Awake() {
         
-        skins.Add(can1Skins);
-        skins.Add(nSkins);
-        skins.Add(candleabraSkins);
-        skins.Add(flareSkins);
-        skins.Add(can7Skins);
+        skins.Add(can1Prefabs);
+        skins.Add(nPrefabs);
+        skins.Add(candleabraPrefabs);
+        skins.Add(flarePrefabs);
+        skins.Add(can7Prefabs);
 
     }
 
-    public Sprite getSkin(int candle, int skin) {
+    /*public Sprite getSkin(int candle, int skin) {
         return skins[candle][skin];
+    }*/
+
+
+    public Sprite getCandleCover(int candle) {
+        return candleCovers[candle];
     }
 
-    public Sprite getCover(int candle) {
-        return candleCoverSkins[candle];
+
+    public GameObject getCandlePrefab(int candle, int skin) {
+        return skins[candle][skin];
     }
 
 }

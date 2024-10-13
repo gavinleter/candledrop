@@ -33,7 +33,7 @@ public class SkinSelectMenuController : FadingMenuController
         };
 
         //go through each skin select button and assign their methods, also remove cover if they're unlocked
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 8; i++) {
             btns[i].onPress(skinButton(i));
 
             if (Settings.skinUnlocked(gameManager.getCurrentStarterCandleId(), i)) {
@@ -42,7 +42,7 @@ public class SkinSelectMenuController : FadingMenuController
         }
 
         //confirm select skin button
-        btns[5].onPress(delegate () {
+        btns[8].onPress(delegate () {
             unpause();
             gameManager.unpause();
         });
