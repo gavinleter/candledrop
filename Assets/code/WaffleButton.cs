@@ -33,8 +33,8 @@ public class WaffleButton : ButtonPress {
         //using Mathf.Min here to make sure we dont go outside the bounds of the arrays
         setAudioDown(  waffleBiteSounds[ Mathf.Min(biteCount, waffleBiteSounds.Length - 1) ]  );
         GetComponent<SpriteRenderer>().sprite = waffleSprites[ Mathf.Min(biteCount, waffleSprites.Length - 1) ];
-        waffleBiteParticles[ Mathf.Min(biteCount, waffleBiteParticles.Length - 1) ].Play();
-
+        waffleBiteParticles[ Mathf.Min(biteCount, waffleBiteParticles.Length - 2) ].Play();
+        
         if (Settings.isSoundEnabled() && biteCount == 24) {
 
             setAudioDown(null);

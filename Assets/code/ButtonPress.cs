@@ -16,6 +16,7 @@ public class ButtonPress : MonoBehaviour
     float pressUpEffectDelay = 0.1f;
     float pressDownTime = 0;
     bool waitingForPressUpEffects = false;
+    bool pressCompleted = false;
 
     private bool isPressed = false;
     private Collider2D buttonCollider;
@@ -43,8 +44,9 @@ public class ButtonPress : MonoBehaviour
 
     virtual protected void Update() {
 
-        if (waitingForPressUpEffects && Time.time > (pressDownTime + pressUpEffectDelay)) {
+        if (waitingForPressUpEffects && pressCompleted && Time.time > (pressDownTime + pressUpEffectDelay)) {
 
+            pressCompleted = false;
             waitingForPressUpEffects = false;
             rend.material.color = normalColor;
 
@@ -92,6 +94,7 @@ public class ButtonPress : MonoBehaviour
 
     virtual protected void MouseUp() {
         isPressed = false;
+        pressCompleted = true;
 
         //execute each action when this button is pressed
         for (int i = 0; i < actions.Count; i++) {
@@ -145,7 +148,7 @@ public class ButtonPress : MonoBehaviour
 
     virtual protected void OnMouseExit(){
         isPressed = false;
-        if (!waitingForPressUpEffects) {
+        if (!pressCompleted) {
             rend.material.color = normalColor;
         }
     }

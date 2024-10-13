@@ -44,9 +44,14 @@ public class BonusText : FadingObject
 
     //turns on the growing and rainbow effects for this
     public void enableHighlight() {
+        enableGrowing();
         rainbow.setActive(true);
-        growing.setActive(true);
         highlightRiseSpeedMultiplier = 1.3f;
+    }
+
+
+    public void enableGrowing() {
+        growing.setActive(true);
     }
 
 }
