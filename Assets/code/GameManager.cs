@@ -917,13 +917,16 @@ public class GameManager : MonoBehaviour, IMenu
 
         int newMult = multiplier;
 
-        CandleId can = /*getCandleById(canId).getParentObject().GetComponent<CandleId>()*/candle.GetComponent<CandleId>();
-        int spriteId = 0;
+        CandleId can = candle.GetComponent<CandleId>();
+        int spriteId = getBonusTextSpriteIdByPoints(can.getPoints());
 
         if (can.isStarterCandle()) {
+
             newMult *= 2;
+            //starter candles will always have the "starter candle! x2" sprite
             spriteId = 1;
             createMultiplierlessBonusText(can, spriteId, true);
+
         }
         else {
             createMultiplierlessBonusText(can, spriteId);
@@ -943,6 +946,11 @@ public class GameManager : MonoBehaviour, IMenu
     public void createMultiplierlessBonusText(CandleId can, int bonusTextId, bool highlighted) {
         BonusText bonusText = Instantiate(bonusTextPrefab, can.transform.position, Quaternion.identity).GetComponent<BonusText>();
         bonusText.setSprite(getBonusText(bonusTextId));
+
+        if(can.getPoints() > 1) {
+            bonusText.enableGrowing();
+        }
+
         if (highlighted) {
             bonusText.enableHighlight();
         }
@@ -954,6 +962,20 @@ public class GameManager : MonoBehaviour, IMenu
         BonusText bonusText = Instantiate(bonusTextPrefab, defaultBonusTextLocation.transform.position, Quaternion.identity).GetComponent<BonusText>();
         bonusText.setSprite(getBonusText(2));
         bonusText.enableHighlight();
+    }
+
+
+    public int getBonusTextSpriteIdByPoints(int points) {
+
+        switch (points) {
+            case 2:
+                return 9;
+            case 3:
+                return 10;
+            default:
+                return 0;
+        }
+
     }
 
 

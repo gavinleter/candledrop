@@ -333,7 +333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5301419144256694765, guid: 8af712b0190cd3f40906e349d832aa97, type: 3}
       propertyPath: isFlare
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8809281867397101790, guid: 8af712b0190cd3f40906e349d832aa97, type: 3}
       propertyPath: m_Name
