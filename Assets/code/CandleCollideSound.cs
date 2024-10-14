@@ -7,7 +7,7 @@ public class CandleCollideSound : MonoBehaviour
 {
 
     [SerializeField] AudioClip candleHitSound;
-    float minVelocityToPlaySound = 4f;
+    float minVelocityToPlaySound = 1f;
 
 
     private void OnCollisionEnter2D(Collision2D collision){
@@ -18,7 +18,7 @@ public class CandleCollideSound : MonoBehaviour
 
             a.clip = candleHitSound;
             a.loop = false;
-            a.volume = 1f;
+            a.volume = 2f;
             a.pitch = Random.Range(0.9f, 1.3f);
             a.Play();
 
