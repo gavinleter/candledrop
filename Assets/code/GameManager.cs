@@ -81,6 +81,8 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] LockedFeatureMenuController lockedFeatureMenu;
     [SerializeField] AdSpinnerMenuController adSpinnerMenu;
 
+    [SerializeField] MusicManager musicManager;
+
     [SerializeField] GameObject startingCandleSpawnLocation;
 
     SkinManager skinManager;
@@ -129,6 +131,8 @@ public class GameManager : MonoBehaviour, IMenu
         //get the starting candle prefab and skin
         setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
 
+        musicManager.setSelectedMusic(1);
+        musicManager.setMusicVolume(1);
 
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = delegate () {
@@ -144,6 +148,7 @@ public class GameManager : MonoBehaviour, IMenu
         //skip the intro transition when the game starts if the screen is pressed (invisible over intro area)
         buttons[2].onPress(delegate () {
             mainCamera.GetComponent<CameraController>().skipIntroTransition();
+            musicManager.setSelectedMusic(2);
         });
         //credits button
         buttons[3].onPress(delegate () {
@@ -151,12 +156,14 @@ public class GameManager : MonoBehaviour, IMenu
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(creditsTransitionLocation.transform.position);
                 mainCamera.GetComponent<CameraController>().startTransition();
+                musicManager.setSelectedMusic(0);
             }
         });
         //button to go back down from credits
         buttons[4].onPress(delegate () {
             canPause = true;
             mainCamera.GetComponent<CameraController>().transitionToTop(20f);
+            musicManager.setSelectedMusic(2);
         });
         //button to go to the basement
         buttons[5].onPress(delegate () {
@@ -164,6 +171,7 @@ public class GameManager : MonoBehaviour, IMenu
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
                 mainCamera.GetComponent<CameraController>().startTransition();
+                musicManager.setSelectedMusic(5);
                 //mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
             }
         });
@@ -172,6 +180,7 @@ public class GameManager : MonoBehaviour, IMenu
             canPause = true;
             //mainCamera.GetComponent<CameraController>().transitionToTop(40f);
             mainCamera.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
+            musicManager.setSelectedMusic(2);
         });
         //button to drop a candle (invisible over game area)
         buttons[7].onPress(delegate () {
@@ -254,6 +263,7 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[18].onPress(() => {
             getInitialCandle().GetComponent<StartCandleFall>().dropCandle();
             losingVignette.clearParticles();
+            musicManager.setSelectedMusic(3);
         });
 
         buttons[19].onPress(() => {
@@ -607,7 +617,7 @@ public class GameManager : MonoBehaviour, IMenu
         for (int i = 0; i < buttons.Count; i++) {
 
             //the exception are secretbuttons since this code would make all found text appear after unpausing
-            if(buttons[i] is SecretButton) {
+            if(buttons[i] is SecretButton || buttons[i] is WaffleButton) {
                 continue;
             }
 
