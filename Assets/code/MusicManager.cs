@@ -7,29 +7,41 @@ public class MusicManager : MonoBehaviour
     [SerializeField] AudioClip[] music;
     [SerializeField] float[] fadeInMultiplier;
     [SerializeField] float[] fadeOutMultiplier;
+    [SerializeField] float maxVolume;
+    [SerializeField] float timeToSwitchTracks;
+
     AudioSource[] musicSources;
+    AudioSource[] lastMusicSources;
     int selectedMusic;
+    float timeSinceLastLoop = 0;
 
 
     private void Awake() {
 
-        musicSources = GetComponentsInChildren<AudioSource>();
+        musicSources = new AudioSource[music.Length];
+        lastMusicSources = new AudioSource[music.Length];
 
-        for (int i = 0; i < musicSources.Length; i++) {
-
-            musicSources[i].clip = music[i];
-            musicSources[i].loop = true;
-            musicSources[i].volume = 0;
-            musicSources[i].Play();
-
+        if(timeToSwitchTracks <= 0) {
+            Debug.Log("Invalid time on timeToSwitchTracks in MusicManager");
         }
 
+        createNewAudioSources();
+        
     }
 
 
     private void Update() {
-        
+
         updateVolumes();
+
+        timeSinceLastLoop += Time.deltaTime;
+
+        if (timeSinceLastLoop > timeToSwitchTracks) {
+            Debug.Log(timeSinceLastLoop);
+
+            createNewAudioSources();
+            setMusicVolume(lastMusicSources[selectedMusic].volume);
+        }
 
     }
 
@@ -46,12 +58,36 @@ public class MusicManager : MonoBehaviour
             //select between fade in/fade out multiplier
             multiplier = i == selectedMusic ? fadeInMultiplier[i] : fadeOutMultiplier[i];
 
-            musicSources[i].volume = musicSources[i].volume + (Time.deltaTime * sign * multiplier);
+            musicSources[i].volume = Mathf.Min(musicSources[i].volume + (Time.deltaTime * sign * multiplier), maxVolume);
+            //music sources that are about to be deleted should slowly be muted
+            if (lastMusicSources[i] != null) {
+                lastMusicSources[i].volume = lastMusicSources[i].volume - (Time.deltaTime);
+            }
 
             //force volume to 0 if music is off
             if (!Settings.isMusicEnabled()) {
                 musicSources[i].volume = 0;
             }
+
+        }
+
+    }
+
+
+    void createNewAudioSources() {
+        timeSinceLastLoop = 0;
+
+        for (int i = 0; i < musicSources.Length; i++) {
+
+            lastMusicSources[i] = musicSources[i];
+
+            musicSources[i] = transform.AddComponent<AudioSource>();
+            musicSources[i].clip = music[i];
+            musicSources[i].volume = 0;
+
+            musicSources[i].Play();
+
+            Destroy(musicSources[i], 65f);
 
         }
 
@@ -64,7 +100,14 @@ public class MusicManager : MonoBehaviour
 
 
     public void setMusicVolume(float volume) {
-        musicSources[selectedMusic].volume = volume;
+        if (musicSources[selectedMusic] != null) {
+            musicSources[selectedMusic].volume = volume;
+        }
+    }
+
+
+    public float getMaxVolume() {
+        return maxVolume;
     }
 
 }

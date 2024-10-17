@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
 
     [SerializeField] FadingObject blackFadeObject;
 
+    [SerializeField] MusicManager musicManager;
+
     private float transitionStartTime;
     private bool isTransitioning = false;
     private bool isBlackFadeTransitioning = false;
@@ -38,6 +40,7 @@ public class CameraController : MonoBehaviour
         if(!introDelayFinished && delayBeforeTransition < Time.time) {
             introDelayFinished = true;
             startTransition();
+            musicManager.setSelectedMusic(2);
         }
 
 

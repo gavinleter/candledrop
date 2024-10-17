@@ -17,6 +17,8 @@ public class GameOverMenuController : FadingMenuController
 
     [SerializeField] CameraController mainCam;
 
+    [SerializeField] MusicManager musicManager;
+
     //these two control the high score ticking up after a better score is achieved
     [SerializeField] float highScoreInitialDelay;
     float highScoreTickingDelay;
@@ -106,7 +108,9 @@ public class GameOverMenuController : FadingMenuController
 
     public override void pause() {
         base.pause();
-        
+
+        musicManager.setSelectedMusic(4);
+
         transform.position = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, 0f);
         initialTime = Time.time;
         highScoreText.fontSize = initialFontSize;

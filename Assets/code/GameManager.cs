@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour, IMenu
         setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
 
         musicManager.setSelectedMusic(1);
-        musicManager.setMusicVolume(1);
+        musicManager.setMusicVolume(musicManager.getMaxVolume());
 
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = delegate () {
@@ -600,6 +600,8 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void unpause() {
+
+        musicManager.setSelectedMusic(2);
 
         if (getStartingCandleObject() != null) {
             getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(true);
