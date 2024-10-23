@@ -13,7 +13,6 @@ public class MusicManager : MonoBehaviour
     AudioSource[] musicSources;
     AudioSource[] lastMusicSources;
     int selectedMusic;
-    float timeSinceLastLoop = 0;
 
 
     private void Awake() {
@@ -34,10 +33,8 @@ public class MusicManager : MonoBehaviour
 
         updateVolumes();
 
-        timeSinceLastLoop += Time.deltaTime;
-
-        if (timeSinceLastLoop > timeToSwitchTracks) {
-            Debug.Log(timeSinceLastLoop);
+        if (musicSources[0].time > timeToSwitchTracks) {
+            Debug.Log(musicSources[0].time);
 
             createNewAudioSources();
             setMusicVolume(lastMusicSources[selectedMusic].volume);
@@ -75,7 +72,6 @@ public class MusicManager : MonoBehaviour
 
 
     void createNewAudioSources() {
-        timeSinceLastLoop = 0;
 
         for (int i = 0; i < musicSources.Length; i++) {
 
