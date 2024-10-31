@@ -13,7 +13,9 @@ public class BonusText : FadingObject
     GrowingObject growing;
 
 
-    private void Awake() {
+    protected override void Awake() {
+        base.Awake();
+
         rainbow = GetComponent<RainbowObject>();
         growing = GetComponent<GrowingObject>();
     }

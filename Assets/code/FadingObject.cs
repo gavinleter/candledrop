@@ -15,18 +15,18 @@ public class FadingObject : Lerpable
     [SerializeField] bool destroyParticlesOnFadeOut;
 
 
-    private void Awake() {
-        
-    }
-
-
-    override protected void Start(){
-        base.Start();
+    protected virtual void Awake() {
 
         sr = GetComponent<SpriteRenderer>();
         childrenRenderers = GetComponentsInChildren<SpriteRenderer>(true);
         childrenParticles = GetComponentsInChildren<ParticleSystem>(true);
         canvasGroup = GetComponentsInChildren<CanvasGroup>();
+
+    }
+
+
+    override protected void Start(){
+        base.Start();
 
     }
 
@@ -78,6 +78,8 @@ public class FadingObject : Lerpable
                 childrenParticles[i].Play();
             }
         }
+
+        setAlpha();
     }
 
     //when the object fades out, start lerping in reverse
@@ -91,18 +93,24 @@ public class FadingObject : Lerpable
                 childrenParticles[i].Stop();
             }
         }
+
+        setAlpha();
     }
 
     //instantly make this object appear
     override public void forceLerpIn() {
         base.forceLerpIn();
         opacity = 1f;
+
+        setAlpha();
     }
 
     //instantly make this object disappear
     override public void forceLerpOut() {
         base.forceLerpOut();
         opacity = 0f;
+
+        setAlpha();
     }
 
 

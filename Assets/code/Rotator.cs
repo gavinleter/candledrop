@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class Rotator : MonoBehaviour
 {
-    public float rotateSpeed = 5f;
+    [SerializeField] float rotateSpeed = 5f;
 
-    void Update()
-    {
-        // Rotate the GameObject smoothly clockwise
+    void Update(){
         transform.Rotate(Vector3.forward * rotateSpeed * Time.deltaTime);
     }
+
 }

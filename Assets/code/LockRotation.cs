@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class LockRotation : MonoBehaviour
 {
-    private Quaternion initialRotation;
+    Quaternion initialRotation;
 
-    private void Start()
-    {
-        // Store the initial rotation when the script starts
+    private void Start(){
         initialRotation = transform.rotation;
     }
 
-    private void LateUpdate()
-    {
-        // Reset the rotation to the initial rotation every frame
+    private void LateUpdate(){
         transform.rotation = initialRotation;
     }
 }
