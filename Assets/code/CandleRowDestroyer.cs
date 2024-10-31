@@ -9,6 +9,7 @@ public class CandleRowDestroyer : CandleLightCollector
     [SerializeField] RightWall otherSide;
     [SerializeField] GameObject CandleDestroyParticle;
     [SerializeField] GameManager gameManager;
+    [SerializeField] MusicManager musicManager;
     [SerializeField] ParticleSystem leftParticleSystem;
 
     [SerializeField] float rowDestructionBonusTime;
@@ -26,6 +27,8 @@ public class CandleRowDestroyer : CandleLightCollector
         CandleLightController[] r = findRow().ToArray();
 
         if (r.Length > 0) {
+
+            musicManager.toggleIntenseMusic();
 
             int multiplier = 1;
             int points = 0;

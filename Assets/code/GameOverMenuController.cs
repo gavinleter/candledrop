@@ -14,10 +14,9 @@ public class GameOverMenuController : FadingMenuController
     [SerializeField] TextMeshProUGUI highScoreText;
 
     [SerializeField] GameManager gameManager;
+    [SerializeField] MusicManager musicManager;
 
     [SerializeField] CameraController mainCam;
-
-    [SerializeField] MusicManager musicManager;
 
     //these two control the high score ticking up after a better score is achieved
     [SerializeField] float highScoreInitialDelay;
@@ -53,6 +52,7 @@ public class GameOverMenuController : FadingMenuController
             unpause();
             gameManager.resetGame();
             //mainCam.restartTransition();
+            musicManager.toggleGameOverTrack(false);
             mainCam.fadeToBlackTransitionToTop(0.1f);
             gameManager.unpause();
         });
@@ -109,7 +109,7 @@ public class GameOverMenuController : FadingMenuController
     public override void pause() {
         base.pause();
 
-        musicManager.setSelectedMusic(4);
+        musicManager.toggleGameOverTrack(true);
 
         transform.position = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, 0f);
         initialTime = Time.time;

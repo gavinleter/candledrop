@@ -1,10 +1,12 @@
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class Settings
 {
 
     private static bool soundEnabled = true;
-    private static bool musicEnabled = true;
+    //musicStatus can be   0: muted  |  1: enabled (default track)  |  2: enabled (alt track)
+    private static int musicStatus = 1;
 
     private static int highScore = 0;
 
@@ -16,7 +18,7 @@ public class Settings
 
         //by default music and sound are enabled
         soundEnabled = isSoundEnabled();
-        musicEnabled = isMusicEnabled();
+        musicStatus = getMusicStatus();
 
         highScore = getHighScore();
 
@@ -35,7 +37,7 @@ public class Settings
         PlayerPrefs.DeleteAll();
 
         //music and sound are the only settings that shouldn't be deleted
-        toggleMusic(musicEnabled);
+        setMusicStatus(musicStatus);
         toggleSound(soundEnabled);
 
         initSettings(gameManager);
@@ -106,14 +108,26 @@ public class Settings
 
 
 
-    public static void toggleMusic(bool x) {
-        musicEnabled = x;
-        toggleOption("musicEnabled", x);
+    public static void setMusicStatus(int x) {
+        musicStatus = x;
+
+        PlayerPrefs.SetInt("musicEnabled", x);
+        PlayerPrefs.Save();
+    }
+
+
+    public static int getMusicStatus() {
+        return PlayerPrefs.GetInt("musicEnabled", 1);
+    }
+
+
+    public static bool isAltMusicEnabled() {
+        return PlayerPrefs.GetInt("musicEnabled", 1) == 2;
     }
 
 
     public static bool isMusicEnabled() {
-        return PlayerPrefs.GetInt("musicEnabled", 1) == 1;
+        return PlayerPrefs.GetInt("musicEnabled", 1) != 0;
     }
 
 

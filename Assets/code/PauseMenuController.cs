@@ -17,12 +17,15 @@ public class PauseMenuController : FadingMenuController
     [SerializeField] Sprite soundEnabledSprite;
     [SerializeField] Sprite soundDisabledSprite;
 
+    [SerializeField] Sprite[] musicButtonSprites;
+
 
     // Start is called before the first frame update
     protected override void Start(){
         base.Start();
         
         setSoundButtonSprite();
+        setMusicButtonSprite();
 
         parentMenu = parentMenuObject.GetComponent<IMenu>();
 
@@ -107,6 +110,16 @@ public class PauseMenuController : FadingMenuController
 
         });
 
+        //music enable/disable button
+        btns[7].onPress(() => { 
+        
+            int x = Settings.getMusicStatus();
+
+            Settings.setMusicStatus((x + 1) % 3);
+            setMusicButtonSprite();
+        
+        });
+
     }
 
 
@@ -131,6 +144,13 @@ public class PauseMenuController : FadingMenuController
         else {
             btns[3].GetComponent<SpriteRenderer>().sprite = soundDisabledSprite;
         }
+    }
+
+
+    void setMusicButtonSprite() {
+
+        btns[7].GetComponent<SpriteRenderer>().sprite = musicButtonSprites[Settings.getMusicStatus()];
+
     }
 
 }
