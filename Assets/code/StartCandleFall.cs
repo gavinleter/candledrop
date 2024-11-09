@@ -14,18 +14,6 @@ public class StartCandleFall : MonoBehaviour
     bool gameStarted = false;
     bool readyToDrop = true;
 
-    // Start is called before the first frame update
-    void Start(){
-        //Debug.Log(name);
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     public void dropCandle() {
         if (!activated && readyToDrop && !gameStarted) {
@@ -40,6 +28,8 @@ public class StartCandleFall : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision) {
         if (!gameStarted) {
             gameStarted = true;
+            //unlock the buttons after the transition ends and start the game
+            gameManager.unpause();
             gameManager.StartTurn();
         }
     }

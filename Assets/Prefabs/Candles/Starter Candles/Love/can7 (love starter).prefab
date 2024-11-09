@@ -192,6 +192,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   points: 2
+  colorGroup: 6
 --- !u!114 &1837472338896553213
 MonoBehaviour:
   m_ObjectHideFlags: 0

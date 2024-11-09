@@ -132,6 +132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   points: 3
+  colorGroup: 1
 --- !u!60 &8514673419421179924
 PolygonCollider2D:
   m_ObjectHideFlags: 0

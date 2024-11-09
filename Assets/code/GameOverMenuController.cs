@@ -108,7 +108,7 @@ public class GameOverMenuController : FadingMenuController
 
     public override void pause() {
         base.pause();
-
+        
         musicManager.toggleGameOverTrack(true);
 
         transform.position = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, 0f);

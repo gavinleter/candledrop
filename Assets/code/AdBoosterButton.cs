@@ -28,6 +28,7 @@ public class AdBoosterButton : ButtonPress
             alreadyPressed = true;
             gameManager.pause();
             adSpinnerMenu.pause();
+            adSpinnerMenu.increaseUsageThisGame();
         });
     }
 

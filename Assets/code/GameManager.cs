@@ -116,6 +116,17 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] LosingVignette losingVignette;
 
     [SerializeField] float chanceForFlare;
+    [SerializeField] bool debugMode;
+    //if debug mode is on the candle that spawns will be chosen by candleToSpawn
+    [SerializeField] int candleToSpawn;
+
+    //used to determine how long a game has been running for achievements 8 and 9
+    float timeSinceGameStarted = 0;
+    float timeOfLastActivity = 0;
+    //how long the player can do nothing for until the timer stops going up
+    float allowedIdleTime = 60;
+    //only set when the game ends from a candle touching the chain for too long
+    bool trueGameOver = true;
 
     List<int> spawnPotentials = new List<int>();
 
@@ -255,17 +266,21 @@ public class GameManager : MonoBehaviour, IMenu
 
         //the inivisble button that drops the initial candle on the title screen
         buttons[18].onPress(() => {
+            //stop buttons from being pressed while initial game transition is happening
+            pause();
+
             getInitialCandle().GetComponent<StartCandleFall>().dropCandle();
             losingVignette.clearParticles();
         });
 
+        //tap glass button
         buttons[19].onPress(() => {
-            //pause();
-            //adSpinnerMenu.pause();
-            //convertAllCandlesToFlares();
-            //spawnEmber(-1.5f);
-            startEventHorizonEvent();
+            
+            //"Don't tap it!" unlocked by tapping the stained glass
+            Settings.setAchievementUnlocked(34);
+
         });
+
         buttons[20].onPress(() => {
             //startSolarRainEvent();
             startMiniSunEvent();
@@ -319,6 +334,14 @@ public class GameManager : MonoBehaviour, IMenu
 
         });
 
+        buttons[25].onPress(() => {
+            //pause();
+            //adSpinnerMenu.pause();
+            //convertAllCandlesToFlares();
+            //spawnEmber(-1.5f);
+            startEventHorizonEvent();
+        });
+
         //spawn the starting candle
         /*GameObject x = Instantiate(startingCandlePrefab);
         setCandleId(x, currentCandlePrefabId);
@@ -350,12 +373,15 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
         updateEvents();
+        updateIdleTimer();
 
     }
 
 
     //attempt to drop the candle if it has spawned, other dropped candles aren't moving, and a time delay has finished between now and the last drop
     private void dropCandle() {
+
+        timeOfLastActivity = Time.time;
         
         if (isTurnActive && Time.time - turnStartTime >= minTurnDuration && !hasMoved) {
             Rigidbody2D rb = rb = selectedCan.GetComponent<Rigidbody2D>();
@@ -401,11 +427,22 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     //spawn a new candle to be dropped
-    public void StartTurn()
-    {
+    public void StartTurn(){
+
+        //reset activity timer when the game starts
+        if (!gameStarted) {
+            timeSinceGameStarted = 0;
+            trueGameOver = false;
+        }
+
         gameStarted = true;
         int randomIndex = spawnPotentials[UnityEngine.Random.Range(0, spawnPotentials.Count)];
         //randomIndex = 1;
+
+        if (debugMode) {
+            randomIndex = candleToSpawn;
+        }
+
         //only black holes can spawn during the event horizon event
         if (eventHorizonEventActive) {
             randomIndex = canObjects.Length - 2;
@@ -515,6 +552,10 @@ public class GameManager : MonoBehaviour, IMenu
 
     public void destroyCandle(GameObject can, bool destroyedByBlackHole) {
 
+        if (destroyedByBlackHole && gameOverChain.isAboutToLose()) {
+            gameOverChain.setBlackHoleSaveTime();
+        }
+
         CandleLightController[] c = can.GetComponentsInChildren<CandleLightController>();
 
         for (int i = 0; i < c.Length; i++) {
@@ -543,6 +584,7 @@ public class GameManager : MonoBehaviour, IMenu
             can.GetComponent<SpriteRenderer>().sortingOrder = 5;
 
             Destroy(can, 1.5f);
+
         }
         else {
             Destroy(can);
@@ -572,6 +614,11 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
         for (int i = 0; i < buttons.Count; i++) {
+            //the tap glass button is the only one that should never be disabled
+            if (i == 19) {
+                continue;
+            }
+
             buttons[i].setActive(false);
         }
 
@@ -632,6 +679,9 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
     public void resetGame(bool initialStart) {
+
+        checkForGameEndAchievments(initialStart);
+
         selectedCan = null;
         isTurnActive = false;
         gameStarted = false;
@@ -662,6 +712,8 @@ public class GameManager : MonoBehaviour, IMenu
             pauseMenuObject.GetComponent<IMenu>().unpause();
             lockedFeatureMenu.unpause();
         }
+
+        adSpinnerMenu.resetGame();
 
         //reset starter candle and skin in case the player wipes data and resets
         setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
@@ -874,6 +926,41 @@ public class GameManager : MonoBehaviour, IMenu
             Settings.setHighScore(s);
         }
 
+        if(s >= 50) {
+            //"Poopy Doopy" unlocked by getting 50 score
+            Settings.setAchievementUnlocked(10);
+        }
+
+        if (s >= 250) {
+            //"Not Too Shabby" unlocked by getting 250 score
+            Settings.setAchievementUnlocked(11);
+        }
+
+        if (s >= 500) {
+            //"Pretty Good" unlocked by getting 500 score
+            Settings.setAchievementUnlocked(12);
+        }
+
+        if (s >= 1000) {
+            //"Impressive" unlocked by getting 1000 score
+            Settings.setAchievementUnlocked(13);
+        }
+
+        if (s >= 5000) {
+            //"Insanely High" unlocked by getting 5000 score
+            Settings.setAchievementUnlocked(14);
+        }
+
+        if (s >= 10000) {
+            //"Unbelieveable" unlocked by getting 10000 score
+            Settings.setAchievementUnlocked(15);
+        }
+
+        if (s >= 50000) {
+            //"Impossible" unlocked by getting 50000 score
+            Settings.setAchievementUnlocked(16);
+        }
+
     }
 
 
@@ -1011,6 +1098,74 @@ public class GameManager : MonoBehaviour, IMenu
             snowyParentObject.transform.GetChild(0).transform.localPosition = new Vector3(100f, 0, 0);
         }
 
+    }
+
+
+    public void setGameOverTime() {
+        trueGameOver = true;
+    }
+
+
+    //only update the timer if the player is not idle
+    void updateIdleTimer() {
+
+        if(timeOfLastActivity + allowedIdleTime > Time.time && !trueGameOver) {
+            timeSinceGameStarted += Time.deltaTime;
+        }
+        
+    }
+
+
+    //checks for achievments that can only be unlocked after ending a game
+    void checkForGameEndAchievments(bool initialStart) {
+        
+        if (currentScore == 0 && !initialStart) {
+            //"Catastrophe" unlocked by losing with 0 points
+            Settings.setAchievementUnlocked(2);
+        }
+        
+        if (Settings.getHighScore() >= lastHighScore * 2 && Settings.isAchievementUnlocked(17) && !initialStart) {
+            //"Major Improvement!" unlocked by doubling previous high score (can only be done if achievment #17 is unlocked)
+            Settings.setAchievementUnlocked(18);
+        }
+
+        if (Settings.getHighScore() > 0) {
+            //"Only up from here" unlocked by getting a high score of at least 1
+            Settings.setAchievementUnlocked(17);
+        }
+
+        if(!initialStart && trueGameOver && timeSinceGameStarted < 20) {
+            //"Failure Speedrun" unlocked by losing in less than 20 seconds
+            Settings.setAchievementUnlocked(8);
+        }
+
+        if (!initialStart && trueGameOver && timeSinceGameStarted >= 3600) {
+            //"The Long Haul" unlocked by ending a game that lasted at least an hour (excluding idle time)
+            Settings.setAchievementUnlocked(9);
+        }
+
+        if (currentScore > lastHighScore && !initialStart) {
+            if (Settings.getStarterCandleSkinId() != 0) {
+                //"Skin diff" unlocked by getting a high score and using a skin other than the default one
+                Settings.setAchievementUnlocked(31);
+            }
+
+            if (Settings.getStarterCandleId() != 0) {
+                //"Kit diff" unlocked by getting a high score and using a starter candle other than the default one
+                Settings.setAchievementUnlocked(32);
+            }
+        }
+
+    }
+
+
+    public void resetHighScoreText() {
+        highScoreText.text = "" + Settings.getHighScore();
+    }
+
+
+    public void achievementUnlockPopup(int x) {
+        Debug.Log("achievement " + x);
     }
 
 

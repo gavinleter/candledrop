@@ -61,6 +61,17 @@ public class SecretButton : ButtonPress
             confettiParticle.Play();
             foundText[Settings.getSecretButtonCounter()].Play();
             Settings.setSecretButtonFound(secretButtonId);
+
+            if (Settings.getSecretButtonCounter() >= 3) {
+                //"Secret Button Hunter" unlocked by pressing all 3 secret buttons
+                Settings.setAchievementUnlocked(27);
+
+                //enable the alt track if music is on
+                if (Settings.isMusicEnabled()) {
+                    Settings.setMusicStatus(2);
+                }
+
+            }
         }
     }
 

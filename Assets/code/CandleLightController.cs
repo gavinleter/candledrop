@@ -323,4 +323,10 @@ public class CandleLightController : MonoBehaviour {
     public int getPoints() {
         return candleId.getPoints();
     }
+
+
+    public CandleId getCandleId() {
+        return candleId;
+    }
+
 }
