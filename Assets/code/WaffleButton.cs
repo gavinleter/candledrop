@@ -30,6 +30,9 @@ public class WaffleButton : ButtonPress {
 
     protected override void MouseDown() {
 
+        //"Wafflin About" unlocked by tapping the waffle
+        Settings.setAchievementUnlocked(33);
+
         //using Mathf.Min here to make sure we dont go outside the bounds of the arrays
         setAudioDown(  waffleBiteSounds[ Mathf.Min(biteCount, waffleBiteSounds.Length - 1) ]  );
         GetComponent<SpriteRenderer>().sprite = waffleSprites[ Mathf.Min(biteCount, waffleSprites.Length - 1) ];

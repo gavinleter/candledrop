@@ -47,9 +47,9 @@ public class BlackHole : MonoBehaviour, ISpecialObject
         }
 
 
-        CandleLightController o = other.gameObject.GetComponentInChildren<CandleLightController>();
+        //CandleLightController o = other.gameObject.GetComponentInChildren<CandleLightController>();
 
-        destroyCandle(o);
+        //destroyCandle(o);
 
         //destroy self only when touching something that is not another black hole
         if (other.gameObject.GetComponentInChildren<BlackHole>() == null) {
@@ -61,6 +61,8 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
     public void destroySelf() {
 
+        int totalPoints = 0;
+
         coll.radius = destructionRadius;
         List<Collider2D> hits = new List<Collider2D>(); 
         int hitCount = coll.OverlapCollider(contactFilter, hits);
@@ -69,7 +71,7 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
             CandleLightController o = hits[i].gameObject.GetComponentInChildren<CandleLightController>();
 
-            destroyCandle(o);
+            totalPoints += destroyCandle(o);
 
         }
         
@@ -78,6 +80,12 @@ public class BlackHole : MonoBehaviour, ISpecialObject
         Destroy(holeExplode, 2f);
         gameManagerScript.removeSpecialObject(id);
         Destroy(gameObject);
+
+        //"Void-maxxer" unlocked by getting 10 or more points from a single black hole
+        if(totalPoints >= 10) {
+            Settings.setAchievementUnlocked(38);
+        }
+
     }
 
 
@@ -86,16 +94,29 @@ public class BlackHole : MonoBehaviour, ISpecialObject
     }
 
 
-    void destroyCandle(CandleLightController o) {
+    int destroyCandle(CandleLightController o) {
 
         if(o != null && !o.isBeingDestroyed()) {
+
+            if (o.isEnabled()) {
+                //"Friendly Fire!" unlocked by destroying a lit candle
+                Settings.setAchievementUnlocked(36);
+            }
+            else {
+                //"Waxicide" unlocked by destroying an unlit candle
+                Settings.setAchievementUnlocked(35);
+            }
+            
 
             CandleId can = o.getParentObject().GetComponent<CandleId>();
             gameManagerScript.createMultiplierlessBonusText(can, 0);
             gameManagerScript.addScore(o.getPoints());
 
             gameManagerScript.destroyCandle(o.getParentObject(), true);
+
+            return o.getPoints();
         }
 
+        return 0;
     }
 }

@@ -28,6 +28,8 @@ public class AdSpinnerMenuController : FadingMenuController
     float closeDelay = 1;
     float startTime;
 
+    int usesThisGame = 0;
+
 
     protected override void Start() {
         base.Start();
@@ -70,6 +72,7 @@ public class AdSpinnerMenuController : FadingMenuController
 
         initialPosition = transform.position;
         spinning = true;
+
     }
 
     //this method is called by the animator when one of the upgrades is centered in the spinner
@@ -91,6 +94,11 @@ public class AdSpinnerMenuController : FadingMenuController
 
     }
 
+    //resets the counter of how many times this has been used in a single game
+    public void resetGame() {
+        usesThisGame = 0;
+    }
+
 
     public override void pause() {
         base.pause();
@@ -98,6 +106,8 @@ public class AdSpinnerMenuController : FadingMenuController
         lever.enable();
         spriteRenderer.sprite = upgradeSprites[upgradeSprites.Length - 1];
         transform.position = new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0);
+
+        checkForAchievements();
     }
 
 
@@ -108,6 +118,23 @@ public class AdSpinnerMenuController : FadingMenuController
         emptySpinnerSpriteRenderer.enabled = true;
         spriteRenderer.enabled = false;
         closeMenu = false;
+    }
+
+
+    public void increaseUsageThisGame() {
+        usesThisGame++;
+    }
+
+    //achievements that are only unlocked by using the ad spinner
+    void checkForAchievements() {
+
+        //"AD-Vantage" unlocked by using an ad powerup for the first time
+        Settings.setAchievementUnlocked(22);
+
+        if (usesThisGame >= 5) {
+            //"AD-Vanced tactics" unlocked by using 5 ad powerups in a single game
+            Settings.setAchievementUnlocked(23);
+        }
     }
 
 }

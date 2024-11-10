@@ -14,6 +14,7 @@ public class CandleRowDestroyer : CandleLightCollector
 
     [SerializeField] float rowDestructionBonusTime;
     float rowDestructionInitialTime = 0;
+    int comboCount = 0;
     
 
     
@@ -28,38 +29,114 @@ public class CandleRowDestroyer : CandleLightCollector
 
         if (r.Length > 0) {
 
-            musicManager.toggleIntenseMusic();
+            destroyRow(r);
 
-            int multiplier = 1;
-            int points = 0;
+            //"I know how to play!" unlocks after lighting your first row of candles
+            Settings.setAchievementUnlocked(0);
 
-            //if the last row destruction bonus has not passed yet
-            if (rowDestructionInitialTime + rowDestructionBonusTime > Time.time) {
-                multiplier *= 2;
-                gameManager.createRowDestructionBonusText();
+            if(r.Length <= 6) {
+                //"Minimalist" unlocks after completing a row of 6 or less candles
+                Settings.setAchievementUnlocked(4);
             }
 
-            rowDestructionInitialTime = Time.time;
-
-            for (int i = 0; i < r.Length; i++) {
-
-                //"r" holds ids for every candle light, this null check is necessary because of candles with multiple lights being entered multiple times
-                if (r[i] != null && !r[i].isBeingDestroyed()) {
-
-                    points += r[i].getPoints();
-                    multiplier = gameManager.createBonusText(r[i].getParentObject(), multiplier);
-                    destroyCandle(r[i]);
-
-                }
-
+            if(r.Length >= 10) {
+                //"Maximalist" unlocks after completing a row of 10 or more candles
+                Settings.setAchievementUnlocked(5);
             }
 
-            gameManager.addScore(points * multiplier);
+            if (r.Length >= 15) {
+                //"God of maximalism" unlocks after completing a row of 15 or more candles
+                Settings.setAchievementUnlocked(6);
+            }
 
         }
         
     }
 
+
+    void destroyRow(CandleLightController[] r) {
+        musicManager.toggleIntenseMusic();
+
+        //count how many candles of each color group were found in the row for achievements 29-21
+        int colorGroupLength = System.Enum.GetNames(typeof(CandleColorGroup)).Length;
+        int[] colorsFound = new int[colorGroupLength];
+        int multiplier = 1;
+        int points = 0;
+        //for "Flaring Focus" (#7) achievement
+        bool allFlares = true;
+
+        //if the last row destruction bonus has not passed yet
+        if (rowDestructionInitialTime + rowDestructionBonusTime > Time.time) {
+            comboCount++;
+
+            multiplier *= 2 * comboCount;
+            gameManager.createRowDestructionBonusText();
+
+            //"Baby's first combo" unlocked by getting a combo
+            Settings.setAchievementUnlocked(28);
+
+            if(comboCount >= 3) {
+                //"Combo god" unlocked by getting a triple combo
+                Settings.setAchievementUnlocked(28);
+            }
+
+        }
+        else {
+            comboCount = 0;
+        }
+
+        rowDestructionInitialTime = Time.time;
+
+        for (int i = 0; i < r.Length; i++) {
+
+            //"r" holds ids for every candle light, this null check is necessary because of candles with multiple lights being entered multiple times
+            if (r[i] != null && !r[i].isBeingDestroyed()) {
+
+                points += r[i].getPoints();
+                multiplier = gameManager.createBonusText(r[i].getParentObject(), multiplier);
+
+                //increase the amount of candles of this color have been found
+                colorsFound[ r[i].getCandleId().getColorGroup() ]++;
+
+                destroyCandle(r[i]);
+
+                if (!r[i].isCurrentlyFlare()) {
+                    allFlares = false;
+                }
+
+            }
+
+        }
+
+        gameManager.addScore(points * multiplier);
+
+        if (allFlares) {
+            //"Flaring Focus" unlocked after completing a row of only flares
+            Settings.setAchievementUnlocked(7);
+        }
+
+        int uniqueColorsFound = 0;
+        //check how many unique colors are found in the row
+        for (int i = 0; i < colorsFound.Length; i++) {
+            if (colorsFound[i] != 0) {
+                uniqueColorsFound++;
+            }
+        }
+
+        if (uniqueColorsFound == 1) {
+            //"Monochromatic" unlocked by making a row with candles of one color group
+            Settings.setAchievementUnlocked(20);
+        } 
+        else if (uniqueColorsFound == 2) {
+            //"Dichromatic" unlocked by making a row with candles of two color groups
+            Settings.setAchievementUnlocked(21);
+        } 
+        else if (uniqueColorsFound == colorGroupLength) {
+            //"Color Conga Line" unlocked by making a row with candles of all color groups
+            Settings.setAchievementUnlocked(19);
+        }
+
+    }
 
 
     void destroyCandle(CandleLightController can) {
@@ -71,6 +148,8 @@ public class CandleRowDestroyer : CandleLightCollector
 
 
     CandleLightController[] findRow() {
+        //this is a hashset because .Contains() is called on it several times
+        //it gets coverted back into an array so that candles inside of it can be deleted
         HashSet<CandleLightController> result = new HashSet<CandleLightController>();
 
         updateTouchingList();
@@ -122,15 +201,6 @@ public class CandleRowDestroyer : CandleLightCollector
     }
 
 
-    //need to keep track of all other candle ids that are touching the wall
-    /*public override void addToList(CandleLightController other) {
-        base.addToList(other);
-
-        //start wall shine if something is touching the wall
-        if (isTouchingAnyCandles()) {
-            leftParticleSystem.Play();
-        }
-    }*/
 
 
 }

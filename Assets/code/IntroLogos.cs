@@ -13,8 +13,12 @@ public class IntroLogos : MonoBehaviour
 
 
     private void Awake() {
-        unityLogo.gameObject.SetActive(false);
-        waffleLogo.gameObject.SetActive(false);
+        unityLogo.GetComponent<SpriteRenderer>().enabled = false;
+        waffleLogo.GetComponent<SpriteRenderer>().enabled = false;
+    }
+
+    private void Start() {
+        waffleLogo.GetComponent<WaffleButton>().setActive(false);
     }
 
 
@@ -22,14 +26,15 @@ public class IntroLogos : MonoBehaviour
         
         if(Time.time > unityDelay) {
 
-            unityLogo.gameObject.SetActive(true);
+            unityLogo.GetComponent<SpriteRenderer>().enabled = true;
             unityLogo.lerpIn();
 
         }
 
         if (Time.time > waffleDelay) {
 
-            waffleLogo.gameObject.SetActive(true);
+            waffleLogo.GetComponent<WaffleButton>().setActive(true);
+            waffleLogo.GetComponent<SpriteRenderer>().enabled = true;
             waffleLogo.lerpIn();
 
         }

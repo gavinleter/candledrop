@@ -22,14 +22,24 @@ public class GameOverChain : MonoBehaviour
     float initialTouchTime;
 
     float lerp = 0;
-    int totalTouches = 0;
 
     bool gameOver = false;
+
+    Collider2D coll;
+    ContactFilter2D contactFilter;
+    List<Collider2D> touching = new List<Collider2D>();
+    int touchingLength = 0;
+
+    float blackHoleSaveTime = float.MinValue;
+    float blackHoleSaveDelay = 0.5f;
+
 
     void Start(){
         
         sr = GetComponent<SpriteRenderer>();
-
+        coll = GetComponent<Collider2D>();
+        contactFilter = new ContactFilter2D().NoFilter();
+        
     }
 
   
@@ -44,6 +54,7 @@ public class GameOverChain : MonoBehaviour
 
             if(lerp >= 0.7 && !gameOver) {
                 gameManager.pause();
+                gameManager.setGameOverTime();
                 gameOverMenu.setScores(gameManager.getScore(), gameManager.getLastHighScore());
                 gameOverMenu.pause();
                 gameOver = true;
@@ -51,6 +62,7 @@ public class GameOverChain : MonoBehaviour
                 for (int i = 0; i < menusToClose.Length; i++) {
                     menusToClose[i].GetComponent<IMenu>().unpause();
                 }
+
             }
             else if (!gameOver){
                 losingVignette.startParticles();
@@ -71,40 +83,65 @@ public class GameOverChain : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-        
-        CandleLightController c = collision.GetComponentInChildren<CandleLightController>();
+    private void FixedUpdate() {
 
-        if (c != null) {
-            if(totalTouches == 0) {
-                initialTouchTime = Time.time;
+        updateTouchingList();
+
+    }
+
+
+    void updateTouchingList() {
+
+        //update touching list and last touching time
+        bool wasPreviouslyTouching = isTouching();
+        touchingLength = coll.OverlapCollider(contactFilter, touching);
+
+        if (!wasPreviouslyTouching && isTouching()) {
+            initialTouchTime = Time.time;
+        }
+
+        if (blackHoleSaveTime + blackHoleSaveDelay > Time.time && !isAboutToLose()) {
+            //"Void Savior" unlocked by preventing a near loss using a black hole
+            Settings.setAchievementUnlocked(37);
+        }
+
+    }
+
+
+    bool isTouching() {
+
+        CandleLightController can;
+
+        for (int i = 0; i < touchingLength; i++) {
+
+            if (touching[i] != null) {
+                can = touching[i].GetComponentInChildren<CandleLightController>();
+
+                if(can && !can.isBeingDestroyed()) {
+                    return true;
+                }
+                
             }
-            
-            totalTouches++;
+
         }
 
-    }
-
-
-    private void OnTriggerExit2D(Collider2D collision) {
-
-        CandleLightController c = collision.GetComponentInChildren<CandleLightController>();
-
-        if (c != null) {
-            totalTouches--;
-        }
-
-    }
-
-
-    private bool isTouching() {
-        return totalTouches > 0;
+        return false;
     }
 
 
     public void resetChain() {
         gameOver = false;
+        lerp = 0;
     }
 
+
+    public bool isAboutToLose() {
+        return lerp >= 0.3 && isTouching();
+    }
+
+
+    public void setBlackHoleSaveTime() {
+        blackHoleSaveTime = Time.time;
+    }
 
 }

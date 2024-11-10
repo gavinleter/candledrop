@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PauseMenuController : FadingMenuController
@@ -18,6 +19,9 @@ public class PauseMenuController : FadingMenuController
     [SerializeField] Sprite soundDisabledSprite;
 
     [SerializeField] Sprite[] musicButtonSprites;
+
+    [SerializeField] TextMeshProUGUI pointlessAdCounterText;
+    [SerializeField] TextMeshProUGUI highScoreText;
 
 
     // Start is called before the first frame update
@@ -58,6 +62,7 @@ public class PauseMenuController : FadingMenuController
 
             setSoundButtonSprite();
 
+            deafAchievementCheck();
         });
 
         //delete save data button
@@ -115,9 +120,32 @@ public class PauseMenuController : FadingMenuController
         
             int x = Settings.getMusicStatus();
 
-            Settings.setMusicStatus((x + 1) % 3);
+            //"Secret Button Hunter" (#27) is the achievement that unlocks the alt track
+            int altTrackUnlocked = Settings.isAchievementUnlocked(27) ? 1 : 0;
+
+            //music status is modulo 2 when alt track is locked and modulo 3 when its unlocked
+            //because 0 == muted, 1 == default track, 2 == alt track
+            Settings.setMusicStatus((x + 1) % (2 + altTrackUnlocked) );
             setMusicButtonSprite();
+
+            deafAchievementCheck();
         
+        });
+
+        //rate in app store button
+        btns[8].onPress(() => {
+
+            //"Candle Megafan" unlocked by pressing the rate app button
+            Settings.setAchievementUnlocked(30);
+        
+        });
+
+        //pointless ad counter
+        btns[9].onPress(() => { 
+        
+            Settings.increasePointlessAdCount();
+            setTexts();
+
         });
 
     }
@@ -128,6 +156,7 @@ public class PauseMenuController : FadingMenuController
         base.pause();
 
         transform.position = new Vector3(transform.parent.position.x, transform.parent.position.y, 0f);
+        setTexts();
 
     }
 
@@ -150,6 +179,23 @@ public class PauseMenuController : FadingMenuController
     void setMusicButtonSprite() {
 
         btns[7].GetComponent<SpriteRenderer>().sprite = musicButtonSprites[Settings.getMusicStatus()];
+
+    }
+
+
+    void deafAchievementCheck() {
+
+        if (!Settings.isMusicEnabled() && !Settings.isSoundEnabled()) {
+            //"Deaf" unlocks when both music and sound are disabled
+            Settings.setAchievementUnlocked(1);
+        }
+    }
+
+
+    void setTexts() {
+
+        pointlessAdCounterText.text = "" + Settings.getPointlessAdCount();
+        highScoreText.text = "" + Settings.getHighScore();
 
     }
 
