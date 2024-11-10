@@ -39,7 +39,7 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
             tempSource.clip = holeExplode;
             tempSource.pitch = Random.Range(1.5f, 2.5f);
-            tempSource.volume = 0.5f;
+            tempSource.volume = 0.2f;
             tempSource.Play();
 
             Destroy(tempAudio, holeExplode.length);
