@@ -151,7 +151,7 @@ public class PauseMenuController : FadingMenuController
     }
 
 
-    //when the game pauses, start lerping
+
     override public void pause() {
         base.pause();
 
@@ -160,7 +160,7 @@ public class PauseMenuController : FadingMenuController
 
     }
 
-    //when the game unpauses, start lerping in reverse
+    
     override public void unpause() {
         base.unpause();
     }

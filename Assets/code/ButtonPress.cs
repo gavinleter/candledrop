@@ -31,13 +31,15 @@ public class ButtonPress : MonoBehaviour
         actions = new List<System.Action>();
         downActions = new List<System.Action>();
         stayActions = new List<System.Action>();
-    }
 
-    virtual protected void Start(){
         rend = GetComponent<SpriteRenderer>();
         buttonCollider = GetComponent<Collider2D>();
 
         buttonCollider.enabled = active;
+    }
+
+    virtual protected void Start(){
+        
 
     }
 

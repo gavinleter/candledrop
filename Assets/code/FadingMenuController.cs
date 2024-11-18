@@ -7,6 +7,7 @@ public class FadingMenuController : FadingObject, IMenu
 {
 
     [SerializeField] protected List<ButtonPress> btns = new List<ButtonPress>();
+    bool menuActive = false;
 
 
     protected override void decreaseLerp() {
@@ -18,6 +19,8 @@ public class FadingMenuController : FadingObject, IMenu
     virtual public void pause() {
         base.lerpIn();
 
+        menuActive = true;
+
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(true);
         }
@@ -27,6 +30,8 @@ public class FadingMenuController : FadingObject, IMenu
     //when the game unpauses, start lerping in reverse
     virtual public void unpause() {
         base.lerpOut();
+
+        menuActive = false;
 
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(false);
@@ -51,5 +56,10 @@ public class FadingMenuController : FadingObject, IMenu
     //if the unpause menu has finished going away, this returns true
     virtual public bool unpauseFinished() {
         return base.fadeOutFinished();
+    }
+
+
+    virtual public bool isMenuActive() {
+        return menuActive;
     }
 }

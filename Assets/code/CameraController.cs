@@ -23,13 +23,32 @@ public class CameraController : MonoBehaviour
 
     private bool introDelayFinished = false;
 
+    Camera cam;
+    //the distance between the middle of the screen and top in world units
+    float camHeight;
+    float lastMouseYPosition = 0;
+    float dragInertia = 0;
 
-    void Start()
-    {
+    bool scrollMode = false;
+    [SerializeField] float scrollModeDragStrength;
+    [SerializeField] float scrollModeInertiaStrength;
+    float scrollModeUpperBound;
+    float scrollModeLowerBound;
+    //for having something happen when the user tries to go above the upper/lower limit of the scroll area
+    System.Action scrollModeUpperLimitAction;
+    System.Action scrollModeLowerLimitAction;
+
+    System.Action endTransitionAction;
+
+
+    private void Awake() {
+        cam = GetComponent<Camera>();
         transform.position = initialPosition;
         targetPosition = gameStartPosition;
 
+        camHeight = Mathf.Abs(transform.position.y - cam.ScreenToWorldPoint(new Vector3(0.5f, 1, 0)).y);
     }
+
 
     void Update()
     {
@@ -60,23 +79,48 @@ public class CameraController : MonoBehaviour
             if (journeyFraction >= 1.0f)
             {
                 isTransitioning = false;
+
+                if(endTransitionAction != null) {
+                    endTransitionAction();
+                    //end transition actions are discarded after being used once
+                    endTransitionAction = null;
+                }
+
             }
         }
 
 
+        //controls the black fade in and out transitions
         if (isBlackFadeTransitioning) {
             if (blackFadeObject.fadeInFinished() && !initialBlackFadeInCompleted) {
 
                 blackFadeObject.lerpOut();
                 transform.position = targetPosition;
                 initialBlackFadeInCompleted = true;
-            }
-            if (blackFadeObject.fadeOutFinished() && initialBlackFadeInCompleted) {
 
-                isBlackFadeTransitioning = false;
-                initialBlackFadeInCompleted = false;
             }
+
+            if (initialBlackFadeInCompleted) {
+
+                //end transition actions happen when the fade out starts rather than when the entire transition is over
+                if (endTransitionAction != null) {
+                    endTransitionAction();
+                    //end transition actions are discarded after being used once
+                    endTransitionAction = null;
+                }
+
+                if (blackFadeObject.fadeOutFinished()) {
+                    isBlackFadeTransitioning = false;
+                    initialBlackFadeInCompleted = false;
+                }
+
+            }
+
         }
+
+
+        updateScrollModePosition();
+        checkScrollModeBounds();
     }
 
 
@@ -96,13 +140,12 @@ public class CameraController : MonoBehaviour
     {
         isTransitioning = true;
         transitionStartTime = Time.time;
+        scrollMode = false;
+        initialBlackFadeInCompleted = false;
     }
 
     public void startGameTransition() {
-        isTransitioning = false;
-        initialPosition = gameStartPosition;
-        targetPosition = gamePosition;
-        transitionSpeed = candleFallTransitionSpeed;
+        setNewTarget(gamePosition, candleFallTransitionSpeed);
         startTransition();
     }
 
@@ -125,18 +168,25 @@ public class CameraController : MonoBehaviour
     }
 
 
-    public void setNewTarget(Vector3 targetPosition, float transitionSpeed) {
+
+    public void setNewTarget(Vector3 targetPosition, float transitionSpeed, System.Action endAction) {
         introDelayFinished = true;
         isTransitioning = false;
         initialPosition = transform.position;
         this.targetPosition = targetPosition;
         this.transitionSpeed = transitionSpeed;
+        endTransitionAction = endAction;
     }
-
-
+    public void setNewTarget(Vector3 targetPosition, System.Action endAction) {
+        setNewTarget(targetPosition, transitionSpeed, endAction);
+    }
+    public void setNewTarget(Vector3 targetPosition, float transitionSpeed) {
+        setNewTarget(targetPosition, transitionSpeed, null);
+    }
     public void setNewTarget(Vector3 targetPosition) {
         setNewTarget(targetPosition, transitionSpeed);
     }
+
 
 
     public bool currentlyTransitioning() {
@@ -144,23 +194,140 @@ public class CameraController : MonoBehaviour
     }
 
 
-    public void fadeToBlackTransition(Vector3 targetPosition, float fadeSpeed) {
+    public void fadeToBlackTransition(Vector3 targetPosition, float fadeSpeed, System.Action endAction) {
         blackFadeObject.forceLerpOut();
         blackFadeObject.transform.position = new Vector3(transform.position.x, transform.position.y, -1f);
         blackFadeObject.setSpeed(fadeSpeed);
         blackFadeObject.lerpIn();
+
         this.targetPosition = targetPosition;
         isBlackFadeTransitioning = true;
+        initialBlackFadeInCompleted = false;
+        scrollMode = false;
+
+        endTransitionAction = endAction;
+    }
+    public void fadeToBlackTransition(Vector3 targetPosition, float fadeSpeed) {
+        fadeToBlackTransition(targetPosition, fadeSpeed, null);
     }
 
 
+
+    public void fadeToBlackTransitionToTop(float fadeSpeed, System.Action endAction) {
+        fadeToBlackTransition(gameStartPosition, fadeSpeed, endAction);
+    }
     public void fadeToBlackTransitionToTop(float fadeSpeed) {
-        fadeToBlackTransition(gameStartPosition, fadeSpeed);
+        fadeToBlackTransition(gameStartPosition, fadeSpeed, null);
     }
 
 
+
+    public void fadeToBlackTransitionToBottom(float fadeSpeed, System.Action endAction) {
+        fadeToBlackTransition(gamePosition, fadeSpeed, endAction);
+    }
     public void fadeToBlackTransitionToBottom(float fadeSpeed) {
-        fadeToBlackTransition(gamePosition, fadeSpeed);
+        fadeToBlackTransition(gamePosition, fadeSpeed, null);
     }
+
+
+
+    public void toggleScrollMode(bool x, float upperBound, float lowerBound) {
+        scrollMode = x;
+        scrollModeUpperBound = upperBound;
+        scrollModeLowerBound = lowerBound;
+
+        scrollModeUpperLimitAction = null;
+        scrollModeLowerLimitAction = null;
+    }
+    public void toggleScrollMode(bool x) {
+        toggleScrollMode(x, scrollModeUpperBound, scrollModeLowerBound);
+    }
+
+
+
+    void checkScrollModeBounds() {
+
+        if (scrollMode) {
+
+            if(transform.position.y + camHeight > scrollModeUpperBound) {
+                transform.position = new Vector3(transform.position.x, scrollModeUpperBound - camHeight - 0.001f, transform.position.z);
+                dragInertia = 0;
+
+                if (scrollModeUpperLimitAction != null) {
+                    scrollModeUpperLimitAction();
+                }
+            }
+
+            if (transform.position.y - camHeight < scrollModeLowerBound) {
+                transform.position = new Vector3(transform.position.x, scrollModeLowerBound + camHeight + 0.001f, transform.position.z);
+                dragInertia = 0;
+
+                if (scrollModeLowerLimitAction != null) {
+                    scrollModeLowerLimitAction();
+                }
+            }
+
+        }
+
+    }
+
+
+    void updateScrollModePosition() {
+
+        if (scrollMode) {
+
+            float mouseY = 0;
+
+            //set the initial value for lastMouseYPosition when the user starts pressing down
+            if (Input.GetMouseButtonDown(0)) {
+                lastMouseYPosition = Input.mousePosition.y;
+                dragInertia = 0;
+            }
+
+            if (Input.GetMouseButton(0)) {
+                mouseY = Input.mousePosition.y;
+            }
+            else {
+                mouseY = lastMouseYPosition;
+            }
+
+            float dragStrength = (lastMouseYPosition - mouseY) * scrollModeDragStrength;
+            dragInertia += dragStrength * scrollModeInertiaStrength;
+            dragInertia = Mathf.Lerp(dragInertia, 0, 0.05f);
+
+            transform.Translate(new Vector3(0, dragStrength, 0));
+
+            //inertia only works when the user isnt holding down
+            if (!Input.GetMouseButton(0)) {
+                transform.Translate(new Vector3(0, dragInertia, 0));
+            }
+
+            lastMouseYPosition = mouseY;
+
+        }
+
+    }
+
+
+    public void setScrollModeLimitActions(System.Action top, System.Action bottom) {
+        scrollModeUpperLimitAction = top;
+        scrollModeLowerLimitAction = bottom;
+    }
+
+
+    public float getCamHeight() {
+        return camHeight;
+    }
+
+
+    public void clearEndTransitionAction() {
+        endTransitionAction = null;
+    }
+
+
+    public void setEndTransitionAction(System.Action endAction) {
+        endTransitionAction = endAction;
+    }
+
 
 }

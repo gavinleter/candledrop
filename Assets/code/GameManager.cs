@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour, IMenu
     private bool gameStarted = false;
     //user should not be able to press pause buttons while transitioning to credits or basement
     private bool canPause = true;
+    bool menuActive = true;
 
     [SerializeField] public float blackHoleDestroyRadius = 0f;
 
@@ -608,7 +609,9 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void pause() {
+        menuActive = false;
         isTurnActive = false;
+
         if(getStartingCandleObject() != null) {
             getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(false);
         }
@@ -640,6 +643,7 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void unpause() {
+        menuActive = true;
 
         if (getStartingCandleObject() != null) {
             getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(true);
@@ -666,6 +670,11 @@ public class GameManager : MonoBehaviour, IMenu
                 ps[j].Play();
             }
         }
+    }
+
+
+    public bool isMenuActive() {
+        return menuActive;
     }
 
 

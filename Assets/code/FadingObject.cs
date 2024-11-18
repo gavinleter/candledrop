@@ -33,14 +33,14 @@ public class FadingObject : Lerpable
 
     override protected void increaseLerp() {
         base.increaseLerp();
-        opacity = Mathf.Lerp(opacity, 1f, lerp);
+        opacity = Mathf.Lerp(opacity, upperLimit, lerp);
         setAlpha();
     }
 
 
     override protected void decreaseLerp() {
         base.decreaseLerp();
-        opacity = Mathf.Lerp(0f, opacity, lerp);
+        opacity = Mathf.Lerp(lowerLimit, opacity, lerp);
         setAlpha();
     }
 
@@ -71,7 +71,7 @@ public class FadingObject : Lerpable
 
     override public void lerpIn() {
         base.lerpIn();
-        lerp = 0f;
+        lerp = lowerLimit;
 
         if (playParticlesOnFadeIn) {
             for (int i = 0; i < childrenParticles.Length; i++) {
@@ -85,7 +85,7 @@ public class FadingObject : Lerpable
     //when the object fades out, start lerping in reverse
     override public void lerpOut() {
         base.lerpOut();
-        lerp = 1f;
+        lerp = upperLimit;
 
         if (destroyParticlesOnFadeOut) {
             for (int i = 0; i < childrenParticles.Length; i++) {
@@ -100,7 +100,7 @@ public class FadingObject : Lerpable
     //instantly make this object appear
     override public void forceLerpIn() {
         base.forceLerpIn();
-        opacity = 1f;
+        opacity = upperLimit;
 
         setAlpha();
     }
@@ -108,7 +108,7 @@ public class FadingObject : Lerpable
     //instantly make this object disappear
     override public void forceLerpOut() {
         base.forceLerpOut();
-        opacity = 0f;
+        opacity = lowerLimit;
 
         setAlpha();
     }
@@ -116,12 +116,12 @@ public class FadingObject : Lerpable
 
     //if the object has finished going away, this returns true
     virtual public bool fadeOutFinished() {
-        return opacity < 0.01f;
+        return opacity < lowerLimit + 0.01f;
     }
 
 
     virtual public bool fadeInFinished() {
-        return opacity > 0.99f;
+        return opacity > upperLimit - 0.01f;
     }
 
 }
