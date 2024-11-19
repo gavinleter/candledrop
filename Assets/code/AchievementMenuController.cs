@@ -10,14 +10,14 @@ class AchievementSection {
     public ParticleSystem particleSystem;
     public SpriteRenderer checkMark;
 
-    public AchievementSection(GameObject obj, SpriteRenderer checkMark, ParticleSystem particleSystem, AudioClip btnUpSound, AudioClip btnDownSound) {
+    public AchievementSection(GameObject obj, SpriteRenderer checkMark, AudioClip btnUpSound, AudioClip btnDownSound) {
 
-        obj.AddComponent<BoxCollider2D>();
-        obj.AddComponent<ParticleSystem>();
-        btn = obj.AddComponent<ButtonPress>();
+        //obj.AddComponent<BoxCollider2D>();
+        //obj.AddComponent<ParticleSystem>();
+        btn = obj.GetComponent<ButtonPress>();
         sr = obj.GetComponent<SpriteRenderer>();
         this.checkMark = checkMark;
-        this.particleSystem = particleSystem;
+        this.particleSystem = obj.GetComponentInChildren<ParticleSystem>();
         
         btn.setActive(false);
         btn.setAudioUp(btnUpSound);
@@ -188,11 +188,10 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
         for (int i = 0; i < achs.Length; i++) {
 
-            obj = achievementContainers[i].transform.GetChild(4).gameObject;
+            obj = achievementContainers[i].transform.GetChild(0).gameObject;
             checkMark = achievementContainers[i].transform.GetChild(3).gameObject;
-            ParticleSystem ps = Instantiate(achievementHighlightParticleSystem, obj.transform);
 
-            achs[i] = new AchievementSection(obj, checkMark.GetComponent<SpriteRenderer>(), ps, buttonUpSound, buttonDownSound);
+            achs[i] = new AchievementSection(obj, checkMark.GetComponent<SpriteRenderer>(), buttonUpSound, buttonDownSound);
             
         }
 
