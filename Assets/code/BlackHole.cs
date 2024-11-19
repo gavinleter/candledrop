@@ -47,10 +47,6 @@ public class BlackHole : MonoBehaviour, ISpecialObject
         }
 
 
-        //CandleLightController o = other.gameObject.GetComponentInChildren<CandleLightController>();
-
-        //destroyCandle(o);
-
         //destroy self only when touching something that is not another black hole
         if (other.gameObject.GetComponentInChildren<BlackHole>() == null) {
             destroySelf();

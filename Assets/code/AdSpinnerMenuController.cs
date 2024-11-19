@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+class AdSpinnerSoundCheckpoint {
+
+    [SerializeField] public AudioClip sound;
+    [SerializeField] public float volume;
+    [SerializeField] public float deactivationSpeed;
+
+}
+
+
 public class AdSpinnerMenuController : FadingMenuController
 {
     //the last sprite in this is the one used for the spinning animation
@@ -14,6 +24,10 @@ public class AdSpinnerMenuController : FadingMenuController
     [SerializeField] float startingSpeed;
     [SerializeField] float shakeAmount;
 
+    [SerializeField] AdSpinnerSoundCheckpoint[] soundCheckpoints;
+    int selectedSound = 0;
+
+    AudioSource audioSource;
     GameObject emptySpinner;
     SpriteRenderer emptySpinnerSpriteRenderer;
     SpriteRenderer spriteRenderer;
@@ -38,6 +52,7 @@ public class AdSpinnerMenuController : FadingMenuController
         emptySpinner = transform.GetChild(1).gameObject;
         emptySpinnerSpriteRenderer = emptySpinner.GetComponent<SpriteRenderer>();
         spinnerAnimator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         sr.enabled = false;
         spinnerAnimator.enabled = false;
@@ -63,6 +78,8 @@ public class AdSpinnerMenuController : FadingMenuController
 
 
     public void startSpin() {
+        selectedSound = 0;
+
         spriteRenderer.enabled = true;
         emptySpinnerSpriteRenderer.enabled = false;
         spinnerAnimator.enabled = true;
@@ -80,6 +97,15 @@ public class AdSpinnerMenuController : FadingMenuController
         selectedUpgrade = x;
 
         spinnerAnimator.speed -= 0.4f * UnityEngine.Random.Range(0.5f, 1);
+
+        //change sounds when as spinner slows down
+        if (spinnerAnimator.speed < soundCheckpoints[selectedSound].deactivationSpeed && selectedSound < soundCheckpoints.Length - 1) { 
+            selectedSound++;
+        }
+
+        if (Settings.isSoundEnabled()) {
+            audioSource.PlayOneShot(soundCheckpoints[selectedSound].sound, soundCheckpoints[selectedSound].volume);
+        }
 
         if(spinnerAnimator.speed < 0.5f) {
 

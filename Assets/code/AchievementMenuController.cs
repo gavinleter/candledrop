@@ -7,18 +7,20 @@ class AchievementSection {
 
     public ButtonPress btn;
     public SpriteRenderer sr;
-    public ParticleSystem particleSystem;
+    public ParticleSystem unlockParticleSystem;
+    public ParticleSystem confettiParticleSystem;
     public SpriteRenderer checkMark;
+    public AudioSource unlockSound;
 
     public AchievementSection(GameObject obj, SpriteRenderer checkMark, AudioClip btnUpSound, AudioClip btnDownSound) {
 
-        //obj.AddComponent<BoxCollider2D>();
-        //obj.AddComponent<ParticleSystem>();
         btn = obj.GetComponent<ButtonPress>();
         sr = obj.GetComponent<SpriteRenderer>();
         this.checkMark = checkMark;
-        this.particleSystem = obj.GetComponentInChildren<ParticleSystem>();
-        
+        unlockParticleSystem = obj.transform.GetChild(0).GetComponent<ParticleSystem>();
+        confettiParticleSystem = obj.transform.GetChild(1).GetComponent<ParticleSystem>();
+        unlockSound = obj.transform.GetChild(1).GetComponent<AudioSource>();
+
         btn.setActive(false);
         btn.setAudioUp(btnUpSound);
         btn.setAudioDown(btnDownSound);
@@ -205,6 +207,12 @@ public class AchievementMenuController : MonoBehaviour, IMenu
             int x = i;
             achs[i].btn.onPress(() => {
                 Debug.Log(x);
+
+                if (Settings.isSoundEnabled()) {
+                    achs[x].unlockSound.Play();
+                }
+
+                achs[x].confettiParticleSystem.Play();
                 setAchievementTapped(x);
             });
 
@@ -226,20 +234,20 @@ public class AchievementMenuController : MonoBehaviour, IMenu
                 if (Settings.isAchievementTapped(i)) {
                     achs[i].sr.enabled = false;
                     achs[i].checkMark.enabled = true;
-                    achs[i].particleSystem.Stop();
-                    achs[i].particleSystem.Clear();
+                    achs[i].unlockParticleSystem.Stop();
+                    achs[i].unlockParticleSystem.Clear();
                 }
                 else {
                     achs[i].sr.sprite = unlockedIcon;
                     achs[i].btn.setActive(true);
-                    achs[i].particleSystem.Play();
+                    achs[i].unlockParticleSystem.Play();
                 }
 
             }
             else {
                 achs[i].sr.sprite = lockedIcon;
-                achs[i].particleSystem.Stop();
-                achs[i].particleSystem.Clear();
+                achs[i].unlockParticleSystem.Stop();
+                achs[i].unlockParticleSystem.Clear();
             }
 
         }
