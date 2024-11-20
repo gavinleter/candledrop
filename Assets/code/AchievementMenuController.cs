@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 
@@ -64,6 +65,11 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
     float lerp = 0;
     [SerializeField] float iconFadeSpeed;
+
+    [SerializeField] TextMeshProUGUI achievementsUnlockedText;
+    [SerializeField] TextMeshProUGUI candlesUnlockedText;
+    [SerializeField] TextMeshProUGUI skinsUnlockedText;
+    [SerializeField] TextMeshProUGUI secretsUnlockedText;
     
     void Awake() {
         cameraController = mainCam.GetComponent<CameraController>();

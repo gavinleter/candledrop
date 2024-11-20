@@ -326,5 +326,18 @@ public class Settings
     }
 
 
+    public static int achievementsUnlockedCount() {
+        int count = 0;
+
+        for(int i = 0; i < achievements.achs.Length; i++) {
+            if (achievements.achs[i].unlocked) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+
 
 }

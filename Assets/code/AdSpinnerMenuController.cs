@@ -9,6 +9,8 @@ class AdSpinnerSoundCheckpoint {
     [SerializeField] public AudioClip sound;
     [SerializeField] public float volume;
     [SerializeField] public float deactivationSpeed;
+    [SerializeField] public bool looping;
+    [HideInInspector] public bool hasPlayed = false;
 
 }
 
@@ -91,6 +93,9 @@ public class AdSpinnerMenuController : FadingMenuController
 
     public void startSpin() {
         selectedSound = 0;
+        for (int i = 0; i < soundCheckpoints.Length; i++) {
+            soundCheckpoints[i].hasPlayed = false;
+        }
 
         spriteRenderer.enabled = true;
         emptySpinnerSpriteRenderer.enabled = false;
@@ -117,9 +122,10 @@ public class AdSpinnerMenuController : FadingMenuController
         }
 
         if (Settings.isSoundEnabled()) {
-            audioSources[selectedSound].loop = true;
+            audioSources[selectedSound].loop = soundCheckpoints[selectedSound].looping;
+            soundCheckpoints[selectedSound].hasPlayed = true;
 
-            if (!audioSources[selectedSound].isPlaying) {
+            if (!audioSources[selectedSound].isPlaying && (!soundCheckpoints[selectedSound].hasPlayed || soundCheckpoints[selectedSound].looping)) {
                 audioSources[selectedSound].Play();
             }
         }
