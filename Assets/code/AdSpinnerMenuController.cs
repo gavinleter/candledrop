@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
@@ -27,7 +28,7 @@ public class AdSpinnerMenuController : FadingMenuController
     [SerializeField] AdSpinnerSoundCheckpoint[] soundCheckpoints;
     int selectedSound = 0;
 
-    AudioSource audioSource;
+    AudioSource[] audioSources;
     GameObject emptySpinner;
     SpriteRenderer emptySpinnerSpriteRenderer;
     SpriteRenderer spriteRenderer;
@@ -52,10 +53,21 @@ public class AdSpinnerMenuController : FadingMenuController
         emptySpinner = transform.GetChild(1).gameObject;
         emptySpinnerSpriteRenderer = emptySpinner.GetComponent<SpriteRenderer>();
         spinnerAnimator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
 
         sr.enabled = false;
         spinnerAnimator.enabled = false;
+
+        //initialize audiosources for each sound the ad spinner can make
+        audioSources = new AudioSource[soundCheckpoints.Length];
+
+        for(int i = 0; i < audioSources.Length; i++) {
+            audioSources[i] = transform.AddComponent<AudioSource>();
+            audioSources[i].loop = true;
+            audioSources[i].volume = soundCheckpoints[i].volume;
+            audioSources[i].playOnAwake = false;
+            audioSources[i].clip = soundCheckpoints[i].sound;
+        }
+
     }
 
 
@@ -99,16 +111,22 @@ public class AdSpinnerMenuController : FadingMenuController
         spinnerAnimator.speed -= 0.4f * UnityEngine.Random.Range(0.5f, 1);
 
         //change sounds when as spinner slows down
-        if (spinnerAnimator.speed < soundCheckpoints[selectedSound].deactivationSpeed && selectedSound < soundCheckpoints.Length - 1) { 
+        if (spinnerAnimator.speed < soundCheckpoints[selectedSound].deactivationSpeed && selectedSound < soundCheckpoints.Length - 1) {
+            audioSources[selectedSound].loop = false;
             selectedSound++;
         }
 
         if (Settings.isSoundEnabled()) {
-            audioSource.PlayOneShot(soundCheckpoints[selectedSound].sound, soundCheckpoints[selectedSound].volume);
+            audioSources[selectedSound].loop = true;
+
+            if (!audioSources[selectedSound].isPlaying) {
+                audioSources[selectedSound].Play();
+            }
         }
 
         if(spinnerAnimator.speed < 0.5f) {
 
+            audioSources[selectedSound].loop = false;
             spinnerAnimator.speed = 0;
             spinnerAnimator.enabled = false;
             spinning = false;
