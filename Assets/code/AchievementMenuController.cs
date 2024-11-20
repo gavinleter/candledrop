@@ -2,13 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+class AchievementSection {
+
+    public ButtonPress btn;
+    public SpriteRenderer sr;
+    public ParticleSystem unlockParticleSystem;
+    public ParticleSystem confettiParticleSystem;
+    public SpriteRenderer checkMark;
+    public AudioSource unlockSound;
+
+    public AchievementSection(GameObject obj, SpriteRenderer checkMark, AudioClip btnUpSound, AudioClip btnDownSound) {
+
+        btn = obj.GetComponent<ButtonPress>();
+        sr = obj.GetComponent<SpriteRenderer>();
+        this.checkMark = checkMark;
+        unlockParticleSystem = obj.transform.GetChild(0).GetComponent<ParticleSystem>();
+        confettiParticleSystem = obj.transform.GetChild(1).GetComponent<ParticleSystem>();
+        unlockSound = obj.transform.GetChild(1).GetComponent<AudioSource>();
+
+        btn.setActive(false);
+        btn.setAudioUp(btnUpSound);
+        btn.setAudioDown(btnDownSound);
+
+
+    }
+
+}
+
+
 public class AchievementMenuController : MonoBehaviour, IMenu
 {
 
     [SerializeField] GameObject topObject;
     [SerializeField] GameObject bottomObject;
-    [SerializeField] float topBoundOffset;
-    [SerializeField] float bottomBoundOffset;
+    [SerializeField] ParticleSystem topParticles;
+    [SerializeField] ParticleSystem bottomParticles;
+    float topBound;
+    float bottomBound;
 
     [SerializeField] GameObject parentMenuObject;
     IMenu parentMenu;
@@ -16,66 +47,243 @@ public class AchievementMenuController : MonoBehaviour, IMenu
     [SerializeField] Camera mainCam;
     [SerializeField] GameManager gameManager;
 
+    CameraController cameraController;
+
     Vector3 transitionPosition;
     bool active = false;
 
-    // Start is called before the first frame update
+
+    [SerializeField] GameObject achievementContainer;
+    AchievementSection[] achs;
+
+    [SerializeField] ParticleSystem achievementHighlightParticleSystem;
+    [SerializeField] AudioClip buttonUpSound;
+    [SerializeField] AudioClip buttonDownSound;
+    [SerializeField] Sprite lockedIcon;
+    [SerializeField] Sprite unlockedIcon;
+
+    float lerp = 0;
+    [SerializeField] float iconFadeSpeed;
+    
+    void Awake() {
+        cameraController = mainCam.GetComponent<CameraController>();
+        topBound = topObject.GetComponent<SpriteRenderer>().bounds.max.y;
+        bottomBound = bottomObject.GetComponent<SpriteRenderer>().bounds.min.y;
+
+        initializeAchievements();
+    }
+
+
     void Start(){
 
-        GetComponent<achcam>().setBounds(topObject.transform.position.y + topBoundOffset, bottomObject.transform.position.y + bottomBoundOffset);
-        transitionPosition = new Vector3(topObject.transform.position.x, topObject.transform.position.y + topBoundOffset, -10);
+        transitionPosition = new Vector3(topObject.transform.position.x, topBound - cameraController.getCamHeight(), cameraController.transform.position.z);
 
         //return back up button
         btns[0].onPress(()=> {
             
             unpause();
-            parentMenuObject.GetComponent<PauseMenuController>().pause();
 
             transitionBackUp();
             
         });
 
     } 
+
+
+    void Update() {
+
+        updateIconFades();
+
+    }
+
+
     
     //go back up to where the camera was before
     void transitionBackUp() {
         if (gameManager.isGameStarted()) {
             //mainCam.GetComponent<CameraController>().transitionToBottom(60f);
-            mainCam.GetComponent<CameraController>().fadeToBlackTransitionToBottom(0.1f);
+
+            cameraController.fadeToBlackTransitionToBottom(0.1f, () => {
+                parentMenuObject.GetComponent<IMenu>().pause();
+            });
+
         }
         else {
             //mainCam.GetComponent<CameraController>().transitionToTop(60f);
-            mainCam.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
+
+            cameraController.fadeToBlackTransitionToTop(0.1f, () => {
+                parentMenuObject.GetComponent<IMenu>().pause();
+            });
+
         }
     }
 
 
     public void unpause() {
-        //this method is called when a game over happens to boot the player out of this menu
+        //this method can be called when a game over happens to boot the player out of this menu
         //so the transition back up should not happen if the player wasn't in this menu to begin with
         if (active) {
             transitionBackUp();
         }
 
-        GetComponent<achcam>().setActive(false);
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(false);
         }
 
+        for (int i = 0; i < achs.Length; i++) {
+            achs[i].btn.setActive(false);
+        }
+
         active = false;
+        
     }
 
 
     public void pause() {
         active = true;
 
+        refreshAchievements();
+
         //mainCam.GetComponent<CameraController>().setNewTarget(transitionPosition, 60f);
         //mainCam.GetComponent<CameraController>().startTransition();
-        mainCam.GetComponent<CameraController>().fadeToBlackTransition(transitionPosition, 0.1f);
-        GetComponent<achcam>().setActive(true);
+
+        cameraController.fadeToBlackTransition(transitionPosition, 0.1f, () => {
+            cameraController.toggleScrollMode(true, topBound, bottomBound);
+
+            //make the top and bottom particles play when the user tries to scroll too far
+            cameraController.setScrollModeLimitActions(() => {
+                if (!topParticles.IsAlive()) {
+                    topParticles.Emit(1);
+                }
+            },
+            () => {
+                if (!bottomParticles.IsAlive()) {
+                    bottomParticles.Emit(1);
+                }
+            });
+        });
+        
+
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(true);
         }
     }
+
+
+    public bool isMenuActive() {
+        return active;
+    }
+
+
+    void initializeAchievements() {
+
+        achs = new AchievementSection[achievementContainer.transform.childCount];
+        GameObject[] achievementContainers = new GameObject[achievementContainer.transform.childCount];
+
+        for (int i = 0; i < achievementContainers.Length; i++) {
+            achievementContainers[i] = achievementContainer.transform.GetChild(i).gameObject;
+        }
+
+
+        GameObject obj;
+        GameObject checkMark;
+
+        for (int i = 0; i < achs.Length; i++) {
+
+            obj = achievementContainers[i].transform.GetChild(0).gameObject;
+            checkMark = achievementContainers[i].transform.GetChild(3).gameObject;
+
+            achs[i] = new AchievementSection(obj, checkMark.GetComponent<SpriteRenderer>(), buttonUpSound, buttonDownSound);
+            
+        }
+
+        setButtonMethods();
+    }
+
+
+    void setButtonMethods() {
+
+        for (int i = 0; i < achs.Length; i++) {
+            int x = i;
+            achs[i].btn.onPress(() => {
+                Debug.Log(x);
+
+                if (Settings.isSoundEnabled()) {
+                    achs[x].unlockSound.Play();
+                }
+
+                achs[x].confettiParticleSystem.Play();
+                setAchievementTapped(x);
+            });
+
+        }
+
+    }
+
+
+    void refreshAchievements() {
+
+        for (int i = 0; i < achs.Length; i++) {
+
+            achs[i].sr.enabled = true;
+            achs[i].btn.setActive(false);
+            achs[i].checkMark.enabled = false;
+
+            if (Settings.isAchievementUnlocked(i)) {
+
+                if (Settings.isAchievementTapped(i)) {
+                    achs[i].sr.enabled = false;
+                    achs[i].checkMark.enabled = true;
+                    achs[i].unlockParticleSystem.Stop();
+                    achs[i].unlockParticleSystem.Clear();
+                }
+                else {
+                    achs[i].sr.sprite = unlockedIcon;
+                    achs[i].btn.setActive(true);
+                    achs[i].unlockParticleSystem.Play();
+                }
+
+            }
+            else {
+                achs[i].sr.sprite = lockedIcon;
+                achs[i].unlockParticleSystem.Stop();
+                achs[i].unlockParticleSystem.Clear();
+            }
+
+        }
+
+    }
+
+
+    void updateIconFades() {
+
+        lerp += Time.deltaTime * iconFadeSpeed;
+        lerp = lerp % 1f;
+
+        Color x;
+        for (int i = 0; i < achs.Length; i++) {
+            if (!Settings.isAchievementUnlocked(i)) {
+                x = achs[i].sr.color;
+                //each icon has a slight offset in transparency from one another
+                //the values of transparency range from 0.875 to 1
+                x.a = 0.875f + (Mathf.Cos(0.4f * (i + lerp * 5) * Mathf.PI)) / 8f;
+
+                achs[i].sr.color = x;
+            }
+
+        }
+
+
+    }
+
+
+    void setAchievementTapped(int x) {
+
+        Settings.setAchievementTapped(x);
+        refreshAchievements();
+
+    }
+
+
 
 }

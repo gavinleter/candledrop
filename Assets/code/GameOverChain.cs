@@ -6,11 +6,15 @@ public class GameOverChain : MonoBehaviour
 {
 
     [SerializeField] GameOverMenuController gameOverMenu;
+    [SerializeField] AchievementMenuController achievementMenu;
     [SerializeField] GameManager gameManager;
 
     //a list of any menu that could potentially be open that needs to be closed before a game over happens
     //this is a list of GameObject rather than IMenu because unity doesn't work with serializing interfaces
     [SerializeField] GameObject[] menusToClose;
+    //also need to clear any end transition actions that may happen from closing a menu that starts a transition
+    //like how the achievement menu opens the pause menu after transitioning
+    [SerializeField] CameraController mainCam;
 
     [SerializeField] float timeToGameOver;
     [SerializeField] float sensingDelay;
@@ -52,15 +56,29 @@ public class GameOverChain : MonoBehaviour
 
             lerp = Mathf.Min(lerp + Time.deltaTime / timeToGameOver, 1);
 
+            //if the threshold has reached for a game over
             if(lerp >= 0.7 && !gameOver) {
                 gameManager.pause();
                 gameManager.setGameOverTime();
                 gameOverMenu.setScores(gameManager.getScore(), gameManager.getLastHighScore());
-                gameOverMenu.pause();
                 gameOver = true;
+
+                bool achievementsOpen = achievementMenu.isMenuActive();
 
                 for (int i = 0; i < menusToClose.Length; i++) {
                     menusToClose[i].GetComponent<IMenu>().unpause();
+                }
+
+                if (achievementsOpen) {
+                    //the achievement menu will attempt to transition and pull up the pause menu if it is closed
+                    //this hijacks the end action to pull up the game over menu instead if that happens
+                    mainCam.setEndTransitionAction(() => {
+                        gameOverMenu.pause();
+                    });
+                }
+                else {
+                    //otherwise the game over menu can just be opened immediately
+                    gameOverMenu.pause();
                 }
 
             }

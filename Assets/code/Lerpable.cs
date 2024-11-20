@@ -11,6 +11,9 @@ public class Lerpable : MonoBehaviour
     [SerializeField] protected float lerpSpeed;
     [SerializeField] bool currentlyActive;
 
+    protected float lowerLimit = 0;
+    protected float upperLimit = 1;
+
 
     protected virtual void Start() {
 
@@ -26,9 +29,11 @@ public class Lerpable : MonoBehaviour
 
         if (lerpingIn && currentlyActive) {
             increaseLerp();
+
         }
         else if (lerp > 0f && currentlyActive) {
             decreaseLerp();
+
         }
 
     }
@@ -36,13 +41,13 @@ public class Lerpable : MonoBehaviour
 
     protected virtual void increaseLerp() {
         //dont let lerp go past 1
-        lerp = Mathf.Min(lerp + (lerpSpeed * Time.deltaTime), 1);
+        lerp = Mathf.Min(lerp + (lerpSpeed * Time.deltaTime), upperLimit);
     }
 
 
     protected virtual void decreaseLerp() {
         //dont let lerp go below 0
-        lerp = Mathf.Max(lerp - (lerpSpeed * Time.deltaTime), 0);
+        lerp = Mathf.Max(lerp - (lerpSpeed * Time.deltaTime), lowerLimit);
     }
 
 
@@ -60,23 +65,23 @@ public class Lerpable : MonoBehaviour
 
     public virtual void forceLerpIn() {
         lerpIn();
-        lerp = 1;
+        lerp = upperLimit;
     }
 
 
     public virtual void forceLerpOut() {
         lerpOut();
-        lerp = 0;
+        lerp = lowerLimit;
     }
 
 
     public virtual bool lerpOutFinished() {
-        return lerp == 0;
+        return lerp <= lowerLimit + 0.01f;
     }
 
 
     public virtual bool lerpInFinished() {
-        return lerp == 1;
+        return lerp >= upperLimit - 0.01f;
     }
 
 
@@ -91,6 +96,22 @@ public class Lerpable : MonoBehaviour
 
     public bool isActive() {
         return currentlyActive;
+    }
+
+
+    virtual public void setLerp(float x) {
+        lerp = x;
+    }
+
+
+    virtual public float getLerp() {
+        return lerp;
+    }
+
+
+    virtual public void setLimits(float lower, float upper) {
+        lowerLimit = lower;
+        upperLimit = upper;
     }
 
 }

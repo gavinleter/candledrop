@@ -6,13 +6,26 @@ public class MiniSunExplosion : MonoBehaviour
 {
 
     [SerializeField] float maxRadius;
+    [SerializeField] AudioClip sunExplodeSound;
+    [SerializeField] float sunExplodeVolume;
+    [SerializeField] float sunExplodeMaxPitch;
+    [SerializeField] float sunExplodeMinPitch;
     float lerp = 0;
 
     CircleCollider2D c;
+    AudioSource audioSource;
 
     void Start() {
         
         c = GetComponent<CircleCollider2D>();
+        audioSource = GetComponent<AudioSource>();
+
+        audioSource.pitch = Random.Range(sunExplodeMinPitch, sunExplodeMaxPitch);
+        audioSource.volume = sunExplodeVolume;
+
+        if (Settings.isSoundEnabled()) {
+            audioSource.Play();
+        }
 
     }
 

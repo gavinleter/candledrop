@@ -22,10 +22,10 @@ public class GrowingObject : Lerpable
         base.Update();
 
         if (looping && isActive()) {
-            if (lerpInFinished()) {
+            if (lerpInFinished() && lerpingIn) {
                 lerpOut();
             }
-            else if (lerpOutFinished()) { 
+            else if (lerpOutFinished() && !lerpingIn) {
                 lerpIn();
             }
         }

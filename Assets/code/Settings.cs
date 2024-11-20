@@ -271,7 +271,7 @@ public class Settings
 
         }
 
-        return new AchievementHolder(39);
+        return new AchievementHolder(47);
     }
 
 
@@ -318,6 +318,11 @@ public class Settings
 
         }
 
+    }
+
+
+    public static int getAchievementCount() {
+        return achievements.achs.Length;
     }
 
 
