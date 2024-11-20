@@ -333,7 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 925d0013b907af24e988e3fdff724bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  candleHitSound: {fileID: 8300000, guid: 72c87ef97ae0d654e9ca7f9d9f90f743, type: 3}
+  candleHitSound: {fileID: 8300000, guid: 7e9d0dd0831a7ae4d823386c96a7422c, type: 3}
 --- !u!1001 &3369102982088672725
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -18,8 +18,8 @@ public class CandleCollideSound : MonoBehaviour
 
             a.clip = candleHitSound;
             a.loop = false;
-            a.volume = 5f;
-            a.pitch = Random.Range(0.9f, 1.3f);
+            a.volume = 0.4f;
+            a.pitch = Random.Range(0.8f, 1.6f);
             a.Play();
 
             Destroy(a, candleHitSound.length);

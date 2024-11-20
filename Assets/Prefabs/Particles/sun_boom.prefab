@@ -9708,8 +9708,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxRadius: 0.4
-  sunExplodeSound: {fileID: 8300000, guid: 45a8ae7482466ca4aa9e1d63fd098368, type: 3}
-  sunExplodeVolume: 2
+  sunExplodeSound: {fileID: 8300000, guid: c05cf4812d01cfc4789287bf5bff4043, type: 3}
+  sunExplodeVolume: 0.3
   sunExplodeMaxPitch: 1.5
   sunExplodeMinPitch: 2.5
 --- !u!82 &539329014489106233
@@ -9722,7 +9722,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 45a8ae7482466ca4aa9e1d63fd098368, type: 3}
+  m_audioClip: {fileID: 8300000, guid: c05cf4812d01cfc4789287bf5bff4043, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

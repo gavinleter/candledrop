@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - candleHitSound: {fileID: 8300000, guid: 72c87ef97ae0d654e9ca7f9d9f90f743, type: 3}
+  - candleHitSound: {fileID: 8300000, guid: 7e9d0dd0831a7ae4d823386c96a7422c, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
