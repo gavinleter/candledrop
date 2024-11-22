@@ -212,7 +212,6 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         for (int i = 0; i < achs.Length; i++) {
             int x = i;
             achs[i].btn.onPress(() => {
-                Debug.Log(x);
 
                 if (Settings.isSoundEnabled()) {
                     achs[x].unlockSound.Play();
@@ -257,6 +256,32 @@ public class AchievementMenuController : MonoBehaviour, IMenu
             }
 
         }
+
+        refreshAchievementStats();
+
+    }
+
+
+    void refreshAchievementStats() {
+
+        string totalAchievements = "" + Settings.achievementsUnlockedCount();
+        string totalSkins = "" + Settings.skinsUnlockedCount();
+        string totalCandles = "" + Settings.candlesUnlockedCount();
+        string totalSecrets = "" + Settings.secretsUnlockedCount();
+
+        //add a 0 so the number always has 2 digits
+        if(totalAchievements.Length == 1) {
+            totalAchievements = "0" + totalAchievements;
+        }
+
+        if (totalSkins.Length == 1) { 
+            totalSkins = "0" + totalCandles;
+        }
+
+        achievementsUnlockedText.text = totalAchievements;
+        skinsUnlockedText.text = totalSkins;
+        candlesUnlockedText.text = totalCandles;
+        secretsUnlockedText.text = totalSecrets;
 
     }
 

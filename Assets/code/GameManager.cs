@@ -131,6 +131,11 @@ public class GameManager : MonoBehaviour, IMenu
 
     List<int> spawnPotentials = new List<int>();
 
+
+    //unlocks all achievements at game start
+    [SerializeField] bool grantAllAchievements;
+
+
     private void Start()
     {
 
@@ -1177,5 +1182,9 @@ public class GameManager : MonoBehaviour, IMenu
         Debug.Log("achievement " + x);
     }
 
+
+    public bool unlockAllAchievements() {
+        return grantAllAchievements;
+    }
 
 }

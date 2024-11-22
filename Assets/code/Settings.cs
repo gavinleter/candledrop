@@ -70,6 +70,16 @@ public class Settings
         //if the achievements do not exist yet, the file needs to be created immediately
         saveAchievements();
 
+        //if test mode is on, grant all achievements
+        if (g.unlockAllAchievements()) {
+
+            for (int i = 0; i < achievements.achs.Length; i++) {
+                setAchievementUnlocked(i);
+                setAchievementTapped(i);
+            }
+
+        }
+
     }
 
 
@@ -133,14 +143,120 @@ public class Settings
     }
 
 
-    public static bool skinUnlocked(int candle, int skin) {
-        return true;
+    public static bool skinUnlocked(int skin) {
+
+        switch (skin) {
+
+            //default skin
+            case 0:
+                return true;
+
+            //bronze skin
+            case 1:
+                return isAchievementTapped(13);
+
+            //silver skin
+            case 2:
+                return isAchievementTapped(14);
+
+            //gold skin
+            case 3:
+                return isAchievementTapped(15);
+
+            //glass skin
+            case 4:
+                return isAchievementTapped(34);
+
+            //glitch/hacker skin
+            case 5:
+                return isAchievementTapped(16);
+
+            //love skin
+            case 6:
+                return isAchievementTapped(24);
+
+            //rainbow skin
+            case 7:
+                return isAchievementTapped(19);
+
+            //black hole skin
+            case 8:
+                return isAchievementTapped(39);
+
+            //sun skin
+            case 9:
+                return isAchievementTapped(43);
+
+            default:
+                return false;
+
+        }
+
+    }
+
+
+    //how many skins are unlocked
+    public static int skinsUnlockedCount() {
+        int count = 0;
+
+        for (int i = 0; i < SkinManager.SKIN_COUNT; i++) {
+
+            if (skinUnlocked(i)) {
+                count++;
+            }
+        
+        }
+
+        return count;
     }
 
 
     public static bool candleUnlocked(int candle) {
-        return true;
+
+        switch (candle) {
+
+            //default candle
+            case 0:
+                return true;
+
+            //n candle
+            case 1:
+                return isAchievementTapped(3);
+
+            //candleabra
+            case 2:
+                return isAchievementTapped(44);
+
+            //flare
+            case 3:
+                return isAchievementTapped(6);
+
+            //fat candle
+            case 4:
+                return isAchievementTapped(10);
+
+            default:
+                return false;
+
+        }
     }
+
+
+    //how many candles are unlocked
+    public static int candlesUnlockedCount() {
+        int count = 0;
+
+        for (int i = 0; i < SkinManager.CANDLE_COUNT; i++) {
+
+            if (candleUnlocked(i)) {
+                count++;
+            }
+
+        }
+
+        return count;
+    }
+
 
     public static bool isSecretButtonFound(int id) {
         return PlayerPrefs.GetInt(secretButtonPrefName + id, 0) == 1;
@@ -245,7 +361,7 @@ public class Settings
 
 
     public static bool snowyUnlocked() {
-        return PlayerPrefs.GetInt("snowyUnlock", 0) == 1 || true;
+        return isAchievementTapped(45);
     }
 
 
@@ -338,6 +454,27 @@ public class Settings
         return count;
     }
 
+
+    //how many secret rewards are unlocked
+    public static int secretsUnlockedCount() {
+
+        int count = 0;
+
+        bool[] x = {
+            isAchievementUnlocked(45), //snowy
+            isAchievementUnlocked(33), //waffle rain
+            isAchievementUnlocked(27) //alt soundtrack
+        };
+
+        for (int i = 0; i < x.Length; i++) {
+            if (x[i]) {
+                count++;
+            }
+        }
+
+        return count;
+
+    }
 
 
 }

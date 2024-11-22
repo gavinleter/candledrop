@@ -15,6 +15,9 @@ public class SkinManager : MonoBehaviour
 
     List<GameObject[]> skins = new List<GameObject[]>();
 
+    public static readonly int SKIN_COUNT = 12;
+    public static readonly int CANDLE_COUNT = 6;
+
 
     void Awake() {
         
@@ -25,10 +28,6 @@ public class SkinManager : MonoBehaviour
         skins.Add(can7Prefabs);
 
     }
-
-    /*public Sprite getSkin(int candle, int skin) {
-        return skins[candle][skin];
-    }*/
 
 
     public Sprite getCandleCover(int candle) {

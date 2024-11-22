@@ -17,7 +17,7 @@ public class SkinSelectMenuController : FadingMenuController
             return delegate () {
 
                 //if the skin is unlocked, switch skins immediately
-                if (Settings.skinUnlocked(gameManager.getCurrentStarterCandleId(), id)) {
+                if (Settings.skinUnlocked(id)) {
                     gameManager.setStarterCandleSkin(id);
                 }
                 else {
@@ -36,7 +36,7 @@ public class SkinSelectMenuController : FadingMenuController
         for(int i = 0; i < 8; i++) {
             btns[i].onPress(skinButton(i));
 
-            if (Settings.skinUnlocked(gameManager.getCurrentStarterCandleId(), i)) {
+            if (Settings.skinUnlocked(i)) {
                 btns[i].transform.Find("skin_select_cover").GetComponent<SpriteRenderer>().enabled = false;
             }
         }
