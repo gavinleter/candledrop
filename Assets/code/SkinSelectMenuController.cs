@@ -32,13 +32,9 @@ public class SkinSelectMenuController : FadingMenuController
             };
         };
 
-        //go through each skin select button and assign their methods, also remove cover if they're unlocked
+        //go through each skin select button and assign their methods
         for(int i = 0; i < 8; i++) {
             btns[i].onPress(skinButton(i));
-
-            if (Settings.skinUnlocked(i)) {
-                btns[i].transform.Find("skin_select_cover").GetComponent<SpriteRenderer>().enabled = false;
-            }
         }
 
         //confirm select skin button
@@ -58,8 +54,11 @@ public class SkinSelectMenuController : FadingMenuController
 
 
     override public void pause() {
+        refreshSkinButtons();
+
         base.pause();
         transform.position = new Vector3(transform.parent.position.x, transform.parent.position.y, 0f);
+
     }
 
     override public void unpause() {
@@ -68,5 +67,24 @@ public class SkinSelectMenuController : FadingMenuController
         //the game needs to be reset so that the starter candle can be switched out when it respawns
         gameManager.resetGame();
     }
+
+
+    //remove covers of unlocked skins and remove normal sprite of locked skins
+    void refreshSkinButtons() {
+
+        for (int i = 0; i < 8; i++) {
+
+            if (Settings.skinUnlocked(i)) {
+                btns[i].transform.Find("skin_select_cover").GetComponent<SpriteRenderer>().enabled = false;
+                btns[i].GetComponent<SpriteRenderer>().enabled = true;
+            }
+            else {
+                btns[i].GetComponent<SpriteRenderer>().enabled = false;
+            }
+
+        }
+
+    }
+
 
 }

@@ -185,6 +185,7 @@ public class GameManager : MonoBehaviour, IMenu
                 mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
                 mainCamera.GetComponent<CameraController>().startTransition();
                 //mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
+                refreshBasementCandleCovers();
             }
         });
         //button to go back up from basement
@@ -245,10 +246,6 @@ public class GameManager : MonoBehaviour, IMenu
         //adds each respective anonymous method and then swaps the skin of each button if its unlocked
         for(int i = 0; i < 5; i++) {
             buttons[i + 8].onPress(candlePrefabSelectionButton(i));
-
-            if (Settings.candleUnlocked(i)) {
-                buttons[i + 8].gameObject.GetComponent<SpriteRenderer>().sprite = skinManager.getCandleCover(i);
-            }
         }
 
         //buttons 13, 14, and 15 dont need their onPress methods set because they use the SecretButton and WaffleButton class for their behaviour
@@ -438,7 +435,6 @@ public class GameManager : MonoBehaviour, IMenu
         //reset activity timer when the game starts
         if (!gameStarted) {
             timeSinceGameStarted = 0;
-            trueGameOver = false;
         }
 
         gameStarted = true;
@@ -566,6 +562,10 @@ public class GameManager : MonoBehaviour, IMenu
 
         for (int i = 0; i < c.Length; i++) {
             c[i].startDestroy();
+
+            if (!destroyedByBlackHole && c[i].isMiniSunIgnited() && gameOverChain.isAboutToLose()) {
+                gameOverChain.setMiniSunSaveTime();
+            }
         }
 
         if (destroyedByBlackHole) {
@@ -699,6 +699,7 @@ public class GameManager : MonoBehaviour, IMenu
         selectedCan = null;
         isTurnActive = false;
         gameStarted = false;
+        trueGameOver = false;
 
         lastHighScore = Settings.getHighScore();
         highScoreText.text = "" + lastHighScore;
@@ -975,6 +976,11 @@ public class GameManager : MonoBehaviour, IMenu
             Settings.setAchievementUnlocked(16);
         }
 
+        if(s >= 100000 && Settings.getAchievementCount() - 2 == Settings.achievementsUnlockedCount()) {
+            //"Full Completionist" unlocked by getting 100000 score and unlocking every other achievement
+            Settings.setAchievementUnlocked(46);
+        }
+
     }
 
 
@@ -1133,7 +1139,7 @@ public class GameManager : MonoBehaviour, IMenu
     //checks for achievments that can only be unlocked after ending a game
     void checkForGameEndAchievments(bool initialStart) {
         
-        if (currentScore == 0 && !initialStart) {
+        if (currentScore == 0 && !initialStart && trueGameOver) {
             //"Catastrophe" unlocked by losing with 0 points
             Settings.setAchievementUnlocked(2);
         }
@@ -1185,6 +1191,21 @@ public class GameManager : MonoBehaviour, IMenu
 
     public bool unlockAllAchievements() {
         return grantAllAchievements;
+    }
+
+
+    //if an achievement that unlocks a candle is granted, the cover for the unlocked candle needs to be removed
+    public void refreshBasementCandleCovers() {
+
+        for (int i = 0; i < 5; i++) {
+            if (Settings.candleUnlocked(i)) {
+                buttons[i + 8].gameObject.GetComponent<SpriteRenderer>().sprite = skinManager.getCandleCover(i);
+            }
+            else {
+                buttons[i + 8].gameObject.GetComponent<SpriteRenderer>().sprite = skinManager.getLockedCandleSprite(i);
+            }
+        }
+
     }
 
 }

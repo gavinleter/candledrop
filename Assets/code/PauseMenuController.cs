@@ -121,7 +121,7 @@ public class PauseMenuController : FadingMenuController
             int x = Settings.getMusicStatus();
 
             //"Secret Button Hunter" (#27) is the achievement that unlocks the alt track
-            int altTrackUnlocked = Settings.isAchievementUnlocked(27) ? 1 : 0;
+            int altTrackUnlocked = Settings.altTrackUnlocked() ? 1 : 0;
 
             //music status is modulo 2 when alt track is locked and modulo 3 when its unlocked
             //because 0 == muted, 1 == default track, 2 == alt track

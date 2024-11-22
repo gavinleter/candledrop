@@ -64,6 +64,8 @@ public class CandleRowDestroyer : CandleLightCollector
         int points = 0;
         //for "Flaring Focus" (#7) achievement
         bool allFlares = true;
+        //for achievements 40 & 42 involving completing a row with supercharged wicks
+        int solarLightCount = 0;
 
         //if the last row destruction bonus has not passed yet
         if (rowDestructionInitialTime + rowDestructionBonusTime > Time.time) {
@@ -104,6 +106,10 @@ public class CandleRowDestroyer : CandleLightCollector
                     allFlares = false;
                 }
 
+                if (r[i].isMiniSunIgnited()) {
+                    solarLightCount++;
+                }
+
             }
 
         }
@@ -134,6 +140,15 @@ public class CandleRowDestroyer : CandleLightCollector
         else if (uniqueColorsFound == colorGroupLength) {
             //"Color Conga Line" unlocked by making a row with candles of all color groups
             Settings.setAchievementUnlocked(19);
+        }
+
+        if(solarLightCount > 0) {
+            //"You Are My Sunshine" unlocked by completing a row using a sun
+            Settings.setAchievementUnlocked(40);
+        }
+        if(solarLightCount == r.Length) {
+            //"Praise the Suns" unlocked by completing a row with only supercharged wicks
+            Settings.setAchievementUnlocked(42);
         }
 
     }

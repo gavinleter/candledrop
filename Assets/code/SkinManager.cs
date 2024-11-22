@@ -12,6 +12,7 @@ public class SkinManager : MonoBehaviour
     [SerializeField] GameObject[] can7Prefabs;
 
     [SerializeField] Sprite[] candleCovers;
+    [SerializeField] Sprite[] lockedCandleSprites;
 
     List<GameObject[]> skins = new List<GameObject[]>();
 
@@ -32,6 +33,11 @@ public class SkinManager : MonoBehaviour
 
     public Sprite getCandleCover(int candle) {
         return candleCovers[candle];
+    }
+
+
+    public Sprite getLockedCandleSprite(int candle) { 
+        return lockedCandleSprites[candle];
     }
 
 

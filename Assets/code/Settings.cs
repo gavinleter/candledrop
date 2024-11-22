@@ -144,7 +144,7 @@ public class Settings
 
 
     public static bool skinUnlocked(int skin) {
-
+        
         switch (skin) {
 
             //default skin
@@ -307,6 +307,11 @@ public class Settings
     }
 
 
+    public static bool altTrackUnlocked() {
+        return isAchievementTapped(27);
+    }
+
+
     public static bool isAltMusicEnabled() {
         return PlayerPrefs.GetInt("musicEnabled", 1) == 2;
     }
@@ -430,6 +435,21 @@ public class Settings
             if (isAchievementTapped(35) && isAchievementTapped(36) && isAchievementTapped(37) && isAchievementTapped(38)) {
                 //"Black Hole Expert" unlocked by also unlocking "Waxicide" (#35), "Friendly Fire!" (#36), "Void Savior" (#37), and "Void-maxxer" (#38)
                 setAchievementUnlocked(39);
+            }
+
+            if (isAchievementTapped(40) && isAchievementTapped(41) && isAchievementTapped(42)) {
+                //"Sun Expert" unlocked by also unlocking "You Are My Sunshine" (#40), "Solar Savior" (#41), and "Praise the Suns" (#42)
+                setAchievementUnlocked(43);
+            }
+
+            if (achievementsUnlockedCount() >= 30) {
+                //"Triad and true" unlocked by unlocking 30 other achievements
+                setAchievementUnlocked(44);
+            }
+
+            if (achievementsUnlockedCount() >= 40) {
+                //"Snowy the budgie" unlocked by unlocking 40 other achievements
+                setAchievementUnlocked(45);
             }
 
         }

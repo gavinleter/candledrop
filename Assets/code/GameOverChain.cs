@@ -37,6 +37,9 @@ public class GameOverChain : MonoBehaviour
     float blackHoleSaveTime = float.MinValue;
     float blackHoleSaveDelay = 0.5f;
 
+    float miniSunSaveTime = float.MinValue;
+    float miniSunSaveDelay = 0.5f;
+
 
     void Start(){
         
@@ -123,6 +126,11 @@ public class GameOverChain : MonoBehaviour
             Settings.setAchievementUnlocked(37);
         }
 
+        if (miniSunSaveTime + miniSunSaveDelay > Time.time && !isAboutToLose()) {
+            //"Solar Savior" unlocked by preventing a near loss using a mini sun
+            Settings.setAchievementUnlocked(41);
+        }
+
     }
 
 
@@ -160,6 +168,11 @@ public class GameOverChain : MonoBehaviour
 
     public void setBlackHoleSaveTime() {
         blackHoleSaveTime = Time.time;
+    }
+
+
+    public void setMiniSunSaveTime() {
+        miniSunSaveTime = Time.time;
     }
 
 }

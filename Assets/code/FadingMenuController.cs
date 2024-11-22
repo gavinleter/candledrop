@@ -25,6 +25,12 @@ public class FadingMenuController : FadingObject, IMenu
             btns[i].setActive(true);
         }
 
+        SpriteMask[] x = GetComponentsInChildren<SpriteMask>();
+
+        for (int i = 0; i < x.Length; i++) {
+            x[i].enabled = true;
+        }
+
     }
 
     //when the game unpauses, start lerping in reverse
@@ -35,6 +41,13 @@ public class FadingMenuController : FadingObject, IMenu
 
         for (int i = 0; i < btns.Count; i++) {
             btns[i].setActive(false);
+        }
+
+        //since fading menus generally stay on top of the camera it can cause layering issues with other sprite masks in the scene
+        SpriteMask[] x = GetComponentsInChildren<SpriteMask>();
+
+        for (int i = 0; i < x.Length; i++) {
+            x[i].enabled = false;
         }
 
     }

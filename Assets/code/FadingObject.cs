@@ -89,8 +89,8 @@ public class FadingObject : Lerpable
 
         if (destroyParticlesOnFadeOut) {
             for (int i = 0; i < childrenParticles.Length; i++) {
-                childrenParticles[i].Clear();
                 childrenParticles[i].Stop();
+                childrenParticles[i].Clear();
             }
         }
 
