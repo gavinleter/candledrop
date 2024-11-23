@@ -24,7 +24,6 @@ public class PauseMenuController : FadingMenuController
     [SerializeField] TextMeshProUGUI highScoreText;
 
 
-    // Start is called before the first frame update
     protected override void Start(){
         base.Start();
         

@@ -82,7 +82,8 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
     void Start(){
 
-        transitionPosition = new Vector3(topObject.transform.position.x, topBound - cameraController.getCamHeight(), cameraController.transform.position.z);
+        //set transition position to top of the menu
+        setTransitionPosition(-1);
 
         //return back up button
         btns[0].onPress(()=> {
@@ -141,7 +142,9 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         }
 
         active = false;
-        
+
+        //reset transition position back to top of the menu
+        setTransitionPosition(-1);
     }
 
 
@@ -312,6 +315,22 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
         Settings.setAchievementTapped(x);
         refreshAchievements();
+
+    }
+
+
+    //sets the transition position based on what achievement you want to go to
+    //-1 will transition to the top of the achievement menu
+    //the transition position will also reset to the top of the achievement menu when the menu is closed
+    public void setTransitionPosition(int x) {
+
+        if(x < 0) {
+            transitionPosition = new Vector3(topObject.transform.position.x, topBound - cameraController.getCamHeight(), cameraController.transform.position.z);
+        }
+        else {
+            transitionPosition = new Vector3(topObject.transform.position.x, achs[x].sr.transform.position.y, cameraController.transform.position.z);
+        }
+
 
     }
 

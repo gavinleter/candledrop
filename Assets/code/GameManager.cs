@@ -135,6 +135,8 @@ public class GameManager : MonoBehaviour, IMenu
     //unlocks all achievements at game start
     [SerializeField] bool grantAllAchievements;
 
+    [SerializeField] UnlockPopUpMenuController unlockPopUpMenu;
+
 
     private void Start()
     {
@@ -644,6 +646,9 @@ public class GameManager : MonoBehaviour, IMenu
                 ps[j].Clear();
             }
         }
+
+        //unlock pop up menu should never be active when this isnt
+        unlockPopUpMenu.unpause();
     }
 
 
@@ -1186,6 +1191,8 @@ public class GameManager : MonoBehaviour, IMenu
 
     public void achievementUnlockPopup(int x) {
         Debug.Log("achievement " + x);
+        unlockPopUpMenu.setTargetAchievement(x);
+        unlockPopUpMenu.pause();
     }
 
 
