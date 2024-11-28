@@ -70,6 +70,9 @@ public class AchievementMenuController : MonoBehaviour, IMenu
     [SerializeField] TextMeshProUGUI candlesUnlockedText;
     [SerializeField] TextMeshProUGUI skinsUnlockedText;
     [SerializeField] TextMeshProUGUI secretsUnlockedText;
+
+    //auto scroll speed exists for a video, this should be removed later
+    [SerializeField] float autoScrollSpeed;
     
     void Awake() {
         cameraController = mainCam.GetComponent<CameraController>();
@@ -92,6 +95,13 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
             transitionBackUp();
             
+        });
+
+
+        btns[2].onPress(() => {
+
+            cameraController.setAutoScrollSpeed(autoScrollSpeed);
+
         });
 
     } 

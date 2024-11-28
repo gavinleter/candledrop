@@ -28,6 +28,8 @@ public class CameraController : MonoBehaviour
     float camHeight;
     float lastMouseYPosition = 0;
     float dragInertia = 0;
+    //auto scroll exists to make a video of the achievements and shouldnt be used in normal gameplay
+    float autoScrollSpeed = 0;
 
     bool scrollMode = false;
     [SerializeField] float scrollModeDragStrength;
@@ -252,6 +254,7 @@ public class CameraController : MonoBehaviour
             if(transform.position.y + camHeight > scrollModeUpperBound) {
                 transform.position = new Vector3(transform.position.x, scrollModeUpperBound - camHeight - 0.001f, transform.position.z);
                 dragInertia = 0;
+                autoScrollSpeed = 0;
 
                 if (scrollModeUpperLimitAction != null) {
                     scrollModeUpperLimitAction();
@@ -261,6 +264,7 @@ public class CameraController : MonoBehaviour
             if (transform.position.y - camHeight < scrollModeLowerBound) {
                 transform.position = new Vector3(transform.position.x, scrollModeLowerBound + camHeight + 0.001f, transform.position.z);
                 dragInertia = 0;
+                autoScrollSpeed = 0;
 
                 if (scrollModeLowerLimitAction != null) {
                     scrollModeLowerLimitAction();
@@ -294,6 +298,11 @@ public class CameraController : MonoBehaviour
             float dragStrength = (lastMouseYPosition - mouseY) * scrollModeDragStrength;
             dragInertia += dragStrength * scrollModeInertiaStrength;
             dragInertia = Mathf.Lerp(dragInertia, 0, 0.05f);
+
+            if(autoScrollSpeed != 0) {
+                dragStrength = autoScrollSpeed;
+                dragInertia = 0;
+            }
 
             transform.Translate(new Vector3(0, dragStrength, 0));
 
@@ -329,5 +338,9 @@ public class CameraController : MonoBehaviour
         endTransitionAction = endAction;
     }
 
+
+    public void setAutoScrollSpeed(float x) {
+        autoScrollSpeed = x;
+    }
 
 }
