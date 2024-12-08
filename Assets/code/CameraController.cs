@@ -134,6 +134,12 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    //used to go directly to game area if save data is found
+    public void skipIntroToBottom() {
+        introDelayFinished = true;
+        fadeToBlackTransitionToBottom(0.1f);
+    }
+
     public void setTransitionSpeed(float speed) {
         transitionSpeed = speed;
     }
@@ -192,7 +198,12 @@ public class CameraController : MonoBehaviour
 
 
     public bool currentlyTransitioning() {
-        return isTransitioning || isBlackFadeTransitioning;
+        return isTransitioning || isBlackFadeTransitioning || !introDelayFinished;
+    }
+
+
+    public bool currentlyScrollTransitioning() {
+        return isTransitioning || !introDelayFinished;
     }
 
 

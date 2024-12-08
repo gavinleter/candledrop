@@ -105,7 +105,7 @@ public class BlackHole : MonoBehaviour, ISpecialObject
             
 
             CandleId can = o.getParentObject().GetComponent<CandleId>();
-            gameManagerScript.createMultiplierlessBonusText(can, 0);
+            gameManagerScript.createMultiplierlessBonusText(can, BonusText.getBonusTextSpriteIdByPoints(o.getPoints()));
             gameManagerScript.addScore(o.getPoints());
 
             gameManagerScript.destroyCandle(o.getParentObject(), true);
@@ -115,4 +115,16 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
         return 0;
     }
+
+
+    public int getType() {
+        return (int)specialObjectType.blackHole;
+    }
+
+
+    public GameObject getGameObject() {
+        return gameObject;
+    }
+
+
 }

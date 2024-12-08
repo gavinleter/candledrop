@@ -13,6 +13,7 @@ public class StartCandleFall : MonoBehaviour
     bool activated = false;
     bool gameStarted = false;
     bool readyToDrop = true;
+    bool fieldsSet = false;
 
 
     public void dropCandle() {
@@ -26,7 +27,7 @@ public class StartCandleFall : MonoBehaviour
 
 
     void OnCollisionEnter2D(Collision2D collision) {
-        if (!gameStarted) {
+        if (!gameStarted && fieldsSet) {
             gameStarted = true;
             //unlock the buttons after the transition ends and start the game
             gameManager.unpause();
@@ -42,6 +43,7 @@ public class StartCandleFall : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         gameManager = gameControllerObject.GetComponent<GameManager>();
         gameManager.addCandleLight(gameObject);
+        fieldsSet = true;
     }
 
 

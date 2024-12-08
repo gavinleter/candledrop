@@ -56,4 +56,18 @@ public class BonusText : FadingObject
         growing.setActive(true);
     }
 
+
+    public static int getBonusTextSpriteIdByPoints(int points) {
+
+        switch (points) {
+            case 2:
+                return 9;
+            case 3:
+                return 10;
+            default:
+                return 0;
+        }
+
+    }
+
 }

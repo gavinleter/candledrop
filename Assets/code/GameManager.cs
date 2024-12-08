@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using TMPro;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class GameManager : MonoBehaviour, IMenu
 {
@@ -136,6 +137,10 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] bool grantAllAchievements;
 
     [SerializeField] UnlockPopUpMenuController unlockPopUpMenu;
+    //in the case that an achievement is unlocked while in a menu and cant be displayed immediately, this
+    //is used to store what achievement was most recently unlocked so it can be displayed when the conditions are right
+    //-1 means there are no achievements to display
+    int nextAchievementPopupToDisplay = -1;
 
 
     private void Start()
@@ -153,7 +158,7 @@ public class GameManager : MonoBehaviour, IMenu
         musicManager.maxOutMusicVolume();
 
         //pause the game and pull up pause menu when a settings button is pressed
-        System.Action settingsAction = delegate () {
+        System.Action settingsAction = () => {
             if (canPause) {
                 pause();
                 pauseMenuObject.GetComponent<IMenu>().pause();
@@ -164,11 +169,11 @@ public class GameManager : MonoBehaviour, IMenu
         buttons[0].onPress(settingsAction);
         buttons[1].onPress(settingsAction);
         //skip the intro transition when the game starts if the screen is pressed (invisible over intro area)
-        buttons[2].onPress(delegate () {
+        buttons[2].onPress(() => {
             mainCamera.GetComponent<CameraController>().skipIntroTransition();
         });
         //credits button
-        buttons[3].onPress(delegate () {
+        buttons[3].onPress(() => {
             if (canPause) {
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(creditsTransitionLocation.transform.position);
@@ -176,12 +181,12 @@ public class GameManager : MonoBehaviour, IMenu
             }
         });
         //button to go back down from credits
-        buttons[4].onPress(delegate () {
+        buttons[4].onPress(() => {
             canPause = true;
             mainCamera.GetComponent<CameraController>().transitionToTop(20f);
         });
         //button to go to the basement
-        buttons[5].onPress(delegate () {
+        buttons[5].onPress(() => {
             if (canPause) {
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
@@ -191,13 +196,13 @@ public class GameManager : MonoBehaviour, IMenu
             }
         });
         //button to go back up from basement
-        buttons[6].onPress(delegate () {
+        buttons[6].onPress(() => {
             canPause = true;
             //mainCamera.GetComponent<CameraController>().transitionToTop(40f);
             mainCamera.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
         });
         //button to drop a candle (invisible over game area)
-        buttons[7].onPress(delegate () {
+        buttons[7].onPress(() => {
             dropCandle();
 
             guideArrows.Stop();
@@ -347,11 +352,17 @@ public class GameManager : MonoBehaviour, IMenu
             startEventHorizonEvent();
         });
 
-        //spawn the starting candle
-        /*GameObject x = Instantiate(startingCandlePrefab);
-        setCandleId(x, currentCandlePrefabId);
-        x.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera, startingCandleSkin);*/
-        resetGame(true);
+
+        //check if there is save data and load it if there is
+        if (SaveManager.initSaveData()) {
+            resetGame(true, false);
+            loadFromSave();
+            mainCamera.GetComponent<CameraController>().skipIntroToBottom();
+        }
+        //if there isnt, start the game normally
+        else {
+            resetGame(true);
+        }
         
 
     }
@@ -465,17 +476,7 @@ public class GameManager : MonoBehaviour, IMenu
             selectedCan = Instantiate(canObjects[randomIndex], teleCoords.position, Quaternion.identity);
         }
 
-        selectedCan.SetActive(true);
-
-        Rigidbody2D rb = selectedCan.GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0;
-        rb.velocity = Vector2.zero;
-        rb.isKinematic = true;
-
-        canMove = false;
-        isTurnActive = true;
-        turnStartTime = Time.time;
-        hasMoved = false;
+        prepareSelectedCandle();
 
         //if a candle has spawned instead of a special item like the black hole, add it to the list to keep track of
         if (selectedCan.GetComponentInChildren<CandleLightController>() != null) {
@@ -500,6 +501,25 @@ public class GameManager : MonoBehaviour, IMenu
             selectedCan.GetComponent<ISpecialObject>().setup(this, specialObjId);
             specialObjects[specialObjId] = selectedCan.GetComponent<ISpecialObject>();
         }
+
+        //every time a new held candle spawns, update the save data
+        updateSaveData();
+    }
+
+
+    //set a bunch of values for selectedCan when it is created so it doesnt immediately fall
+    void prepareSelectedCandle() {
+        selectedCan.SetActive(true);
+
+        Rigidbody2D rb = selectedCan.GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0;
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+
+        canMove = false;
+        isTurnActive = true;
+        turnStartTime = Time.time;
+        hasMoved = false;
     }
 
 
@@ -680,6 +700,13 @@ public class GameManager : MonoBehaviour, IMenu
                 ps[j].Play();
             }
         }
+
+        //if theres an achievement that needs to be displayed, show it
+        if(nextAchievementPopupToDisplay != -1) {
+            achievementUnlockPopup(nextAchievementPopupToDisplay);
+            nextAchievementPopupToDisplay = -1;
+        }
+
     }
 
 
@@ -694,10 +721,14 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void resetGame() {
-        resetGame(false);
+        resetGame(false, true);
     }
 
     public void resetGame(bool initialStart) {
+        resetGame(initialStart, true);
+    }
+
+    public void resetGame(bool initialStart, bool spawnStarterCandle) {
 
         checkForGameEndAchievments(initialStart);
 
@@ -731,6 +762,11 @@ public class GameManager : MonoBehaviour, IMenu
             adSpinnerMenu.unpause();
             pauseMenuObject.GetComponent<IMenu>().unpause();
             lockedFeatureMenu.unpause();
+
+            //clear save data when restarting the game
+            //since save data is also cleared immediately when the game over menu appears,
+            //this line should only ever clear the save data when the user restarts rather than loses
+            SaveManager.clearSaveData();
         }
 
         adSpinnerMenu.resetGame();
@@ -738,9 +774,12 @@ public class GameManager : MonoBehaviour, IMenu
         //reset starter candle and skin in case the player wipes data and resets
         setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
 
-        starterCandle = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
-        starterCandle.GetComponent<CandleId>().setInfo(-1, true);
-        starterCandle.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
+        if (spawnStarterCandle) {
+            starterCandle = Instantiate(startingCandlePrefab, startingCandleSpawnLocation.transform.position, Quaternion.identity);
+            starterCandle.GetComponent<CandleId>().setInfo(-1, true);
+            starterCandle.GetComponent<StartCandleFall>().setFields(startingCandleGravity, gameObject, mainCamera);
+        }
+
     }
 
 
@@ -1033,7 +1072,7 @@ public class GameManager : MonoBehaviour, IMenu
         int newMult = multiplier;
 
         CandleId can = candle.GetComponent<CandleId>();
-        int spriteId = getBonusTextSpriteIdByPoints(can.getPoints());
+        int spriteId = BonusText.getBonusTextSpriteIdByPoints(can.getPoints());
 
         if (can.isStarterCandle()) {
 
@@ -1079,19 +1118,6 @@ public class GameManager : MonoBehaviour, IMenu
         bonusText.enableHighlight();
     }
 
-
-    public int getBonusTextSpriteIdByPoints(int points) {
-
-        switch (points) {
-            case 2:
-                return 9;
-            case 3:
-                return 10;
-            default:
-                return 0;
-        }
-
-    }
 
 
     public void toggleWaffleRain(bool x) {
@@ -1148,7 +1174,7 @@ public class GameManager : MonoBehaviour, IMenu
             //"Catastrophe" unlocked by losing with 0 points
             Settings.setAchievementUnlocked(2);
         }
-        
+
         if (Settings.getHighScore() >= lastHighScore * 2 && Settings.isAchievementUnlocked(17) && !initialStart) {
             //"Major Improvement!" unlocked by doubling previous high score (can only be done if achievment #17 is unlocked)
             Settings.setAchievementUnlocked(18);
@@ -1191,8 +1217,22 @@ public class GameManager : MonoBehaviour, IMenu
 
     public void achievementUnlockPopup(int x) {
         Debug.Log("achievement " + x);
-        unlockPopUpMenu.setTargetAchievement(x);
-        unlockPopUpMenu.pause();
+
+        //dont have pop up happen if the camera is moving or if there is a menu other than the gameManager open
+        if (!mainCamera.GetComponent<CameraController>().currentlyScrollTransitioning()) {
+
+            if (isMenuActive()) {
+                unlockPopUpMenu.setTargetAchievement(x);
+                unlockPopUpMenu.pause();
+            }
+            else {
+                //if the pop up cant be displayed store it for later
+                //only allowed to display the pop up later if it was blocked because of another menu being open
+                nextAchievementPopupToDisplay = x;
+            }
+
+        }
+
     }
 
 
@@ -1214,5 +1254,132 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
     }
+
+
+    void updateSaveData() {
+
+        List<GameObject> livingCandles = new List<GameObject>();
+        List<GameObject> currentSpecialObjects = new List<GameObject>();
+
+        //get all the candles in the scene
+        for (int i = 0; i < currentCandles.Count; i++) { 
+        
+            //make sure this candle still exists, is not being destroyed, and is not the held candle
+            if(currentCandles[i] != null && !currentCandles[i].isBeingDestroyed() && currentCandles[i].getParentObject() != selectedCan) {
+                livingCandles.Add(currentCandles[i].getParentObject());
+            }
+
+        }
+
+        //get all the special objects in the scene
+        for (int i = 0; i < specialObjects.Count; i++) {
+
+            //make sure this object still exists and is not the held object
+            if (specialObjects[i] != null && specialObjects[i].getGameObject() != selectedCan) {
+                currentSpecialObjects.Add(specialObjects[i].getGameObject());
+            }
+
+        }
+
+
+        SaveManager.updateSave(livingCandles.Distinct().ToArray(), selectedCan, currentSpecialObjects.ToArray(), gameOverChain.getChainProgress());
+
+    }
+
+
+    void loadFromSave() {
+
+        CandleData[] objs = SaveManager.getSavedObjects();
+
+        selectedCan = instantiateCandleData(SaveManager.getHeldCandle());
+        prepareSelectedCandle();
+
+        //create all dropped objects from the save
+        for(int i = 0; i < objs.Length; i++) {
+
+            instantiateCandleData(objs[i]);
+
+        }
+
+    }
+
+
+    //takes a candle data object and turn it into a gameobject
+    GameObject instantiateCandleData(CandleData x) {
+
+        GameObject result = null;
+
+        //prepare position and rotation
+        Quaternion rot = new Quaternion(x.rotation[0], x.rotation[1], x.rotation[2], x.rotation[3]);
+
+        Vector3 pos = new Vector3();
+        pos.x = x.position[0];
+        pos.y = x.position[1];
+        pos.z = x.position[2];
+
+
+        switch (x.specialObject) {
+
+            //candle
+            case -1:
+                
+                //starter candle
+                if(x.candleId == -1) {
+                    result = Instantiate(startingCandlePrefab, pos, rot);
+                    Destroy(result.GetComponent<StartCandleFall>());
+                }
+                //normal candle
+                else {
+                    result = Instantiate(canObjects[x.candleId], pos, rot);
+                }
+
+                addCandleLight(result);
+                setCandleId(result, x.candleId);
+
+                //set the status of each light
+                CandleLightController[] lights = result.GetComponentsInChildren<CandleLightController>();
+
+                for(int i = 0; i < lights.Length; i++) {
+                    lights[i].setLightStatusById(x.lightState[i]);
+                }
+
+                break;
+
+            //black hole
+            case 0:
+                result = Instantiate(canObjects[canObjects.Length - 2], pos, rot);
+                break;
+
+            //mini sun
+            case 1:
+                result = Instantiate(canObjects[canObjects.Length - 1], pos, rot);
+                break;
+
+        }
+
+        //extra set up if it is a special object
+        if (x.specialObject != -1) {
+            int specialObjId = nextSpecialObjectId();
+            result.GetComponent<ISpecialObject>().setup(this, specialObjId);
+            specialObjects[specialObjId] = result.GetComponent<ISpecialObject>();
+        }
+
+
+        //apply velocity
+        Rigidbody2D rb = result.GetComponent<Rigidbody2D>();
+
+        Vector2 vel = new Vector2(x.linearVelocityX, x.linearVelocityY);
+        rb.velocity = vel;
+
+        rb.angularVelocity = x.angularVelocity;
+
+        //starting candles have no gravity by default
+        rb.gravityScale = 1;
+
+
+        return result;
+
+    }
+
 
 }

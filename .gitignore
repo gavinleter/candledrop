@@ -73,6 +73,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# List of unlocked achievements
-achievements.json
-achievements.json.meta
+# Any save data
+/Assets/Save/

@@ -17,7 +17,7 @@ public class AchievementHolder {
 
     public Achievement[] achs;
 
-    public AchievementHolder(int achievementCount) {
+    internal AchievementHolder(int achievementCount) {
         achs = new Achievement[achievementCount];
 
         for (int i = 0; i < achievementCount; i++) { 
@@ -43,7 +43,7 @@ public class Settings
     private static readonly string secretButtonPrefName = "secretButton";
 
     private static AchievementHolder achievements;
-    private static readonly string achievementFileName = Application.dataPath + "/achievements.json";
+    private static readonly string achievementFileName = Application.dataPath + "/Save/achievements.json";
 
 
     public static void initSettings(GameManager g) {
@@ -79,14 +79,17 @@ public class Settings
             }
 
         }
-
+        
     }
 
 
 
     public static void deleteAllSaveData(GameManager gameManager) {
         PlayerPrefs.DeleteAll();
+
         File.Delete(achievementFileName);
+        File.Delete(achievementFileName + ".meta");
+         
         achievements = getAchievements();
         saveAchievements();
 
@@ -466,7 +469,7 @@ public class Settings
         int count = 0;
 
         for(int i = 0; i < achievements.achs.Length; i++) {
-            if (achievements.achs[i].unlocked) {
+            if (achievements.achs[i].tapped) {
                 count++;
             }
         }
@@ -481,9 +484,9 @@ public class Settings
         int count = 0;
 
         bool[] x = {
-            isAchievementUnlocked(45), //snowy
-            isAchievementUnlocked(33), //waffle rain
-            isAchievementUnlocked(27) //alt soundtrack
+            isAchievementTapped(45), //snowy
+            isAchievementTapped(33), //waffle rain
+            isAchievementTapped(27) //alt soundtrack
         };
 
         for (int i = 0; i < x.Length; i++) {

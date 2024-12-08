@@ -175,4 +175,9 @@ public class GameOverChain : MonoBehaviour
         miniSunSaveTime = Time.time;
     }
 
+
+    public float getChainProgress() {
+        return lerp;
+    }
+
 }

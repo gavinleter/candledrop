@@ -33,4 +33,14 @@ public class MiniSun : MonoBehaviour, ISpecialObject
     }
 
 
+    public int getType() {
+        return (int)specialObjectType.miniSun;
+    }
+
+
+    public GameObject getGameObject() {
+        return gameObject;
+    }
+
+
 }

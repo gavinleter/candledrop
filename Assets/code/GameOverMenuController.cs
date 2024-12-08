@@ -108,7 +108,11 @@ public class GameOverMenuController : FadingMenuController
 
     public override void pause() {
         base.pause();
-        
+
+        //if the game over menu ever appears, save data should be cleared immediately
+        //so that the user cant close the game and reopen the game to avoid a loss
+        SaveManager.clearSaveData();
+
         musicManager.toggleGameOverTrack(true);
 
         transform.position = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, 0f);

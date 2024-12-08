@@ -29,7 +29,7 @@ public class UnlockPopUpMenuController : MonoBehaviour, IMenu
         targetPosition = mainCam.getCamHeight() - GetComponent<SpriteRenderer>().bounds.extents.y;
         offPosition = targetPosition + 10;
 
-        resultPosition.z = transform.position.z - mainCam.transform.position.z;
+        resultPosition.z = transform.position.z;
 
         btns[0].onPress(() => {
 

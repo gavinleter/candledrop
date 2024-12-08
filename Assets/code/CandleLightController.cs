@@ -329,4 +329,31 @@ public class CandleLightController : MonoBehaviour {
         return candleId;
     }
 
+
+    //used when loading candles from a save
+    public void setLightStatusById(int x) {
+        
+        switch (x) {
+
+            case 0:
+                disableLight(true);
+                break;
+
+            case 1:
+                enableLight();
+                break;
+
+            case 2:
+                convertToFlare();
+                break;
+
+            case 3:
+                miniSunIgnite();
+                break;
+
+        }
+
+    }
+
+
 }
