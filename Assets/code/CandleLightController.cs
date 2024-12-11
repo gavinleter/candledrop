@@ -93,7 +93,7 @@ public class CandleLightController : MonoBehaviour {
     }
 
 
-    private int updateCollisionList() {
+    public int updateCollisionList() {
         int x = wickCollider.OverlapCollider(contactFilter, collisions);
         overlaps = 0;
 

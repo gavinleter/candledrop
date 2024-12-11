@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
 
 
 [System.Serializable]
@@ -76,6 +77,33 @@ public class CandleData {
 
     }
 
+
+    public void print() {
+
+        Debug.Log("Light states:");
+        for(int i = 0; i < lightState.Length; i++) {
+            Debug.Log(lightState[i]);
+        }
+
+        Debug.Log("Candle Id: " + candleId);
+
+        Debug.Log("position:");
+        for (int i = 0; i < position.Length; i++) {
+            Debug.Log(position[i]);
+        }
+
+        Debug.Log("rotation:");
+        for (int i = 0; i < rotation.Length; i++) {
+            Debug.Log(rotation[i]);
+        }
+
+        Debug.Log("Velocity x: " + linearVelocityX);
+        Debug.Log("Velocity y: " + linearVelocityY);
+        Debug.Log("Angular velocity: " + angularVelocity);
+
+        Debug.Log("Special object: " + specialObject);
+    }
+
 }
 
 
@@ -111,8 +139,18 @@ public class SaveManager
 
         if (File.Exists(saveFileName)) {
 
-            string x = File.ReadAllText(saveFileName);
-            save = JsonUtility.FromJson<SaveData>(x);
+            try {
+                string x = File.ReadAllText(saveFileName);
+                save = JsonUtility.FromJson<SaveData>(x);
+            }
+            catch (Exception e) {
+
+                Debug.LogError(e);
+                Debug.LogWarning("Cannot read save data");
+                clearSaveData();
+                return false;
+
+            }
 
             return true;
 
@@ -154,8 +192,8 @@ public class SaveManager
         }
 
         //special objects
-        for (int i = droppedCandles.Length; i < specialObjects.Length; i++) {
-            d[i] = new CandleData(droppedCandles[i]);
+        for (int i = 0; i < specialObjects.Length; i++) {
+            d[i + droppedCandles.Length] = new CandleData(specialObjects[i]);
         }
 
         save = new SaveData(d, new CandleData(heldCandle), chainProgress);

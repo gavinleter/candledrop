@@ -356,8 +356,20 @@ public class GameManager : MonoBehaviour, IMenu
         //check if there is save data and load it if there is
         if (SaveManager.initSaveData()) {
             resetGame(true, false);
-            loadFromSave();
-            mainCamera.GetComponent<CameraController>().skipIntroToBottom();
+
+            try {
+                loadFromSave();
+                mainCamera.GetComponent<CameraController>().skipIntroToBottom();
+
+            } catch(Exception e) {
+                Debug.LogError(e);
+                Debug.LogWarning("Invalid save data");
+                SaveManager.clearSaveData();
+
+                //start game normally if loading from save fails
+                resetGame(true);
+            }
+
         }
         //if there isnt, start the game normally
         else {
@@ -1273,7 +1285,7 @@ public class GameManager : MonoBehaviour, IMenu
 
         //get all the special objects in the scene
         for (int i = 0; i < specialObjects.Count; i++) {
-
+            
             //make sure this object still exists and is not the held object
             if (specialObjects[i] != null && specialObjects[i].getGameObject() != selectedCan) {
                 currentSpecialObjects.Add(specialObjects[i].getGameObject());
@@ -1290,16 +1302,33 @@ public class GameManager : MonoBehaviour, IMenu
     void loadFromSave() {
 
         CandleData[] objs = SaveManager.getSavedObjects();
+        List<GameObject> createdCandles = new List<GameObject>();
 
         selectedCan = instantiateCandleData(SaveManager.getHeldCandle());
         prepareSelectedCandle();
 
+
         //create all dropped objects from the save
         for(int i = 0; i < objs.Length; i++) {
 
-            instantiateCandleData(objs[i]);
+            createdCandles.Add(instantiateCandleData(objs[i]));
 
         }
+
+
+        CandleLightController[] lights;
+
+        //once all candles are created update their touching lists
+        for (int i = 0; i < createdCandles.Count; i++) { 
+            
+            lights = createdCandles[i].GetComponentsInChildren<CandleLightController>();
+
+            for (int j = 0; j < lights.Length; j++) {
+                lights[j].updateCollisionList();
+            }
+
+        }
+
 
     }
 
@@ -1307,6 +1336,7 @@ public class GameManager : MonoBehaviour, IMenu
     //takes a candle data object and turn it into a gameobject
     GameObject instantiateCandleData(CandleData x) {
 
+        CandleLightController[] lights;
         GameObject result = null;
 
         //prepare position and rotation
@@ -1336,8 +1366,9 @@ public class GameManager : MonoBehaviour, IMenu
                 addCandleLight(result);
                 setCandleId(result, x.candleId);
 
-                //set the status of each light
-                CandleLightController[] lights = result.GetComponentsInChildren<CandleLightController>();
+                //set each light status
+                //each light also needs to have their collision list updated after each candle is created
+                lights = result.GetComponentsInChildren<CandleLightController>();
 
                 for(int i = 0; i < lights.Length; i++) {
                     lights[i].setLightStatusById(x.lightState[i]);
