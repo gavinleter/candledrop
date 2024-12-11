@@ -142,17 +142,15 @@ public class SaveManager
             try {
                 string x = File.ReadAllText(saveFileName);
                 save = JsonUtility.FromJson<SaveData>(x);
+                return true;
             }
             catch (Exception e) {
 
                 Debug.LogError(e);
                 Debug.LogWarning("Cannot read save data");
                 clearSaveData();
-                return false;
 
             }
-
-            return true;
 
         }
 

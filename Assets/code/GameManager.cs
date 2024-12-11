@@ -360,6 +360,7 @@ public class GameManager : MonoBehaviour, IMenu
             try {
                 loadFromSave();
                 mainCamera.GetComponent<CameraController>().skipIntroToBottom();
+                gameStarted = true;
 
             } catch(Exception e) {
                 Debug.LogError(e);

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 
@@ -42,6 +43,7 @@ public class Settings
     private static bool[] secretButtonFound = new bool[3];
     private static readonly string secretButtonPrefName = "secretButton";
 
+    private static int achievementCount = 47;
     private static AchievementHolder achievements;
     private static readonly string achievementFileName = Application.dataPath + "/Save/achievements.json";
 
@@ -87,17 +89,22 @@ public class Settings
     public static void deleteAllSaveData(GameManager gameManager) {
         PlayerPrefs.DeleteAll();
 
-        File.Delete(achievementFileName);
-        File.Delete(achievementFileName + ".meta");
-         
-        achievements = getAchievements();
-        saveAchievements();
+        deleteAchievementData();
 
         //music and sound are the only settings that shouldn't be deleted
         setMusicStatus(musicStatus);
         toggleSound(soundEnabled);
 
         initSettings(gameManager);
+    }
+
+
+    static void deleteAchievementData() {
+        File.Delete(achievementFileName);
+        File.Delete(achievementFileName + ".meta");
+
+        achievements = getAchievements();
+        saveAchievements();
     }
 
 
@@ -389,13 +396,44 @@ public class Settings
 
         if (File.Exists(achievementFileName)) {
 
-            string x = File.ReadAllText(achievementFileName);
+            try {
+                string x = File.ReadAllText(achievementFileName);
+                AchievementHolder ah = JsonUtility.FromJson<AchievementHolder>(x);
+                
+                //if the achievement holder has less achievements than there should be
+                if(ah.achs.Length != achievementCount) {
 
-            return JsonUtility.FromJson<AchievementHolder>(x);
+                    Debug.LogWarning("Missing achievements, counted " + ah.achs.Length + ", expected " + achievementCount);
+
+                    Achievement[] expandedAchievements = new Achievement[achievementCount];
+
+                    //copy all old achievements
+                    for (int i = 0; i < ah.achs.Length; i++) {
+                        expandedAchievements[i] = ah.achs[i];
+                    }
+
+                    //create new empty achievements
+                    for (int i = ah.achs.Length; i < expandedAchievements.Length; i++) {
+                        expandedAchievements[i] = new Achievement();
+                    }
+
+                    ah.achs = expandedAchievements;
+                }
+                
+                return ah;
+
+            } catch(Exception e) {
+
+                //delete achievement data if it cant be read properly
+                Debug.LogError(e);
+                Debug.LogWarning("Cannot read achievement data");
+                deleteAchievementData();
+
+            }
 
         }
 
-        return new AchievementHolder(47);
+        return new AchievementHolder(achievementCount);
     }
 
 
