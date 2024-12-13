@@ -439,7 +439,13 @@ public class Settings
 
     static void saveAchievements() {
 
-        File.WriteAllText(achievementFileName, JsonUtility.ToJson(achievements));
+        try {
+            File.WriteAllText(achievementFileName, JsonUtility.ToJson(achievements));
+        }
+        catch (Exception e) {
+            Debug.LogError(e);
+            Debug.LogWarning("Failed to save achievements");
+        }
 
     }
 

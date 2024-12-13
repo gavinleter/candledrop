@@ -171,13 +171,19 @@ public class CameraController : MonoBehaviour
 
 
     public void transitionToBottom(float speed) {
+        transitionToBottom(speed, null);
+    }
+
+
+    public void transitionToBottom(float speed, System.Action endAction) {
         setNewTarget(gamePosition, speed);
         startTransition();
+        endTransitionAction = endAction;
     }
 
 
 
-    public void setNewTarget(Vector3 targetPosition, float transitionSpeed, System.Action endAction) {
+        public void setNewTarget(Vector3 targetPosition, float transitionSpeed, System.Action endAction) {
         introDelayFinished = true;
         isTransitioning = false;
         initialPosition = transform.position;

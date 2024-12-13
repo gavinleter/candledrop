@@ -143,6 +143,16 @@ public class GameManager : MonoBehaviour, IMenu
     int nextAchievementPopupToDisplay = -1;
 
 
+    [SerializeField] ParticleSystem nFallingParticle;
+    [SerializeField] Sprite normalTitleSprite;
+    [SerializeField] Sprite nlessTitleSprite;
+    [SerializeField] SpriteRenderer titleObject;
+    //keeps track of when the user has stayed idle on the top part of the game for achievement 3
+    float topIdleInitialTime = 0;
+    float allowedTopIdleTime = 5;
+    bool nTopIdle = false;
+
+
     private void Start()
     {
 
@@ -175,6 +185,7 @@ public class GameManager : MonoBehaviour, IMenu
         //credits button
         buttons[3].onPress(() => {
             if (canPause) {
+                nTopIdle = false;
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(creditsTransitionLocation.transform.position);
                 mainCamera.GetComponent<CameraController>().startTransition();
@@ -182,12 +193,14 @@ public class GameManager : MonoBehaviour, IMenu
         });
         //button to go back down from credits
         buttons[4].onPress(() => {
+            resetNTopIdleTimer();
             canPause = true;
             mainCamera.GetComponent<CameraController>().transitionToTop(20f);
         });
         //button to go to the basement
         buttons[5].onPress(() => {
             if (canPause) {
+                nTopIdle = false;
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
                 mainCamera.GetComponent<CameraController>().startTransition();
@@ -197,6 +210,7 @@ public class GameManager : MonoBehaviour, IMenu
         });
         //button to go back up from basement
         buttons[6].onPress(() => {
+            resetNTopIdleTimer();
             canPause = true;
             //mainCamera.GetComponent<CameraController>().transitionToTop(40f);
             mainCamera.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
@@ -402,7 +416,7 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
         updateEvents();
-        updateIdleTimer();
+        updateIdleTimers();
 
     }
 
@@ -457,6 +471,8 @@ public class GameManager : MonoBehaviour, IMenu
 
     //spawn a new candle to be dropped
     public void StartTurn(){
+
+        nTopIdle = false;
 
         //reset activity timer when the game starts
         if (!gameStarted) {
@@ -649,6 +665,7 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void pause() {
+        nTopIdle = false;
         menuActive = false;
         isTurnActive = false;
 
@@ -686,6 +703,11 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void unpause() {
+
+        if (!gameStarted) {
+            resetNTopIdleTimer();
+        }
+
         menuActive = true;
 
         if (getStartingCandleObject() != null) {
@@ -742,6 +764,10 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
     public void resetGame(bool initialStart, bool spawnStarterCandle) {
+        
+        if (spawnStarterCandle) {
+            resetNTopIdleTimer();
+        }
 
         checkForGameEndAchievments(initialStart);
 
@@ -1171,10 +1197,14 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     //only update the timer if the player is not idle
-    void updateIdleTimer() {
+    void updateIdleTimers() {
 
         if(timeOfLastActivity + allowedIdleTime > Time.time && !trueGameOver) {
             timeSinceGameStarted += Time.deltaTime;
+        }
+
+        if (nTopIdle && topIdleInitialTime + allowedTopIdleTime < Time.time) {
+            nGameStart();
         }
         
     }
@@ -1411,6 +1441,55 @@ public class GameManager : MonoBehaviour, IMenu
 
         return result;
 
+    }
+
+
+    //used to start the game with n candle at the bottom after user idles on the top for long enough
+    void nGameStart() {
+
+        pause();
+        fadeOutStartingFloor();
+        nTopIdle = false;
+        nFallingParticle.Emit(1);
+        titleObject.sprite = nlessTitleSprite;
+
+        destroyCandle(starterCandle, true);
+
+        //set the chosen starter candle to the n candle
+        setStarterCandle(1, 0);
+
+        StartCoroutine(nTransitionDown());
+
+    }
+
+    IEnumerator nTransitionDown() {
+        yield return new WaitForSeconds(2.5f);
+
+        //spawn the n candle at the bottom
+        GameObject x = Instantiate(startingCandlePrefab, teleCoords.position, Quaternion.identity);
+        addCandleLight(x);
+        setCandleId(x, -1);
+
+        x.GetComponent<Rigidbody2D>().gravityScale = 1;
+        Destroy(x.GetComponent<StartCandleFall>());
+
+        //after the transition ends start spawning candles normally
+        mainCamera.GetComponent<CameraController>().transitionToBottom(20, () => {
+            unpause();
+            StartTurn();
+
+            //reset the title sprite to normal
+            titleObject.sprite = normalTitleSprite;
+
+            //"Afraid of heights?" unlocked by sitting at main menu for 3 minutes
+            Settings.setAchievementUnlocked(3);
+        });
+    }
+
+
+    void resetNTopIdleTimer() {
+        nTopIdle = true;
+        topIdleInitialTime = Time.time;
     }
 
 

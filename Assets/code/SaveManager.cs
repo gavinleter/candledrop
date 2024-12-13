@@ -195,7 +195,15 @@ public class SaveManager
         }
 
         save = new SaveData(d, new CandleData(heldCandle), chainProgress);
-        File.WriteAllText(saveFileName, JsonUtility.ToJson(save));
+
+        //try to save to file
+        try {
+            File.WriteAllText(saveFileName, JsonUtility.ToJson(save));
+        }
+        catch (Exception e) { 
+            Debug.LogError(e);
+            Debug.LogWarning("Failed to write save data");
+        }
 
     }
 
