@@ -111,14 +111,16 @@ public class CandleData {
 class SaveData {
 
     public float chainProgress = 0;
+    public float timeSinceGameStart = 0;
     public CandleData heldCandle;
     public CandleData[] droppedCandles;
 
-    internal SaveData(CandleData[] droppedCandles, CandleData heldCandle, float chainProgress) {
+    internal SaveData(CandleData[] droppedCandles, CandleData heldCandle, float chainProgress, float timeSinceGameStart) {
 
         this.droppedCandles = droppedCandles;
         this.heldCandle = heldCandle;
         this.chainProgress = chainProgress;
+        this.timeSinceGameStart = timeSinceGameStart;
 
     }
 
@@ -164,6 +166,11 @@ public class SaveManager
     }
 
 
+    public static float getTimeSinceGameStart() { 
+        return save.timeSinceGameStart;
+    }
+
+
     public static CandleData getHeldCandle() {
         return save.heldCandle;
     }
@@ -180,7 +187,7 @@ public class SaveManager
     }
 
 
-    public static void updateSave(GameObject[] droppedCandles, GameObject heldCandle, GameObject[] specialObjects, float chainProgress) {
+    public static void updateSave(GameObject[] droppedCandles, GameObject heldCandle, GameObject[] specialObjects, float chainProgress, float gameTime) {
 
         CandleData[] d = new CandleData[droppedCandles.Length + specialObjects.Length];
 
@@ -194,7 +201,7 @@ public class SaveManager
             d[i + droppedCandles.Length] = new CandleData(specialObjects[i]);
         }
 
-        save = new SaveData(d, new CandleData(heldCandle), chainProgress);
+        save = new SaveData(d, new CandleData(heldCandle), chainProgress, gameTime);
 
         //try to save to file
         try {

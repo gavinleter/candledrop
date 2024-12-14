@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] SpriteRenderer titleObject;
     //keeps track of when the user has stayed idle on the top part of the game for achievement 3
     float topIdleInitialTime = 0;
-    float allowedTopIdleTime = 5;
+    float allowedTopIdleTime = 180;
     bool nTopIdle = false;
 
 
@@ -1024,40 +1024,6 @@ public class GameManager : MonoBehaviour, IMenu
             Settings.setHighScore(s);
         }
 
-        if(s >= 50) {
-            //"Poopy Doopy" unlocked by getting 50 score
-            Settings.setAchievementUnlocked(10);
-        }
-
-        if (s >= 250) {
-            //"Not Too Shabby" unlocked by getting 250 score
-            Settings.setAchievementUnlocked(11);
-        }
-
-        if (s >= 500) {
-            //"Pretty Good" unlocked by getting 500 score
-            Settings.setAchievementUnlocked(12);
-        }
-
-        if (s >= 1000) {
-            //"Impressive" unlocked by getting 1000 score
-            Settings.setAchievementUnlocked(13);
-        }
-
-        if (s >= 5000) {
-            //"Insanely High" unlocked by getting 5000 score
-            Settings.setAchievementUnlocked(14);
-        }
-
-        if (s >= 10000) {
-            //"Unbelieveable" unlocked by getting 10000 score
-            Settings.setAchievementUnlocked(15);
-        }
-
-        if (s >= 50000) {
-            //"Impossible" unlocked by getting 50000 score
-            Settings.setAchievementUnlocked(16);
-        }
 
         if(s >= 100000 && Settings.getAchievementCount() - 2 == Settings.achievementsUnlockedCount()) {
             //"Full Completionist" unlocked by getting 100000 score and unlocking every other achievement
@@ -1212,7 +1178,42 @@ public class GameManager : MonoBehaviour, IMenu
 
     //checks for achievments that can only be unlocked after ending a game
     void checkForGameEndAchievments(bool initialStart) {
+
+        if (currentScore >= 50) {
+            //"Poopy Doopy" unlocked by getting 50 score
+            Settings.setAchievementUnlocked(10);
+        }
+
+        if (currentScore >= 250) {
+            //"Not Too Shabby" unlocked by getting 250 score
+            Settings.setAchievementUnlocked(11);
+        }
         
+        if (currentScore >= 500) {
+            //"Pretty Good" unlocked by getting 500 score
+            Settings.setAchievementUnlocked(12);
+        }
+
+        if (currentScore >= 1000) {
+            //"Impressive" unlocked by getting 1000 score
+            Settings.setAchievementUnlocked(13);
+        }
+
+        if (currentScore >= 5000) {
+            //"Insanely High" unlocked by getting 5000 score
+            Settings.setAchievementUnlocked(14);
+        }
+
+        if (currentScore >= 10000) {
+            //"Unbelieveable" unlocked by getting 10000 score
+            Settings.setAchievementUnlocked(15);
+        }
+
+        if (currentScore >= 50000) {
+            //"Impossible" unlocked by getting 50000 score
+            Settings.setAchievementUnlocked(16);
+        }
+
         if (currentScore == 0 && !initialStart && trueGameOver) {
             //"Catastrophe" unlocked by losing with 0 points
             Settings.setAchievementUnlocked(2);
@@ -1325,7 +1326,7 @@ public class GameManager : MonoBehaviour, IMenu
         }
 
 
-        SaveManager.updateSave(livingCandles.Distinct().ToArray(), selectedCan, currentSpecialObjects.ToArray(), gameOverChain.getChainProgress());
+        SaveManager.updateSave(livingCandles.Distinct().ToArray(), selectedCan, currentSpecialObjects.ToArray(), gameOverChain.getChainProgress(), timeSinceGameStarted);
 
     }
 
@@ -1360,6 +1361,10 @@ public class GameManager : MonoBehaviour, IMenu
 
         }
 
+
+        //set chain touching time and time since game start
+        gameOverChain.setChainProgress(SaveManager.getChainProgress());
+        timeSinceGameStarted = SaveManager.getTimeSinceGameStart();
 
     }
 

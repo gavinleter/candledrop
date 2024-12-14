@@ -180,4 +180,9 @@ public class GameOverChain : MonoBehaviour
         return lerp;
     }
 
+
+    public void setChainProgress(float x) {
+        lerp = x;
+    }
+
 }
