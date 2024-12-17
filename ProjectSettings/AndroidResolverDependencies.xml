@@ -2,9 +2,7 @@
   <packages>
     <package>androidx.constraintlayout:constraintlayout:2.1.4</package>
     <package>com.google.android.gms:play-services-ads:23.6.0</package>
-    <package>com.google.android.gms:play-services-ads-identifier:18.1.0</package>
     <package>com.google.android.ump:user-messaging-platform:3.1.0</package>
-    <package>com.unity3d.ads-mediation:mediation-sdk:8.5.0</package>
   </packages>
   <files />
   <settings>
@@ -12,7 +10,7 @@
     <setting name="bundleId" value="com.DefaultCompany.com.unity.template.mobile2D" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
-    <setting name="gradleTemplateEnabled" value="False" />
+    <setting name="gradleTemplateEnabled" value="True" />
     <setting name="installAndroidPackages" value="True" />
     <setting name="packageDir" value="Assets/Plugins/Android" />
     <setting name="patchAndroidManifest" value="True" />
