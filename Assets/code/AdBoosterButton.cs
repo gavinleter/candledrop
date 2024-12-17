@@ -1,3 +1,4 @@
+using GoogleMobileAds.Api;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,17 +19,28 @@ public class AdBoosterButton : ButtonPress
     float initialTime;
     float currentSpawnDelay;
 
+    AdController adController;
 
     protected override void Start(){
         base.Start();
 
         initialTime = Time.time;
+        adController = GetComponent<AdController>();
+        adController.loadRewardedAd();
 
         onPress(() => {
             alreadyPressed = true;
-            gameManager.pause();
-            adSpinnerMenu.pause();
-            adSpinnerMenu.increaseUsageThisGame();
+
+            bool x = adController.showRewardedAd((Reward r) => {
+                gameManager.pause();
+                adSpinnerMenu.pause();
+                adSpinnerMenu.increaseUsageThisGame();
+            });
+
+            if (!x) {
+                Debug.Log("Failed to show rewarded ad");
+            }
+
         });
     }
 

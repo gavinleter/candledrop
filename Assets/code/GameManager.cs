@@ -153,14 +153,22 @@ public class GameManager : MonoBehaviour, IMenu
     bool nTopIdle = false;
 
 
+    AdController adController;
+    float bannerInitialTime = 0;
+    bool bannerToggled = false;
+    [SerializeField] float bannerSpawnDelay;
+    [SerializeField] float bannerShowDuration;
+
+
     private void Start()
     {
 
         setSpawnPotentials();
-
         Settings.initSettings(this);
 
         skinManager = GetComponent<SkinManager>();
+        adController = GetComponent<AdController>();
+        adController.loadBannerAd();
 
         //get the starting candle prefab and skin
         setStarterCandle(Settings.getStarterCandleId(), Settings.getStarterCandleSkinId());
@@ -355,7 +363,7 @@ public class GameManager : MonoBehaviour, IMenu
                 }
             }*/
             destroyAllCandles(true);
-
+            
         });
 
         buttons[25].onPress(() => {
@@ -417,6 +425,7 @@ public class GameManager : MonoBehaviour, IMenu
 
         updateEvents();
         updateIdleTimers();
+        updateBannerTimer();
 
     }
 
@@ -669,6 +678,8 @@ public class GameManager : MonoBehaviour, IMenu
         menuActive = false;
         isTurnActive = false;
 
+        adController.hideBannerAd();
+
         if(getStartingCandleObject() != null) {
             getStartingCandleObject().GetComponent<StartCandleFall>().setReadyToDrop(false);
         }
@@ -703,6 +714,11 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void unpause() {
+
+        //if the banner should be shown and the game is active
+        if (bannerToggled && gameStarted) {
+            adController.showBannerAd();
+        }
 
         if (!gameStarted) {
             resetNTopIdleTimer();
@@ -1495,6 +1511,31 @@ public class GameManager : MonoBehaviour, IMenu
     void resetNTopIdleTimer() {
         nTopIdle = true;
         topIdleInitialTime = Time.time;
+    }
+
+
+    void updateBannerTimer() {
+
+        //if the banner is disabled and its time to show the banner
+        if (!bannerToggled && bannerInitialTime + bannerSpawnDelay < Time.time) {
+
+            //banner should never show if the user hasnt started the game yet or is in another menu
+            if (gameStarted && menuActive) {
+                adController.showBannerAd();
+            }
+            bannerToggled = true;
+            bannerInitialTime = Time.time;
+
+        }
+        //if the banner is enabled and its time to hide the banner
+        else if (bannerInitialTime + bannerShowDuration < Time.time){
+
+            adController.hideBannerAd();
+            bannerToggled = false;
+            bannerInitialTime = Time.time;
+
+        }
+
     }
 
 

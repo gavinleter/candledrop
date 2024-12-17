@@ -1,3 +1,4 @@
+using GoogleMobileAds.Api;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -23,9 +24,13 @@ public class PauseMenuController : FadingMenuController
     [SerializeField] TextMeshProUGUI pointlessAdCounterText;
     [SerializeField] TextMeshProUGUI highScoreText;
 
+    AdController adController;
 
     protected override void Start(){
         base.Start();
+
+        adController = GetComponent<AdController>();
+        adController.loadRewardedAd();
         
         setSoundButtonSprite();
         setMusicButtonSprite();
@@ -140,10 +145,17 @@ public class PauseMenuController : FadingMenuController
         });
 
         //pointless ad counter
-        btns[9].onPress(() => { 
-        
-            Settings.increasePointlessAdCount();
-            setTexts();
+        btns[9].onPress(() => {
+
+            bool x = adController.showRewardedAd((Reward r) => {
+                Settings.increasePointlessAdCount();
+                setTexts();
+            });
+
+            //show pop up if the ad fails to load
+            if (!x) {
+                Debug.Log("Failed to show ad");
+            }
 
         });
 
