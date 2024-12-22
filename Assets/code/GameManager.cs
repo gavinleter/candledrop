@@ -208,6 +208,8 @@ public class GameManager : MonoBehaviour, IMenu
         //button to go to the basement
         buttons[5].onPress(() => {
             if (canPause) {
+                //trying to enter the achievement menu here causes issues with the canPause variable, so its disabled
+                unlockPopUpMenu.unpause();
                 nTopIdle = false;
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(basementTransitionLocation.transform.position, 40f);
@@ -714,7 +716,7 @@ public class GameManager : MonoBehaviour, IMenu
 
 
     public void unpause() {
-
+        
         //if the banner should be shown and the game is active
         if (bannerToggled && gameStarted) {
             adController.showBannerAd();

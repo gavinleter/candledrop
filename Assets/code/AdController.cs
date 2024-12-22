@@ -26,6 +26,8 @@ public class AdController : MonoBehaviour
     BannerView nextBannerAd;
     float lastBannerAdLoadTime = 0;
 
+    System.Action adOpenAction;
+
     static bool initialized = false;
     static bool initStarted = false;
 
@@ -120,6 +122,8 @@ public class AdController : MonoBehaviour
             nextRewardedAd = ad;
             lastRewardedAdLoadTime = Time.time;
 
+            nextRewardedAd.OnAdFullScreenContentOpened += adOpenAction;
+
         });
 
     }
@@ -187,6 +191,11 @@ public class AdController : MonoBehaviour
             rewardedAdToDestroy = null;
         }
 
+    }
+
+
+    public void setAdOpenAction(System.Action x) {
+        adOpenAction = x;
     }
 
 

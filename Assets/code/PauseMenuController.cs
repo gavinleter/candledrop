@@ -30,8 +30,13 @@ public class PauseMenuController : FadingMenuController
         base.Start();
 
         adController = GetComponent<AdController>();
+
+        //this is set so that the user closing the ad doesn't trigger any buttons that might be behind the ad
+        adController.setAdOpenAction(() => { 
+            unpause();
+        });
         adController.loadRewardedAd();
-        
+
         setSoundButtonSprite();
         setMusicButtonSprite();
 
@@ -148,6 +153,8 @@ public class PauseMenuController : FadingMenuController
         btns[9].onPress(() => {
 
             bool x = adController.showRewardedAd((Reward r) => {
+                //menu is closed but opened again after ad is closed
+                pause();
                 Settings.increasePointlessAdCount();
                 setTexts();
             });
@@ -155,6 +162,7 @@ public class PauseMenuController : FadingMenuController
             //show pop up if the ad fails to load
             if (!x) {
                 Debug.Log("Failed to show ad");
+                pause();
             }
 
         });

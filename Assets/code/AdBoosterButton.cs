@@ -26,19 +26,24 @@ public class AdBoosterButton : ButtonPress
 
         initialTime = Time.time;
         adController = GetComponent<AdController>();
+
+        //disable gamemanager so that buttons are not pressed when exiting the ad
+        adController.setAdOpenAction(() => {
+            gameManager.pause();
+        });
         adController.loadRewardedAd();
 
         onPress(() => {
             alreadyPressed = true;
 
             bool x = adController.showRewardedAd((Reward r) => {
-                gameManager.pause();
                 adSpinnerMenu.pause();
                 adSpinnerMenu.increaseUsageThisGame();
             });
 
             if (!x) {
                 Debug.Log("Failed to show rewarded ad");
+                gameManager.unpause();
             }
 
         });
