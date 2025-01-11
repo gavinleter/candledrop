@@ -175,6 +175,9 @@ public class GameManager : MonoBehaviour, IMenu
 
         musicManager.maxOutMusicVolume();
 
+        //the credits return button can be seen at game start on some taller devices, so it needs to be hidden
+        buttons[4].GetComponent<SpriteRenderer>().enabled = false;
+
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = () => {
             if (canPause) {
@@ -193,6 +196,8 @@ public class GameManager : MonoBehaviour, IMenu
         //credits button
         buttons[3].onPress(() => {
             if (canPause) {
+                //credits button is normally hiden from view on game start
+                buttons[4].GetComponent<SpriteRenderer>().enabled = true;
                 nTopIdle = false;
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(creditsTransitionLocation.transform.position);
