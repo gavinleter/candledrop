@@ -115,7 +115,7 @@ public class GameOverChain : MonoBehaviour
 
         //update touching list and last touching time
         bool wasPreviouslyTouching = isTouching();
-        touchingLength = coll.OverlapCollider(contactFilter, touching);
+        touchingLength = coll.Overlap(contactFilter, touching);
 
         if (!wasPreviouslyTouching && isTouching()) {
             initialTouchTime = Time.time;

@@ -422,8 +422,8 @@ public class GameManager : MonoBehaviour, IMenu
 
             //velocityCheckDelay is important because the candle starts out at 0 velocity, so we have to wait for it to fall a bit first
             //the next "candle" can also spawn if an event horizon/mini sun event is active and a shorter timer runs out while the previous black hole is moving still
-            if ( rb == null || (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.velocity.magnitude < 0.01f) || 
-                (eventHorizonEventActive || miniSunEventActive) && Time.time - lastMoveTime >= blackHoleSpawnDelay && rb.velocity.magnitude > 0.1f)
+            if ( rb == null || (canMove && Time.time - lastMoveTime >= velocityCheckDelay && rb.linearVelocity.magnitude < 0.01f) || 
+                (eventHorizonEventActive || miniSunEventActive) && Time.time - lastMoveTime >= blackHoleSpawnDelay && rb.linearVelocity.magnitude > 0.1f)
             {
                 //object has stopped moving, start a new turn
                 StartTurn();
@@ -558,7 +558,7 @@ public class GameManager : MonoBehaviour, IMenu
 
         Rigidbody2D rb = selectedCan.GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         rb.isKinematic = true;
 
         canMove = false;
@@ -1459,7 +1459,7 @@ public class GameManager : MonoBehaviour, IMenu
         Rigidbody2D rb = result.GetComponent<Rigidbody2D>();
 
         Vector2 vel = new Vector2(x.linearVelocityX, x.linearVelocityY);
-        rb.velocity = vel;
+        rb.linearVelocity = vel;
 
         rb.angularVelocity = x.angularVelocity;
 

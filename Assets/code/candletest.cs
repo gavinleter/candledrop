@@ -19,7 +19,7 @@ public class candletest : MonoBehaviour
             CandleIgniter x = GetComponentInChildren<CandleIgniter>();
             List<Collider2D> c = new List<Collider2D>();
 
-            x.GetComponent<Collider2D>().OverlapCollider(new ContactFilter2D().NoFilter(), c);
+            x.GetComponent<Collider2D>().Overlap(new ContactFilter2D().NoFilter(), c);
             for(int i = 0; i < c.Count; i++) {
                 Debug.Log(c[i].name);
                 if (c[i].GetComponent<CandleIgniter>()) {

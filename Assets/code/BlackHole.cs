@@ -61,7 +61,7 @@ public class BlackHole : MonoBehaviour, ISpecialObject
 
         coll.radius = destructionRadius;
         List<Collider2D> hits = new List<Collider2D>(); 
-        int hitCount = coll.OverlapCollider(contactFilter, hits);
+        int hitCount = coll.Overlap(contactFilter, hits);
 
         for(int i = 0; i < hitCount; i++) {
 

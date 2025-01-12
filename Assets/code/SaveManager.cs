@@ -71,8 +71,8 @@ public class CandleData {
 
         Rigidbody2D rb = can.GetComponent<Rigidbody2D>();
 
-        linearVelocityX = rb.velocity.x;
-        linearVelocityY = rb.velocity.y;
+        linearVelocityX = rb.linearVelocity.x;
+        linearVelocityY = rb.linearVelocity.y;
         angularVelocity = rb.angularVelocity;
 
     }
