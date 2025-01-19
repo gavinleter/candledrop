@@ -8,13 +8,18 @@ using System;
 public class AdController : MonoBehaviour
 {
 
+
     #if UNITY_ANDROID
-      private string adUnitId = "ca-app-pub-3940256099942544/5224354917";
+        int deviceType = 1;
     #elif UNITY_IPHONE
-      private string adUnitId = "ca-app-pub-3940256099942544/1712485313";
+        int deviceType = 2;
     #else
-        private string adUnitId = "unused";
+        int deviceType = 0;
     #endif
+
+    [SerializeField] string AndroidAdUnitId;
+    [SerializeField] string IOSAdUnitId;
+    string adUnitId = "unknown platform";
 
     [SerializeField] bool rewardedAd;
     [SerializeField] bool bannerAd;
@@ -32,6 +37,15 @@ public class AdController : MonoBehaviour
     static bool initStarted = false;
 
     void Awake() {
+
+
+        if(deviceType == 1) {
+            adUnitId = AndroidAdUnitId;
+        } 
+        else if(deviceType == 2) {
+            adUnitId = IOSAdUnitId;
+        }
+
 
         //admob only needs to be initialized once
         if (!initStarted) {
