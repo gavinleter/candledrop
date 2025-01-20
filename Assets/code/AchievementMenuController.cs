@@ -79,11 +79,12 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         topBound = topObject.GetComponent<SpriteRenderer>().bounds.max.y;
         bottomBound = bottomObject.GetComponent<SpriteRenderer>().bounds.min.y;
 
-        initializeAchievements();
     }
 
 
     void Start(){
+
+        initializeAchievements();
 
         //set transition position to top of the menu
         setTransitionPosition(-1);

@@ -23,7 +23,7 @@ public class CandleLightCollector : MonoBehaviour
 
     public int updateTouchingList() {
 
-        touchingLength = coll.OverlapCollider(contactFilter, touching);
+        touchingLength = coll.Overlap(contactFilter, touching);
         return touchingLength;
     }
 

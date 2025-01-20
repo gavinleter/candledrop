@@ -18,7 +18,7 @@ public class EmberController : MonoBehaviour
 
         transform.localScale = transform.localScale + new Vector3(changeInSize, changeInSize, 0);
         rb.angularVelocity = UnityEngine.Random.Range(-360, 360);
-        rb.velocity = new Vector2(UnityEngine.Random.Range(-2, 2), 3);
+        rb.linearVelocity = new Vector2(UnityEngine.Random.Range(-2, 2), 3);
 
     }
 
@@ -45,7 +45,7 @@ public class EmberController : MonoBehaviour
             other.enableLight();
         }
 
-        rb.velocity = new Vector2(rb.velocity.x * -1.5f, rb.velocity.y);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x * -1.5f, rb.linearVelocity.y);
         bouncesRemaining--;
 
         if (bouncesRemaining <= 0) {

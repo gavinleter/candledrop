@@ -8,13 +8,21 @@ public class CameraController : MonoBehaviour
     Vector3 targetPosition;
 
     Vector3 gameStartPosition = new Vector3(0f, 55f, -10f);
-    Vector3 gamePosition = new Vector3(0f, 10.55f, -10f);
+    //Vector3 gamePosition = new Vector3(0f, 10.55f, -10f);
 
     [SerializeField] float transitionSpeed;
     [SerializeField] float delayBeforeTransition;
     [SerializeField] float candleFallTransitionSpeed;
 
     [SerializeField] FadingObject blackFadeObject;
+
+    //this is an object that should represent the minimum width of the camera
+    [SerializeField] GameObject minCameraWidthObj;
+    float minCameraWidth;
+
+    //represents the bottom of the game area
+    [SerializeField] Transform minimumGameAreaPosition;
+    Vector3 gamePosition = new Vector3(0, 0, -10);
 
     private float transitionStartTime;
     private bool isTransitioning = false;
@@ -47,8 +55,11 @@ public class CameraController : MonoBehaviour
         cam = GetComponent<Camera>();
         transform.position = initialPosition;
         targetPosition = gameStartPosition;
+        minCameraWidth = minCameraWidthObj.GetComponent<SpriteRenderer>().bounds.size.x;
 
-        camHeight = Mathf.Abs(transform.position.y - cam.ScreenToWorldPoint(new Vector3(0.5f, 1, 0)).y);
+        setTargetCameraZoom();
+        camHeight = Mathf.Abs(transform.position.y - cam.ScreenToWorldPoint(new Vector3(0, 0, 0)).y);
+        setTargetGamePosition();
     }
 
 
@@ -331,6 +342,25 @@ public class CameraController : MonoBehaviour
             lastMouseYPosition = mouseY;
 
         }
+
+    }
+
+
+    void setTargetCameraZoom() {
+
+        float currentWidth = cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth - 1, 0, 0)).x - cam.ScreenToWorldPoint(new Vector3(0, 0, 0)).x;
+        
+        if (currentWidth < minCameraWidth) {
+            cam.orthographicSize = minCameraWidth / cam.aspect * 0.5f;
+
+        }
+
+    }
+
+
+    void setTargetGamePosition() { 
+        
+        gamePosition.y = minimumGameAreaPosition.position.y + getCamHeight();
 
     }
 
