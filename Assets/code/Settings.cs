@@ -45,7 +45,9 @@ public class Settings
 
     private static int achievementCount = 47;
     private static AchievementHolder achievements;
-    private static readonly string achievementFileName = Application.dataPath + "/Save/achievements.json";
+    private static readonly string achievementFileName = Application.persistentDataPath + "/achievements.json";
+
+    static bool loadSaveFailed = false;
 
 
     public static void initSettings(GameManager g) {
@@ -70,7 +72,7 @@ public class Settings
 
         achievements = getAchievements();
         //if the achievements do not exist yet, the file needs to be created immediately
-        saveAchievements();
+        //saveAchievements();
 
         //if test mode is on, grant all achievements
         if (g.unlockAllAchievements()) {
@@ -99,7 +101,7 @@ public class Settings
     }
 
 
-    static void deleteAchievementData() {
+    public static void deleteAchievementData() {
         File.Delete(achievementFileName);
         File.Delete(achievementFileName + ".meta");
 
@@ -390,18 +392,17 @@ public class Settings
     }
 
 
-
-
     static AchievementHolder getAchievements() {
 
-        if (File.Exists(achievementFileName)) {
+        try {
 
-            try {
+            if (File.Exists(achievementFileName)) {
+                //throw new Exception();
                 string x = File.ReadAllText(achievementFileName);
                 AchievementHolder ah = JsonUtility.FromJson<AchievementHolder>(x);
-                
+
                 //if the achievement holder has less achievements than there should be
-                if(ah.achs.Length != achievementCount) {
+                if (ah.achs.Length != achievementCount) {
 
                     Debug.LogWarning("Missing achievements, counted " + ah.achs.Length + ", expected " + achievementCount);
 
@@ -419,20 +420,22 @@ public class Settings
 
                     ah.achs = expandedAchievements;
                 }
-                
+
                 return ah;
-
-            } catch(Exception e) {
-
-                //delete achievement data if it cant be read properly
-                Debug.LogError(e);
-                Debug.LogWarning("Cannot read achievement data");
-                deleteAchievementData();
-
             }
 
         }
+        catch (Exception e) {
 
+            //delete achievement data if it cant be read properly
+            Debug.LogError(e);
+            Debug.LogWarning("Cannot read achievement data");
+            //deleteAchievementData();
+            //gameManager.openFailedSaveMenu();
+            loadSaveFailed = true;
+
+        }
+        
         return new AchievementHolder(achievementCount);
     }
 
@@ -541,6 +544,11 @@ public class Settings
 
         return count;
 
+    }
+
+
+    public static bool loadFromSaveFailed() {
+        return loadSaveFailed;
     }
 
 

@@ -152,6 +152,7 @@ public class GameManager : MonoBehaviour, IMenu
     float allowedTopIdleTime = 180;
     bool nTopIdle = false;
 
+    [SerializeField] FailedSaveMenuController failedSaveMenu;
 
     AdController adController;
     float bannerInitialTime = 0;
@@ -164,7 +165,6 @@ public class GameManager : MonoBehaviour, IMenu
     {
 
         setSpawnPotentials();
-        Settings.initSettings(this);
 
         skinManager = GetComponent<SkinManager>();
         adController = GetComponent<AdController>();
@@ -382,6 +382,10 @@ public class GameManager : MonoBehaviour, IMenu
         });
 
 
+
+
+        Settings.initSettings(this);
+
         //check if there is save data and load it if there is
         if (SaveManager.initSaveData()) {
             resetGame(true, false);
@@ -404,6 +408,10 @@ public class GameManager : MonoBehaviour, IMenu
         //if there isnt, start the game normally
         else {
             resetGame(true);
+        }
+
+        if(Settings.loadFromSaveFailed() || SaveManager.loadFromSaveFailed()) {
+            openFailedSaveMenu();
         }
         
 
@@ -452,7 +460,7 @@ public class GameManager : MonoBehaviour, IMenu
                 selectedCan.transform.position = new Vector3(teleCoords.position.x, teleCoords.position.y, 0);
 
                 rb.gravityScale = 1;
-                rb.isKinematic = false;
+                rb.bodyType = RigidbodyType2D.Dynamic;
 
                 Vector3 newPosition = new Vector3(tapPosition.x, selectedCan.transform.position.y, 0);
 
@@ -559,7 +567,7 @@ public class GameManager : MonoBehaviour, IMenu
         Rigidbody2D rb = selectedCan.GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
         rb.linearVelocity = Vector2.zero;
-        rb.isKinematic = true;
+        rb.bodyType = RigidbodyType2D.Kinematic;
 
         canMove = false;
         isTurnActive = true;
@@ -1541,6 +1549,16 @@ public class GameManager : MonoBehaviour, IMenu
             bannerToggled = false;
             bannerInitialTime = Time.time;
 
+        }
+
+    }
+
+
+    public void openFailedSaveMenu() {
+
+        if (!failedSaveMenu.isMenuActive()) {
+            pause();
+            failedSaveMenu.pause();
         }
 
     }

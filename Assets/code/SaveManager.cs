@@ -130,29 +130,32 @@ class SaveData {
 public class SaveManager
 {
 
-    static readonly string saveFileName = Application.dataPath + "/Save/save.json";
+    static readonly string saveFileName = Application.persistentDataPath + "save.json";
     static SaveData save;
 
-
+    static bool loadSaveFailed = false;
 
     //should be run once on game startup
     //returns false if there is no save data
     public static bool initSaveData() {
 
-        if (File.Exists(saveFileName)) {
+        try {
 
-            try {
+            if (File.Exists(saveFileName)) {
+                //throw new Exception();
                 string x = File.ReadAllText(saveFileName);
                 save = JsonUtility.FromJson<SaveData>(x);
                 return true;
-            }
-            catch (Exception e) {
-
-                Debug.LogError(e);
-                Debug.LogWarning("Cannot read save data");
-                clearSaveData();
 
             }
+
+        }
+        catch (Exception e) {
+
+            Debug.LogError(e);
+            Debug.LogWarning("Cannot read save data");
+            //clearSaveData();
+            loadSaveFailed = true;
 
         }
 
@@ -212,6 +215,11 @@ public class SaveManager
             Debug.LogWarning("Failed to write save data");
         }
 
+    }
+
+
+    public static bool loadFromSaveFailed() {
+        return loadSaveFailed;
     }
 
 
