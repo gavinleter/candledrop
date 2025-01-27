@@ -13,6 +13,8 @@ public class AdBoosterButton : ButtonPress
     [SerializeField] float spawnDelayMin;
     [SerializeField] float spawnDelayMax;
 
+    [SerializeField] FailedAdMenuController failedAdMenu;
+
     //if the booster button has been pressed, this will be true to stop the player from getting multiple ad rewards
     bool alreadyPressed = false;
     bool waitingToRespawn = false;
@@ -33,17 +35,29 @@ public class AdBoosterButton : ButtonPress
         });
         adController.loadRewardedAd();
 
+
         onPress(() => {
+            //reset actions since they may be overwritten by the pause menu
+            failedAdMenu.setAdLoadedAction(() => {
+                showAd();
+            });
+
+            failedAdMenu.setExitAction(() => {
+                failedAdMenu.unpause();
+                gameManager.unpause();
+            });
+
+            failedAdMenu.setAdController(adController);
+
+            gameManager.pause();
             alreadyPressed = true;
 
-            bool x = adController.showRewardedAd((Reward r) => {
-                adSpinnerMenu.pause();
-                adSpinnerMenu.increaseUsageThisGame();
-            });
+            bool x = showAd();
 
             if (!x) {
                 Debug.Log("Failed to show rewarded ad");
-                gameManager.unpause();
+                //gameManager.unpause();
+                failedAdMenu.pause();
             }
 
         });
@@ -81,6 +95,14 @@ public class AdBoosterButton : ButtonPress
         waitingToRespawn = false;
         alreadyPressed = false;
         transform.position = new Vector3(10f, transform.position.y, transform.position.z);
+    }
+
+
+    bool showAd() {
+        return adController.showRewardedAd((Reward r) => {
+            adSpinnerMenu.pause();
+            adSpinnerMenu.increaseUsageThisGame();
+        });
     }
 
 

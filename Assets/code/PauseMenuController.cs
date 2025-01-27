@@ -24,6 +24,8 @@ public class PauseMenuController : FadingMenuController
     [SerializeField] TextMeshProUGUI pointlessAdCounterText;
     [SerializeField] TextMeshProUGUI highScoreText;
 
+    [SerializeField] FailedAdMenuController failedAdMenu;
+
     AdController adController;
 
     protected override void Start(){
@@ -152,17 +154,25 @@ public class PauseMenuController : FadingMenuController
         //pointless ad counter
         btns[9].onPress(() => {
 
-            bool x = adController.showRewardedAd((Reward r) => {
-                //menu is closed but opened again after ad is closed
-                pause();
-                Settings.increasePointlessAdCount();
-                setTexts();
+            //reset actions since they may be overwritten by the booster button
+            failedAdMenu.setAdLoadedAction(() => {
+                showAd();
             });
+
+            failedAdMenu.setExitAction(() => {
+                failedAdMenu.unpause();
+                pause();
+            });
+
+            failedAdMenu.setAdController(adController);
+
+            bool x = showAd();
 
             //show pop up if the ad fails to load
             if (!x) {
                 Debug.Log("Failed to show ad");
-                pause();
+                unpause();
+                failedAdMenu.pause();
             }
 
         });
@@ -216,6 +226,16 @@ public class PauseMenuController : FadingMenuController
         pointlessAdCounterText.text = "" + Settings.getPointlessAdCount();
         highScoreText.text = "" + Settings.getHighScore();
 
+    }
+
+
+    bool showAd() {
+        return adController.showRewardedAd((Reward r) => {
+            //menu is closed but opened again after ad is closed
+            pause();
+            Settings.increasePointlessAdCount();
+            setTexts();
+        });
     }
 
 }
