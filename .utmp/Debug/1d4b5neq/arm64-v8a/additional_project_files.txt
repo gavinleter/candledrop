@@ -1,1 +1,0 @@
-C:\Users\Curtis\Desktop\Programs\Unity\candledrop\Library\PramData\AndroidApplicationController\Cache\com.DefaultCompany.com.unity.template.mobile2D\gradle-project\unityLibrary\src\main\cpp\FramePacing\UnitySwappyWrapper.h

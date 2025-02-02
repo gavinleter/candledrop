@@ -1,5 +1,0 @@
-C:/Users/Curtis/Desktop/Programs/Unity/candledrop/.utmp/Debug/1d4b5neq/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/Curtis/Desktop/Programs/Unity/candledrop/.utmp/Debug/1d4b5neq/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-C:/Users/Curtis/Desktop/Programs/Unity/candledrop/.utmp/Debug/1d4b5neq/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
-C:/Users/Curtis/Desktop/Programs/Unity/candledrop/.utmp/Debug/1d4b5neq/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
-C:/Users/Curtis/Desktop/Programs/Unity/candledrop/.utmp/Debug/1d4b5neq/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir
