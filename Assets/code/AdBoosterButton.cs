@@ -30,7 +30,8 @@ public class AdBoosterButton : ButtonPress
         adController = GetComponent<AdController>();
 
         //disable gamemanager so that buttons are not pressed when exiting the ad
-        adController.setAdOpenAction(() => {
+        adController.setAdOpenAction(async () => {
+            await Awaitable.MainThreadAsync();
             gameManager.pause();
         });
         adController.loadRewardedAd();
@@ -42,7 +43,8 @@ public class AdBoosterButton : ButtonPress
                 showAd();
             });
 
-            failedAdMenu.setExitAction(() => {
+            failedAdMenu.setExitAction(async () => {
+                await Awaitable.MainThreadAsync();
                 failedAdMenu.unpause();
                 gameManager.unpause();
             });
@@ -78,7 +80,8 @@ public class AdBoosterButton : ButtonPress
         if (waitingToRespawn && initialTime + currentSpawnDelay < Time.time) {
             resetBooster();
         }
-        
+
+
         base.Update();
     }
 
@@ -99,7 +102,10 @@ public class AdBoosterButton : ButtonPress
 
 
     bool showAd() {
-        return adController.showRewardedAd((Reward r) => {
+        //this will activate on another thread, which causes problems with unity if stuff like getting the time is used
+        //so instead it uses the main thread async
+        return adController.showRewardedAd(async (Reward r) => {
+            await Awaitable.MainThreadAsync();
             adSpinnerMenu.pause();
             adSpinnerMenu.increaseUsageThisGame();
         });

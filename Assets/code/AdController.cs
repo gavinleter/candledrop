@@ -74,20 +74,21 @@ public class AdController : MonoBehaviour
 
 
     //ads are valid for 1 hour so they need to be replaced before they expire
+    //give a bit of wiggle room because of loading time and awaiting for main thread to return to use Time.time
     void testForAdRefresh() {
         
-        if(rewardedAd && lastRewardedAdLoadTime + 3600 < Time.time) {
+        if(rewardedAd && lastRewardedAdLoadTime + 3500 < Time.time) {
             loadRewardedAd();
         }
 
-        if (bannerAd && lastBannerAdLoadTime + 3600 < Time.time) {
+        if (bannerAd && lastBannerAdLoadTime + 3500 < Time.time) {
             loadBannerAd();
         }
 
     }
 
 
-    public void loadBannerAd() {
+    public async void loadBannerAd() {
 
         if (!initialized) {
             return;
@@ -104,6 +105,8 @@ public class AdController : MonoBehaviour
 
         nextBannerAd.LoadAd(req);
         nextBannerAd.Hide();
+
+        await Awaitable.MainThreadAsync();
 
         lastBannerAdLoadTime = Time.time;
         
@@ -124,7 +127,7 @@ public class AdController : MonoBehaviour
         AdRequest req = new AdRequest();
 
 
-        RewardedAd.Load(adUnitId, req, (RewardedAd ad, LoadAdError err) => {
+        RewardedAd.Load(adUnitId, req, async (RewardedAd ad, LoadAdError err) => {
 
             //if the ad failed to load
             if (err != null || ad == null) {
@@ -134,9 +137,12 @@ public class AdController : MonoBehaviour
 
             Debug.Log("Rewarded ad loaded successfully");
             nextRewardedAd = ad;
-            lastRewardedAdLoadTime = Time.time;
-
             nextRewardedAd.OnAdFullScreenContentOpened += adOpenAction;
+
+            //have to return to main thread before using Time.time
+            await Awaitable.MainThreadAsync();
+
+            lastRewardedAdLoadTime = Time.time;
 
         });
 
@@ -177,10 +183,11 @@ public class AdController : MonoBehaviour
         if (nextBannerAd != null) {
 
             nextBannerAd.Show();
+            //Debug.Log("Banner ad shown");
             return true;
 
         }
-
+        //Debug.Log("Failed to show banner ad");
         return false;
     }
 

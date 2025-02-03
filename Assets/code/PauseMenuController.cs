@@ -34,7 +34,8 @@ public class PauseMenuController : FadingMenuController
         adController = GetComponent<AdController>();
 
         //this is set so that the user closing the ad doesn't trigger any buttons that might be behind the ad
-        adController.setAdOpenAction(() => { 
+        adController.setAdOpenAction(async () => {
+            await Awaitable.MainThreadAsync();
             unpause();
         });
         adController.loadRewardedAd();
@@ -159,7 +160,8 @@ public class PauseMenuController : FadingMenuController
                 showAd();
             });
 
-            failedAdMenu.setExitAction(() => {
+            failedAdMenu.setExitAction(async () => {
+                await Awaitable.MainThreadAsync();
                 failedAdMenu.unpause();
                 pause();
             });
@@ -230,8 +232,9 @@ public class PauseMenuController : FadingMenuController
 
 
     bool showAd() {
-        return adController.showRewardedAd((Reward r) => {
+        return adController.showRewardedAd(async (Reward r) => {
             //menu is closed but opened again after ad is closed
+            await Awaitable.MainThreadAsync();
             pause();
             Settings.increasePointlessAdCount();
             setTexts();
