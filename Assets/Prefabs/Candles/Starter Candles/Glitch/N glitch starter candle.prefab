@@ -4774,6 +4774,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4812,13 +4815,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -9602,6 +9607,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9640,13 +9648,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -14430,6 +14440,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -14468,13 +14481,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -14533,6 +14548,9 @@ SpriteMask:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -14567,6 +14585,7 @@ SpriteMask:
   m_BackSortingOrder: 0
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
+  m_MaskSource: 0
 --- !u!1 &8236809499685158023
 GameObject:
   m_ObjectHideFlags: 0
@@ -19341,6 +19360,9 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -19379,13 +19401,15 @@ ParticleSystemRenderer:
   m_RenderAlignment: 0
   m_Pivot: {x: 0, y: 0, z: 0}
   m_Flip: {x: 0, y: 0, z: 0}
-  m_UseCustomVertexStreams: 0
   m_EnableGPUInstancing: 1
   m_ApplyActiveColorSpace: 1
   m_AllowRoll: 1
   m_FreeformStretching: 0
   m_RotateWithStretchDirection: 1
+  m_UseCustomVertexStreams: 0
   m_VertexStreams: 00010304
+  m_UseCustomTrailVertexStreams: 0
+  m_TrailVertexStreams: 00010304
   m_Mesh: {fileID: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
@@ -19456,6 +19480,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -19499,6 +19526,7 @@ PolygonCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8531850439406674610}
   m_Enabled: 1
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -19522,7 +19550,8 @@ PolygonCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -19537,48 +19566,33 @@ PolygonCollider2D:
     m_Paths:
     - - {x: 0.044980954, y: 0.09998041}
       - {x: 0.044981312, y: 0.06997933}
-      - {x: 0.03498027, y: 0.06997987}
-      - {x: 0.03498047, y: 0.039980467}
       - {x: 0.044980615, y: 0.039980542}
       - {x: 0.0449805, y: -0.04001947}
       - {x: 0.034979712, y: -0.04002034}
-      - {x: 0.03498132, y: -0.020019244}
       - {x: 0.024982883, y: -0.02002139}
-      - {x: 0.024981512, y: -0.000016481872}
       - {x: 0.014981003, y: -0.000024189867}
-      - {x: 0.0149790365, y: 0.019986678}
       - {x: 0.0049887807, y: 0.019985408}
-      - {x: 0.0049804165, y: 0.03997959}
       - {x: -0.005021064, y: 0.03997959}
-      - {x: -0.0050212434, y: 0.059978537}
       - {x: -0.015012789, y: 0.05997845}
-      - {x: -0.015018472, y: 0.079978354}
       - {x: -0.02484408, y: 0.080123715}
       - {x: -0.025025452, y: 0.09997563}
       - {x: -0.055016797, y: 0.099981956}
       - {x: -0.05501609, y: 0.059981555}
-      - {x: -0.06501695, y: 0.059978854}
       - {x: -0.065019496, y: 0.04998045}
-      - {x: -0.07501858, y: 0.04997982}
-      - {x: -0.0750175, y: 0.009982714}
+      - {x: -0.07499998, y: 0.030000154}
       - {x: -0.055017922, y: 0.009981602}
       - {x: -0.05501242, y: -0.14001678}
       - {x: -0.02511389, y: -0.14006364}
       - {x: -0.025013098, y: -0.13000476}
-      - {x: -0.015049327, y: -0.13003321}
       - {x: -0.015019545, y: -0.12001947}
-      - {x: -0.005019693, y: -0.120019466}
-      - {x: -0.0050040176, y: -0.09002173}
+      - {x: -0.009078872, y: -0.105088204}
       - {x: -0.015266746, y: -0.08947058}
-      - {x: -0.015103131, y: -0.07943697}
       - {x: -0.024403382, y: -0.07915103}
       - {x: -0.024370858, y: -0.06064434}
+      - {x: -0.01, y: -0.04999985}
       - {x: 0.004307739, y: -0.060170446}
-      - {x: 0.004980059, y: -0.09001902}
       - {x: 0.024967285, y: -0.0900338}
-      - {x: 0.024980457, y: -0.10001949}
       - {x: 0.034978084, y: -0.10001806}
-      - {x: 0.034979716, y: -0.12000517}
       - {x: 0.04498048, y: -0.12001947}
       - {x: 0.04498052, y: -0.14001943}
       - {x: 0.07498083, y: -0.14002343}
@@ -19586,7 +19600,7 @@ PolygonCollider2D:
   m_UseDelaunayMesh: 1
 --- !u!50 &976823213297399499
 Rigidbody2D:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -19596,9 +19610,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
-  m_Mass: 0.85116524
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 0.7735284
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
