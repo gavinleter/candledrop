@@ -110,7 +110,11 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 1
+<<<<<<< HEAD
   m_Mass: 0.9799557
+=======
+  m_Mass: 0.6655586
+>>>>>>> 496e09131a492d216e4a531121cd63621caca107
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0.6
@@ -147,6 +151,7 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854789459276125003}
   m_Enabled: 1
+<<<<<<< HEAD
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 925d0013b907af24e988e3fdff724bb6, type: 3}
   m_Name: 
@@ -160,6 +165,8 @@ BoxCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854789459276125003}
   m_Enabled: 1
+=======
+>>>>>>> 496e09131a492d216e4a531121cd63621caca107
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -186,7 +193,11 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
+<<<<<<< HEAD
   m_Offset: {x: 0.000035747886, y: -0.000021738932}
+=======
+  m_Offset: {x: 0, y: 0}
+>>>>>>> 496e09131a492d216e4a531121cd63621caca107
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
