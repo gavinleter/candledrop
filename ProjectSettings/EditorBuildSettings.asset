@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 3fc8acdd13e6c734bafef6554d6fdbcd
   - enabled: 1
-    path: Assets/Scenes/gavin mistake.unity
+    path: Assets/Scenes/Curtis Scene.unity
     guid: 26a17a18111f0724c93a8ce4fad28746
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 5296c3e68ec658841b2369c15b16a702, type: 2}

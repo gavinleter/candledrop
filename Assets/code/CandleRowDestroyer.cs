@@ -156,8 +156,8 @@ public class CandleRowDestroyer : CandleLightCollector
 
     void destroyCandle(CandleLightController can) {
         GameObject c = can.getParentObject();
-        GameObject p = Instantiate(CandleDestroyParticle);
-        p.transform.position = c.transform.position;
+        //GameObject p = Instantiate(CandleDestroyParticle);
+        //p.transform.position = c.transform.position;
         gameManager.destroyCandle(c);
     }
 
