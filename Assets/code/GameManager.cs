@@ -83,6 +83,9 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] LockedFeatureMenuController lockedFeatureMenu;
     [SerializeField] AdSpinnerMenuController adSpinnerMenu;
 
+    [SerializeField] InfoMenuController dedicationsMenu;
+    [SerializeField] InfoMenuController soundCreditsMenu;
+
     [SerializeField] MusicManager musicManager;
 
     [SerializeField] GameObject startingCandleSpawnLocation;
@@ -177,6 +180,7 @@ public class GameManager : MonoBehaviour, IMenu
 
         //the credits return button can be seen at game start on some taller devices, so it needs to be hidden
         buttons[4].GetComponent<SpriteRenderer>().enabled = false;
+        buttons[4].GetComponentInChildren<ParticleSystem>().Clear();
 
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = () => {
@@ -198,6 +202,7 @@ public class GameManager : MonoBehaviour, IMenu
             if (canPause) {
                 //credits button is normally hiden from view on game start
                 buttons[4].GetComponent<SpriteRenderer>().enabled = true;
+                buttons[4].GetComponentInChildren<ParticleSystem>().Play();
                 nTopIdle = false;
                 canPause = false;
                 mainCamera.GetComponent<CameraController>().setNewTarget(creditsTransitionLocation.transform.position);
@@ -379,6 +384,18 @@ public class GameManager : MonoBehaviour, IMenu
             //convertAllCandlesToFlares();
             //spawnEmber(-1.5f);
             startEventHorizonEvent();
+        });
+
+        buttons[26].onPress(() => {
+            pause();
+            dedicationsMenu.setReturnMenu(this);
+            dedicationsMenu.pause();
+        });
+
+        buttons[27].onPress(() => {
+            pause();
+            soundCreditsMenu.setReturnMenu(this);
+            soundCreditsMenu.pause();
         });
 
 
