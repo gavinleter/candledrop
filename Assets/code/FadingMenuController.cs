@@ -8,11 +8,13 @@ public class FadingMenuController : FadingObject, IMenu
 
     [SerializeField] protected List<ButtonPress> btns = new List<ButtonPress>();
     bool menuActive = false;
+    //this is used for the shift down when the menu is closed 
+    float closingYPosition = 0;
 
 
     protected override void decreaseLerp() {
         base.decreaseLerp();
-        transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(-1f, transform.localPosition.y, lerp), transform.localPosition.z);
+        transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(closingYPosition - 1f, closingYPosition, lerp), transform.localPosition.z);
     }
 
 
@@ -35,6 +37,13 @@ public class FadingMenuController : FadingObject, IMenu
 
     //when the game unpauses, start lerping in reverse
     virtual public void unpause() {
+
+        if (!menuActive) {
+            return;
+        }
+
+        closingYPosition = transform.localPosition.y;
+
         base.lerpOut();
 
         menuActive = false;

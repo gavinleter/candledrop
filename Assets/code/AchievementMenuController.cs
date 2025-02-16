@@ -73,7 +73,9 @@ public class AchievementMenuController : MonoBehaviour, IMenu
 
     //auto scroll speed exists for a video, this should be removed later
     [SerializeField] float autoScrollSpeed;
-    
+
+    [SerializeField] ParticleSystem[] backgroundParticles;
+
     void Awake() {
         cameraController = mainCam.GetComponent<CameraController>();
         topBound = topObject.GetComponent<SpriteRenderer>().bounds.max.y;
@@ -121,7 +123,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         if (gameManager.isGameStarted()) {
             //mainCam.GetComponent<CameraController>().transitionToBottom(60f);
 
-            cameraController.fadeToBlackTransitionToBottom(0.1f, () => {
+            cameraController.fadeToBlackTransitionToBottom(2f, () => {
                 parentMenuObject.GetComponent<IMenu>().pause();
             });
 
@@ -129,7 +131,7 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         else {
             //mainCam.GetComponent<CameraController>().transitionToTop(60f);
 
-            cameraController.fadeToBlackTransitionToTop(0.1f, () => {
+            cameraController.fadeToBlackTransitionToTop(2f, () => {
                 parentMenuObject.GetComponent<IMenu>().pause();
             });
 
@@ -152,6 +154,10 @@ public class AchievementMenuController : MonoBehaviour, IMenu
             achs[i].btn.setActive(false);
         }
 
+        for (int i = 0; i < backgroundParticles.Length; i++) {
+            backgroundParticles[i].Stop();
+        }
+
         active = false;
 
         //reset transition position back to top of the menu
@@ -167,7 +173,11 @@ public class AchievementMenuController : MonoBehaviour, IMenu
         //mainCam.GetComponent<CameraController>().setNewTarget(transitionPosition, 60f);
         //mainCam.GetComponent<CameraController>().startTransition();
 
-        cameraController.fadeToBlackTransition(transitionPosition, 0.1f, () => {
+        for (int i = 0; i < backgroundParticles.Length; i++) {
+            backgroundParticles[i].Play();
+        }
+
+        cameraController.fadeToBlackTransition(transitionPosition, 2f, () => {
             cameraController.toggleScrollMode(true, topBound, bottomBound);
 
             //make the top and bottom particles play when the user tries to scroll too far

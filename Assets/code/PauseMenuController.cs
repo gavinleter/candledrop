@@ -57,7 +57,7 @@ public class PauseMenuController : FadingMenuController
         btns[1].onPress(() => {
             parentMenuObject.GetComponent<GameManager>().resetGame();
             //mainCam.GetComponent<CameraController>().restartTransition();
-            mainCam.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
+            mainCam.GetComponent<CameraController>().fadeToBlackTransitionToTop(2f);
             unpause();
             parentMenu.unpause();
         });

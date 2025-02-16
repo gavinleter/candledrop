@@ -19,7 +19,7 @@ public class Lerpable : MonoBehaviour
 
         //default fading speed
         if (lerpSpeed == 0f) {
-            lerpSpeed = 0.1f;
+            lerpSpeed = 2f;
         }
 
     }

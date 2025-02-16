@@ -53,7 +53,7 @@ public class GameOverMenuController : FadingMenuController
             gameManager.resetGame();
             //mainCam.restartTransition();
             musicManager.toggleGameOverTrack(false);
-            mainCam.fadeToBlackTransitionToTop(0.1f);
+            mainCam.fadeToBlackTransitionToTop(2f);
             gameManager.unpause();
         });
 

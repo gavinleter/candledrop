@@ -148,7 +148,7 @@ public class CameraController : MonoBehaviour
     //used to go directly to game area if save data is found
     public void skipIntroToBottom() {
         introDelayFinished = true;
-        fadeToBlackTransitionToBottom(0.1f);
+        fadeToBlackTransitionToBottom(2f);
     }
 
     public void setTransitionSpeed(float speed) {
@@ -194,7 +194,7 @@ public class CameraController : MonoBehaviour
 
 
 
-        public void setNewTarget(Vector3 targetPosition, float transitionSpeed, System.Action endAction) {
+    public void setNewTarget(Vector3 targetPosition, float transitionSpeed, System.Action endAction) {
         introDelayFinished = true;
         isTransitioning = false;
         initialPosition = transform.position;
@@ -309,18 +309,31 @@ public class CameraController : MonoBehaviour
         if (scrollMode) {
 
             float mouseY = 0;
+            bool mouseHeld = false;
 
             //set the initial value for lastMouseYPosition when the user starts pressing down
-            if (Input.GetMouseButtonDown(0)) {
-                lastMouseYPosition = Input.mousePosition.y;
+            if ((Input.touchCount > 0 && !mouseHeld) || (Input.GetMouseButtonDown(0) && Input.mousePresent)) {
+                if (Input.mousePresent) {
+                    lastMouseYPosition = Input.mousePosition.y;
+                }
+                else {
+                    lastMouseYPosition = Input.GetTouch(0).position.y;
+                }
                 dragInertia = 0;
+                mouseHeld = true;
             }
 
-            if (Input.GetMouseButton(0)) {
-                mouseY = Input.mousePosition.y;
+            if ((Input.touchCount > 0 && mouseHeld) || (Input.GetMouseButton(0) && Input.mousePresent)) {
+                if (Input.mousePresent) {
+                    mouseY = Input.mousePosition.y;
+                }
+                else {
+                    mouseY = Input.GetTouch(0).position.y;
+                }
             }
             else {
                 mouseY = lastMouseYPosition;
+                mouseHeld = false;
             }
 
             float dragStrength = (lastMouseYPosition - mouseY) * scrollModeDragStrength;

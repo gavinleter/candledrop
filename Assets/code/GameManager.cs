@@ -163,6 +163,11 @@ public class GameManager : MonoBehaviour, IMenu
     [SerializeField] float bannerSpawnDelay;
     [SerializeField] float bannerShowDuration;
 
+    [SerializeField] GameObject rainParticleContainer;
+    ParticleSystem[] rainParticles;
+    [SerializeField] GameObject smokeParticleContainer;
+    ParticleSystem[] smokeParticles;
+
 
     private void Start()
     {
@@ -181,6 +186,9 @@ public class GameManager : MonoBehaviour, IMenu
         //the credits return button can be seen at game start on some taller devices, so it needs to be hidden
         buttons[4].GetComponent<SpriteRenderer>().enabled = false;
         buttons[4].GetComponentInChildren<ParticleSystem>().Clear();
+
+        rainParticles = rainParticleContainer.GetComponentsInChildren<ParticleSystem>();
+        smokeParticles = smokeParticleContainer.GetComponentsInChildren<ParticleSystem>();
 
         //pause the game and pull up pause menu when a settings button is pressed
         System.Action settingsAction = () => {
@@ -226,6 +234,8 @@ public class GameManager : MonoBehaviour, IMenu
                 mainCamera.GetComponent<CameraController>().startTransition();
                 //mainCamera.GetComponent<CameraController>().fadeToBlackTransition(basementTransitionLocation.transform.position, 0.1f);
                 refreshBasementCandleCovers();
+
+                disableTitleParticles();
             }
         });
         //button to go back up from basement
@@ -233,7 +243,9 @@ public class GameManager : MonoBehaviour, IMenu
             resetNTopIdleTimer();
             canPause = true;
             //mainCamera.GetComponent<CameraController>().transitionToTop(40f);
-            mainCamera.GetComponent<CameraController>().fadeToBlackTransitionToTop(0.1f);
+            mainCamera.GetComponent<CameraController>().fadeToBlackTransitionToTop(2f);
+
+            enableTitleParticles();
         });
         //button to drop a candle (invisible over game area)
         buttons[7].onPress(() => {
@@ -315,6 +327,8 @@ public class GameManager : MonoBehaviour, IMenu
 
             getInitialCandle().GetComponent<StartCandleFall>().dropCandle();
             losingVignette.clearParticles();
+
+            disableTitleParticles();
         });
 
         //tap glass button
@@ -812,7 +826,9 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
     public void resetGame(bool initialStart, bool spawnStarterCandle) {
-        
+
+        enableTitleParticles();
+
         if (spawnStarterCandle) {
             resetNTopIdleTimer();
         }
@@ -1578,6 +1594,28 @@ public class GameManager : MonoBehaviour, IMenu
             failedSaveMenu.pause();
         }
 
+    }
+
+
+    void disableTitleParticles() {
+        for (int i = 0; i < rainParticles.Length; i++) {
+            rainParticles[i].Stop();
+        }
+
+        for (int i = 0; i < smokeParticles.Length; i++) {
+            smokeParticles[i].Stop();
+        }
+    }
+
+
+    void enableTitleParticles() {
+        for (int i = 0; i < rainParticles.Length; i++) {
+            rainParticles[i].Play();
+        }
+
+        for (int i = 0; i < smokeParticles.Length; i++) {
+            smokeParticles[i].Play();
+        }
     }
 
 

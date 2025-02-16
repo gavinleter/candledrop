@@ -33,14 +33,14 @@ public class FadingObject : Lerpable
 
     override protected void increaseLerp() {
         base.increaseLerp();
-        opacity = Mathf.Lerp(opacity, upperLimit, lerp);
+        opacity = Mathf.Lerp(lowerLimit, upperLimit, lerp);
         setAlpha();
     }
 
 
     override protected void decreaseLerp() {
         base.decreaseLerp();
-        opacity = Mathf.Lerp(lowerLimit, opacity, lerp);
+        opacity = Mathf.Lerp(lowerLimit, upperLimit, lerp);
         setAlpha();
     }
 
