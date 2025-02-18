@@ -199,6 +199,10 @@ public class Settings
             case 9:
                 return isAchievementTapped(43);
 
+            //oil skin
+            case 10:
+                return isAchievementTapped(46);
+
             default:
                 return false;
 

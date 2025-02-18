@@ -244,6 +244,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1407519156186933729, guid: 8af712b0190cd3f40906e349d832aa97, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8809281867397101790, guid: 8af712b0190cd3f40906e349d832aa97, type: 3}
       propertyPath: m_Name
       value: candle_light

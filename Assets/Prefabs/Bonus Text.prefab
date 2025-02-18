@@ -52,6 +52,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -99,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8861a3f212606443a370ec41e6f79d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lerpSpeed: 0.005
+  lerpSpeed: 0.25
   currentlyActive: 0
   playParticlesOnFadeIn: 0
   destroyParticlesOnFadeOut: 0

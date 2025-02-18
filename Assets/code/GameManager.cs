@@ -511,13 +511,13 @@ public class GameManager : MonoBehaviour, IMenu
         Vector3 newPosition = initialPosition;
 
         //check if the tapped position is too far off screen first and adjust if necessary
-        if (initialPosition.x + obj.GetComponent<Collider2D>().bounds.size.x / 2 > rightCandlePlacementLimit.transform.position.x) {
+        if (initialPosition.x + obj.GetComponent<SpriteRenderer>().bounds.size.x / 2 > rightCandlePlacementLimit.transform.position.x) {
 
-            newPosition.x = rightCandlePlacementLimit.transform.position.x - obj.GetComponent<Collider2D>().bounds.size.x / 2;
+            newPosition.x = rightCandlePlacementLimit.transform.position.x - obj.GetComponent<SpriteRenderer>().bounds.size.x / 2;
         }
-        if (initialPosition.x - obj.GetComponent<Collider2D>().bounds.size.x / 2 < leftCandlePlacementLimit.transform.position.x) {
+        if (initialPosition.x - obj.GetComponent<SpriteRenderer>().bounds.size.x / 2 < leftCandlePlacementLimit.transform.position.x) {
 
-            newPosition.x = leftCandlePlacementLimit.transform.position.x + obj.GetComponent<Collider2D>().bounds.size.x / 2;
+            newPosition.x = leftCandlePlacementLimit.transform.position.x + obj.GetComponent<SpriteRenderer>().bounds.size.x / 2;
         }
 
         return newPosition;
@@ -1060,9 +1060,9 @@ public class GameManager : MonoBehaviour, IMenu
     }
 
 
-    /*public int getCurrentStarterCandleSkinId() {
+    public int getCurrentStarterCandleSkinId() {
         return currentSkinId;
-    }*/
+    }
 
     public int getCurrentStarterCandleId() {
         return currentCandlePrefabId;

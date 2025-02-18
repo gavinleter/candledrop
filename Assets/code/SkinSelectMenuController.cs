@@ -8,6 +8,10 @@ public class SkinSelectMenuController : FadingMenuController
     [SerializeField] GameManager gameManager;
     [SerializeField] LockedFeatureMenuController lockedFeatureMenu;
 
+    [SerializeField] GameObject selectedSkinIndicator;
+
+    int selectedSkin = 0;
+
 
     protected override void Start(){
         base.Start();
@@ -15,10 +19,11 @@ public class SkinSelectMenuController : FadingMenuController
         //generates an anonymous method for each skin select button
         System.Func<int, System.Action> skinButton = (int id) => {
             return delegate () {
-
+                
                 //if the skin is unlocked, switch skins immediately
                 if (Settings.skinUnlocked(id)) {
-                    gameManager.setStarterCandleSkin(id);
+                    selectedSkin = id;
+                    refreshSelectorPosition();
                 }
                 else {
                     //otherwise bring up the locked feature menu
@@ -33,12 +38,13 @@ public class SkinSelectMenuController : FadingMenuController
         };
 
         //go through each skin select button and assign their methods
-        for(int i = 0; i < 8; i++) {
+        for(int i = 0; i < 11; i++) {
             btns[i].onPress(skinButton(i));
         }
 
         //confirm select skin button
-        btns[8].onPress(delegate () {
+        btns[12].onPress(delegate () {
+            gameManager.setStarterCandleSkin(selectedSkin);
             unpause();
             gameManager.unpause();
         });
@@ -55,6 +61,8 @@ public class SkinSelectMenuController : FadingMenuController
 
     override public void pause() {
         refreshSkinButtons();
+        selectedSkin = gameManager.getCurrentStarterCandleSkinId();
+        refreshSelectorPosition();
 
         base.pause();
         transform.position = new Vector3(transform.parent.position.x, transform.parent.position.y, 0f);
@@ -72,7 +80,7 @@ public class SkinSelectMenuController : FadingMenuController
     //remove covers of unlocked skins and remove normal sprite of locked skins
     void refreshSkinButtons() {
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 12; i++) {
 
             if (Settings.skinUnlocked(i)) {
                 btns[i].transform.Find("skin_select_cover").GetComponent<SpriteRenderer>().enabled = false;
@@ -83,6 +91,13 @@ public class SkinSelectMenuController : FadingMenuController
             }
 
         }
+
+    }
+
+
+    void refreshSelectorPosition() {
+
+        selectedSkinIndicator.transform.localPosition = new Vector3(-0.25f + (selectedSkin % 3 * 0.25f), 0.5f - (selectedSkin / 3 * 0.25f), 0);
 
     }
 

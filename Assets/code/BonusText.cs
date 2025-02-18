@@ -34,7 +34,7 @@ public class BonusText : FadingObject
         base.Update();
          
         transform.position = new Vector3(transform.position.x, transform.position.y + newRiseSpeed * highlightRiseSpeedMultiplier * Time.deltaTime, transform.position.z);
-
+        
         if (fadeOutFinished()) {
             Destroy(gameObject);
         }

@@ -11,6 +11,8 @@ public class IntroLogos : MonoBehaviour
     [SerializeField] float unityDelay;
     [SerializeField] float waffleDelay;
 
+    bool unityLogoStarted = false;
+    bool waffleLogoStarted = false;
 
     private void Awake() {
         unityLogo.GetComponent<SpriteRenderer>().enabled = false;
@@ -19,23 +21,27 @@ public class IntroLogos : MonoBehaviour
 
     private void Start() {
         waffleLogo.GetComponent<WaffleButton>().setActive(false);
+        unityLogo.setLimits(0, 1);
+        waffleLogo.setLimits(0, 1);
     }
 
 
     private void Update() {
-        
-        if(Time.time > unityDelay) {
+
+        if(Time.time > unityDelay && !unityLogoStarted) {
 
             unityLogo.GetComponent<SpriteRenderer>().enabled = true;
             unityLogo.lerpIn();
+            unityLogoStarted = true;
 
         }
 
-        if (Time.time > waffleDelay) {
+        if (Time.time > waffleDelay && !waffleLogoStarted) {
 
             waffleLogo.GetComponent<WaffleButton>().setActive(true);
             waffleLogo.GetComponent<SpriteRenderer>().enabled = true;
             waffleLogo.lerpIn();
+            waffleLogoStarted = true;
 
         }
 
